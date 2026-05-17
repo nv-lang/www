@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nova — a systems language with effects, contracts, AI-first design</title>
+<meta name="description" content="Nova is an in-development general-purpose language built around algebraic effects, static contracts, and AI-first ergonomics. Bootstrap stage — not for production.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <a class="brand" href="/">Nova</a>
+  <nav class="lang-switch">
+    <a class="active" href="/">EN</a>
+    <a href="/ru/">RU</a>
+  </nav>
+</header>
+
+<main>
+
+<section class="hero">
+  <h1>Nova</h1>
+  <p class="tagline">A general-purpose language built around algebraic effects, static contracts, and AI-first ergonomics.</p>
+</section>
+
+<section class="status">
+  <strong>Status: Bootstrap.</strong>
+  Nova is in active early development. The compiler works, the standard library is partial, breaking changes happen weekly. <strong>Do not use in production.</strong>
+</section>
+
+<section class="features">
+  <h2>What makes it different</h2>
+  <ul>
+    <li><strong>Effects in signatures.</strong> Network, I/O, time, randomness, mutation — every side effect declared in the type. No hidden control flow, no surprise <code>await</code>.</li>
+    <li><strong>Contracts as first-class.</strong> <code>requires</code> / <code>ensures</code> / <code>invariant</code> checked statically (SMT) when possible, at runtime in debug, zero-cost in release.</li>
+    <li><strong>AI-first ergonomics.</strong> Designed for the era where LLMs write 50–80% of code: explicit signatures, locality, compiler errors as a learning signal.</li>
+    <li><strong>M:N runtime.</strong> Go-style fibers with work-stealing scheduler. Managed by default (Boehm GC today, concurrent GC planned), <code>realtime nogc</code> for hot paths.</li>
+  </ul>
+</section>
+
+<section class="sample">
+  <h2>A taste</h2>
+  <pre><code>fn fetch_user(id u64) Result[User, NotFound]
+    requires id &gt; 0
+    ensures result is Ok(u) implies u.id == id
+    uses Db, Log
+{
+    log("fetching user", id)
+    match db.find_user(id) {
+        Some(u) -&gt; Ok(u)
+        None    -&gt; Err(NotFound)
+    }
+}</code></pre>
+  <p class="caption">
+    Effects (<code>Db</code>, <code>Log</code>) and a postcondition right in the signature — the caller knows exactly what this function does and what to expect back.
+  </p>
+</section>
+
+<section class="links">
+  <h2>Where to go</h2>
+  <ul>
+    <li><a href="https://github.com/nv-lang/nova">Source on GitHub</a> — compiler, stdlib, tests, spec</li>
+    <li><a href="https://github.com/nv-lang/nova/tree/main/spec">Language specification</a> — design decisions (D-blocks), grammar, open questions</li>
+    <li><a href="https://github.com/nv-lang/nova/tree/main/docs/plans">Roadmap</a> — current and historical plans</li>
+    <li>Contact: <a href="mailto:hello@nv-lang.org">hello@nv-lang.org</a> · Security: <a href="mailto:security@nv-lang.org">security@nv-lang.org</a></li>
+  </ul>
+</section>
+
+</main>
+
+<footer>
+  <p>
+    Code: MIT OR Apache-2.0 ·
+    Docs: <a href="https://creativecommons.org/licenses/by/4.0/">CC&nbsp;BY&nbsp;4.0</a> ·
+    Site source: <a href="https://github.com/nv-lang/www">nv-lang/www</a>
+  </p>
+</footer>
+
+</body>
+</html>

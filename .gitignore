@@ -1,0 +1,11 @@
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Local build / preview artifacts
+_site/
+node_modules/
+*.log

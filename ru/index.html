@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nova — язык с эффектами, контрактами, AI-first дизайном</title>
+<meta name="description" content="Nova — язык общего назначения вокруг алгебраических эффектов, статических контрактов и AI-first эргономики. Bootstrap-стадия, не для продакшена.">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <a class="brand" href="/ru/">Nova</a>
+  <nav class="lang-switch">
+    <a href="/">EN</a>
+    <a class="active" href="/ru/">RU</a>
+  </nav>
+</header>
+
+<main>
+
+<section class="hero">
+  <h1>Nova</h1>
+  <p class="tagline">Язык общего назначения вокруг алгебраических эффектов, статических контрактов и AI-first эргономики.</p>
+</section>
+
+<section class="status">
+  <strong>Статус: Bootstrap.</strong>
+  Nova в активной ранней разработке. Компилятор работает, стандартная библиотека частична, breaking changes происходят каждую неделю. <strong>Не использовать в продакшене.</strong>
+</section>
+
+<section class="features">
+  <h2>Чем отличается</h2>
+  <ul>
+    <li><strong>Эффекты в сигнатурах.</strong> Сеть, ввод-вывод, время, случайность, мутация — каждый побочный эффект объявлен в типе. Никакого скрытого control flow, никаких неожиданных <code>await</code>.</li>
+    <li><strong>Контракты как first-class.</strong> <code>requires</code> / <code>ensures</code> / <code>invariant</code> проверяются статически (SMT) где возможно, в runtime в debug, zero-cost в release.</li>
+    <li><strong>AI-first эргономика.</strong> Спроектирован под эпоху, где LLM пишут 50–80% кода: явные сигнатуры, локальность, ошибки компилятора как обучающий сигнал.</li>
+    <li><strong>M:N runtime.</strong> Go-style fibers с work-stealing scheduler. Managed по умолчанию (Boehm GC сейчас, concurrent GC планируется), <code>realtime nogc</code> для hot path.</li>
+  </ul>
+</section>
+
+<section class="sample">
+  <h2>На вкус</h2>
+  <pre><code>fn fetch_user(id u64) Result[User, NotFound]
+    requires id &gt; 0
+    ensures result is Ok(u) implies u.id == id
+    uses Db, Log
+{
+    log("fetching user", id)
+    match db.find_user(id) {
+        Some(u) -&gt; Ok(u)
+        None    -&gt; Err(NotFound)
+    }
+}</code></pre>
+  <p class="caption">
+    Эффекты (<code>Db</code>, <code>Log</code>) и постусловие прямо в сигнатуре — вызывающий код знает ровно что функция делает и что ожидать на выходе.
+  </p>
+</section>
+
+<section class="links">
+  <h2>Куда смотреть</h2>
+  <ul>
+    <li><a href="https://github.com/nv-lang/nova">Исходники на GitHub</a> — компилятор, stdlib, тесты, спека</li>
+    <li><a href="https://github.com/nv-lang/nova/tree/main/spec">Спецификация языка</a> — D-блоки решений, грамматика, открытые вопросы</li>
+    <li><a href="https://github.com/nv-lang/nova/tree/main/docs/plans">Roadmap</a> — текущие и архивные планы</li>
+    <li>Связь: <a href="mailto:hello@nv-lang.org">hello@nv-lang.org</a> · Безопасность: <a href="mailto:security@nv-lang.org">security@nv-lang.org</a></li>
+  </ul>
+</section>
+
+</main>
+
+<footer>
+  <p>
+    Код: MIT OR Apache-2.0 ·
+    Документация: <a href="https://creativecommons.org/licenses/by/4.0/">CC&nbsp;BY&nbsp;4.0</a> ·
+    Исходники сайта: <a href="https://github.com/nv-lang/www">nv-lang/www</a>
+  </p>
+</footer>
+
+</body>
+</html>
