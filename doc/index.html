@@ -115,8 +115,7 @@
       <h2 id="hello-world">Hello, World</h2>
       <p>Create a file named <code>hello.nv</code>:</p>
 
-      <pre><code><span class="tok-kw">fn</span> <span class="tok-fn">main</span>() !
-    <span class="tok-kw">uses</span> <span class="tok-effect">Io</span>
+      <pre><code><span class="tok-kw">fn</span> <span class="tok-fn">main</span>() <span class="tok-effect">Io</span> -&gt; !
 {
     println(<span class="tok-str">"Hello, World!"</span>)
 }</code></pre>
@@ -126,7 +125,7 @@
       <pre><code>nova build hello.nv
 ./hello</code></pre>
 
-      <p>Notice that <code>main</code> declares <code>uses Io</code> — even the top-level entry point is honest about its effects. <code>!</code> in the return position means the function can propagate any error.</p>
+      <p>Notice that <code>main</code> declares <code>Io</code> before the return arrow — even the top-level entry point is honest about its effects. <code>!</code> in the return position means the function can propagate any error.</p>
 
       <h2 id="next-steps">Next steps</h2>
       <p>The language guide sections below explain effects, contracts, the type system, and the concurrency model in detail. For the formal treatment of every language construct, see the <a href="/spec/">Language Specification</a>.</p>
@@ -136,7 +135,7 @@
       <hr class="divider">
 
       <h1 id="effects">Effects</h1>
-      <p>Every function that performs a side effect declares it in its signature using the <code>uses</code> clause. The available built-in effects are:</p>
+      <p>Every function that performs a side effect declares it in its type — between the parameter list and the return arrow. The available built-in effects are:</p>
 
       <ul>
         <li><code>Io</code> — standard input/output (console, files)</li>
@@ -152,14 +151,12 @@
 
       <p>User-defined effects are supported. You declare an effect interface, provide a handler, and inject it at the call boundary — no global state, no hidden dependency injection framework.</p>
 
-      <pre><code><span class="tok-kw">effect</span> <span class="tok-type">Cache</span> {
-    <span class="tok-kw">fn</span> <span class="tok-fn">get</span>(key <span class="tok-type">str</span>) -&gt; <span class="tok-type">Option</span>[<span class="tok-type">bytes</span>]
-    <span class="tok-kw">fn</span> <span class="tok-fn">set</span>(key <span class="tok-type">str</span>, val <span class="tok-type">bytes</span>, ttl <span class="tok-type">Duration</span>)
-        <span class="tok-kw">uses</span> <span class="tok-effect">Mut</span>
+      <pre><code><span class="tok-kw">type</span> <span class="tok-type">Cache</span> <span class="tok-kw">effect</span> {
+    <span class="tok-fn">get</span>(key <span class="tok-type">str</span>) -&gt; <span class="tok-type">Option</span>[<span class="tok-type">bytes</span>]
+    <span class="tok-fn">set</span>(key <span class="tok-type">str</span>, val <span class="tok-type">bytes</span>, ttl <span class="tok-type">Duration</span>) -&gt; ()
 }
 
-<span class="tok-kw">fn</span> <span class="tok-fn">get_profile</span>(user_id <span class="tok-type">u64</span>) -&gt; <span class="tok-type">Profile</span>
-    <span class="tok-kw">uses</span> <span class="tok-effect">Cache</span>, <span class="tok-effect">Db</span>
+<span class="tok-kw">fn</span> <span class="tok-fn">get_profile</span>(user_id <span class="tok-type">u64</span>) <span class="tok-effect">Cache</span> <span class="tok-effect">Db</span> -&gt; <span class="tok-type">Profile</span>
 {
     <span class="tok-kw">let</span> key = <span class="tok-fn">format</span>(<span class="tok-str">"profile:{}"</span>, user_id)
     <span class="tok-kw">if</span> <span class="tok-kw">let</span> <span class="tok-type">Some</span>(raw) = cache.<span class="tok-fn">get</span>(key) {
@@ -209,8 +206,7 @@
       <h1 id="concurrency">Concurrency</h1>
       <p>Nova's runtime multiplexes <em>fibers</em> (lightweight green threads) across OS threads using a work-stealing scheduler. You spawn a fiber with <code>spawn</code> and communicate over channels:</p>
 
-      <pre><code><span class="tok-kw">fn</span> <span class="tok-fn">process_batch</span>(items <span class="tok-type">Vec</span>[<span class="tok-type">Item</span>]) -&gt; <span class="tok-type">Vec</span>[<span class="tok-type">Result</span>[<span class="tok-type">Output</span>, <span class="tok-type">Err</span>]]
-    <span class="tok-kw">uses</span> <span class="tok-effect">Db</span>
+      <pre><code><span class="tok-kw">fn</span> <span class="tok-fn">process_batch</span>(items <span class="tok-type">[]Item</span>) <span class="tok-effect">Db</span> -&gt; <span class="tok-type">[]Result</span>[<span class="tok-type">Output</span>, <span class="tok-type">Err</span>]
 {
     <span class="tok-kw">let</span> (tx, rx) = channel.<span class="tok-fn">bounded</span>(items.len())
     <span class="tok-kw">for</span> item <span class="tok-kw">in</span> items {
@@ -227,12 +223,11 @@
 
       <p>For latency-sensitive code, annotate a scope or function with <code>realtime nogc</code> to opt out of GC pauses. The compiler enforces that no GC-managed allocations occur inside such scopes.</p>
 
-      <pre><code><span class="tok-kw">fn</span> <span class="tok-fn">process_audio_frame</span>(frame <span class="tok-type">&amp;AudioFrame</span>) -&gt; <span class="tok-type">AudioFrame</span>
-    <span class="tok-kw">realtime</span> <span class="tok-kw">nogc</span>
-    <span class="tok-kw">uses</span> <span class="tok-effect">Dsp</span>
-{
-    <span class="tok-comment">// only stack allocation allowed here</span>
-    frame.<span class="tok-fn">apply_eq</span>()
+      <pre><code><span class="tok-kw">fn</span> <span class="tok-fn">process_audio_frame</span>(frame <span class="tok-type">AudioFrame</span>) <span class="tok-effect">Dsp</span> -&gt; <span class="tok-type">AudioFrame</span> {
+    <span class="tok-kw">realtime</span> <span class="tok-kw">nogc</span> {
+        <span class="tok-comment">// only stack allocation allowed here</span>
+        frame.<span class="tok-fn">apply_eq</span>()
+    }
 }</code></pre>
 
       <hr class="divider">

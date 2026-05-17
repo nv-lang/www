@@ -66,10 +66,8 @@
           <span class="code-window__title">fetch_user.nv</span>
         </div>
         <pre><code><span class="tok-comment">// Алгебраические эффекты в сигнатурах</span>
-<span class="tok-kw">fn</span> <span class="tok-fn">fetch_user</span>(id <span class="tok-type">u64</span>) -&gt; <span class="tok-type">Result</span>[<span class="tok-type">User</span>, <span class="tok-type">NotFound</span>]
+<span class="tok-kw">fn</span> <span class="tok-fn">fetch_user</span>(id <span class="tok-type">u64</span>) <span class="tok-effect">Db</span> <span class="tok-effect">Log</span> -&gt; <span class="tok-type">Result</span>[<span class="tok-type">User</span>, <span class="tok-type">NotFound</span>]
     <span class="tok-kw">requires</span> id &gt; <span class="tok-num">0</span>
-    <span class="tok-kw">ensures</span>  result <span class="tok-kw">is</span> <span class="tok-type">Ok</span>(u) <span class="tok-kw">implies</span> u.id == id
-    <span class="tok-kw">uses</span>     <span class="tok-effect">Db</span>, <span class="tok-effect">Log</span>
 {
     <span class="tok-fn">log</span>(<span class="tok-str">"fetching"</span>, {id: id.<span class="tok-fn">to_str</span>()})
     <span class="tok-kw">match</span> db.<span class="tok-fn">find_user</span>(id) {
@@ -104,7 +102,7 @@
         <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
       </div>
       <h3>Алгебраические эффекты</h3>
-      <p>Сеть, ввод-вывод, случайность, время и мутация объявляются в сигнатуре каждой функции через <code>uses</code>. Никакого скрытого control flow. Никаких неожиданных <code>await</code>. Вызывающий всегда знает, что делает функция.</p>
+      <p>Сеть, ввод-вывод, случайность, время и мутация появляются прямо в типе функции — между параметрами и стрелкой возврата. Никакого скрытого control flow. Никаких неожиданных <code>await</code>. Вызывающий всегда знает, что делает функция.</p>
     </div>
 
     <div class="feature-card">
@@ -141,8 +139,7 @@
         <span class="code-window__title">server.nv</span>
       </div>
       <pre><code><span class="tok-comment">// HTTP-сервер — эффекты видны в сигнатуре</span>
-<span class="tok-kw">fn</span> <span class="tok-fn">serve_api</span>() !
-    <span class="tok-kw">uses</span> <span class="tok-effect">Net</span>, <span class="tok-effect">Http</span>, <span class="tok-effect">Log</span>
+<span class="tok-kw">fn</span> <span class="tok-fn">serve_api</span>() <span class="tok-effect">Net</span> <span class="tok-effect">Http</span> <span class="tok-effect">Log</span> -&gt; !
 {
     <span class="tok-kw">let</span> router = <span class="tok-type">Router</span>.<span class="tok-fn">new</span>()
         |&gt; <span class="tok-fn">route</span>(<span class="tok-type">Get</span>,  <span class="tok-str">"/users/:id"</span>, get_user)

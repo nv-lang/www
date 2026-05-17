@@ -61,7 +61,7 @@
 
     <p>Most languages let functions lie. A function named <code>get_user</code> might query a database, make an HTTP call, write a log line, and cache the result in a global map — and none of that is visible in its signature. The caller has no way to know without reading the body. Tests have to mock the world. Reviewers have to hold everything in their heads.</p>
 
-    <p>This is the problem Nova is designed to solve. In Nova, every side effect must appear in the function's type. If a function touches the database, it says <code>uses Db</code>. If it writes logs, it says <code>uses Log</code>. If it does neither, the type checker proves it cannot.</p>
+    <p>This is the problem Nova is designed to solve. In Nova, every side effect must appear in the function's type — between the parameter list and the return arrow. If a function touches the database, <code>Db</code> appears in its type. If it writes logs, so does <code>Log</code>. If it does neither, the type checker proves it cannot.</p>
 
     <p>The signature is not documentation that might be wrong — it is a constraint the compiler enforces.</p>
 
@@ -79,10 +79,8 @@
       <pre><code><span class="tok-comment">// The signature is the contract with the caller:</span>
 <span class="tok-comment">// give me a positive id, I give you a User or NotFound,</span>
 <span class="tok-comment">// and I will only touch Db and Log — nothing else.</span>
-<span class="tok-kw">fn</span> <span class="tok-fn">fetch_user</span>(id <span class="tok-type">u64</span>) -&gt; <span class="tok-type">Result</span>[<span class="tok-type">User</span>, <span class="tok-type">NotFound</span>]
+<span class="tok-kw">fn</span> <span class="tok-fn">fetch_user</span>(id <span class="tok-type">u64</span>) <span class="tok-effect">Db</span> <span class="tok-effect">Log</span> -&gt; <span class="tok-type">Result</span>[<span class="tok-type">User</span>, <span class="tok-type">NotFound</span>]
     <span class="tok-kw">requires</span> id &gt; <span class="tok-num">0</span>
-    <span class="tok-kw">ensures</span>  result <span class="tok-kw">is</span> <span class="tok-type">Ok</span>(u) <span class="tok-kw">implies</span> u.id == id
-    <span class="tok-kw">uses</span>     <span class="tok-effect">Db</span>, <span class="tok-effect">Log</span>
 {
     <span class="tok-fn">log</span>(<span class="tok-str">"fetching"</span>, {id: id.<span class="tok-fn">to_str</span>()})
     <span class="tok-kw">match</span> db.<span class="tok-fn">find_user</span>(id) {
@@ -111,8 +109,7 @@
       </div>
       <pre><code><span class="tok-comment">// The full set of capabilities is in the signature.</span>
 <span class="tok-comment">// No hidden globals. No implicit async runtime.</span>
-<span class="tok-kw">fn</span> <span class="tok-fn">serve_api</span>() !
-    <span class="tok-kw">uses</span> <span class="tok-effect">Net</span>, <span class="tok-effect">Http</span>, <span class="tok-effect">Log</span>
+<span class="tok-kw">fn</span> <span class="tok-fn">serve_api</span>() <span class="tok-effect">Net</span> <span class="tok-effect">Http</span> <span class="tok-effect">Log</span> -&gt; !
 {
     <span class="tok-kw">let</span> router = <span class="tok-type">Router</span>.<span class="tok-fn">new</span>()
         |&gt; <span class="tok-fn">route</span>(<span class="tok-type">Get</span>,  <span class="tok-str">"/users/:id"</span>, get_user)
@@ -130,7 +127,7 @@
 
     <ul>
       <li><strong>Core type system</strong> — structs, enums, generics, traits, <code>Option[T]</code>, <code>Result[T, E]</code>, type inference, and pattern matching all work.</li>
-      <li><strong>Effects</strong> — the <code>uses</code> clause is enforced by the type checker. Built-in effects (<code>Io</code>, <code>Net</code>, <code>Db</code>, <code>Log</code>, <code>Rand</code>, <code>Time</code>, <code>Fs</code>) are recognized. User-defined effects with custom handlers work in the current compiler.</li>
+      <li><strong>Effects</strong> — effect types in function signatures are enforced by the type checker. Built-in effects (<code>Io</code>, <code>Net</code>, <code>Db</code>, <code>Log</code>, <code>Rand</code>, <code>Time</code>, <code>Fs</code>) are recognized. User-defined effects with custom handlers work in the current compiler.</li>
       <li><strong>Contracts</strong> — <code>requires</code> and <code>ensures</code> clauses are parsed and checked. SMT integration (Z3) is functional for linear arithmetic. Runtime fallback for non-provable constraints works. Struct <code>invariant</code> is implemented and enforced (including the rule that redundant field specs are rejected).</li>
       <li><strong>M:N runtime</strong> — the fiber scheduler runs, <code>spawn</code> works, and channels are usable. Work-stealing across threads is implemented. I/O is fiber-aware on Linux (io_uring) and macOS (kqueue).</li>
       <li><strong>Documentation tooling</strong> — <code>nv doc</code> generates HTML documentation from doc comments. The format is specified in D45.</li>
@@ -152,12 +149,10 @@
     ctx    <span class="tok-type">AuthCtx</span>,
     amount <span class="tok-type">Money</span>,
     card   <span class="tok-type">CardToken</span>,
-) -&gt; <span class="tok-type">Result</span>[<span class="tok-type">ChargeId</span>, <span class="tok-type">PaymentError</span>]
+) <span class="tok-effect">Db</span> <span class="tok-effect">Net</span> <span class="tok-effect">Log</span> -&gt; <span class="tok-type">Result</span>[<span class="tok-type">ChargeId</span>, <span class="tok-type">PaymentError</span>]
     <span class="tok-kw">requires</span> ctx.<span class="tok-fn">is_authenticated</span>()
     <span class="tok-kw">requires</span> amount &gt; <span class="tok-type">Money</span>::ZERO
     <span class="tok-kw">requires</span> amount &lt;= <span class="tok-type">Money</span>::MAX_SINGLE_CHARGE
-    <span class="tok-kw">ensures</span>  result <span class="tok-kw">is</span> <span class="tok-type">Ok</span>(id) <span class="tok-kw">implies</span> id.<span class="tok-fn">is_valid</span>()
-    <span class="tok-kw">uses</span>     <span class="tok-effect">Db</span>, <span class="tok-effect">Net</span>, <span class="tok-effect">Log</span>
 {
     <span class="tok-fn">log</span>(<span class="tok-str">"charging"</span>, {user: ctx.user_id.<span class="tok-fn">to_str</span>(), amount: amount.<span class="tok-fn">to_str</span>()})
     <span class="tok-kw">let</span> result = payment_gateway.<span class="tok-fn">charge</span>(card, amount)?
@@ -166,7 +161,7 @@
 }</code></pre>
     </div>
 
-    <p>The preconditions (<code>requires</code>) tell callers exactly what must be true before calling. The postcondition (<code>ensures</code>) guarantees what the caller can rely on after a successful call. The <code>uses</code> clause lists every external system touched. A code reviewer — or an LLM generating the caller — can understand the full contract from the signature alone, without reading the body.</p>
+    <p>The preconditions (<code>requires</code>) tell callers exactly what must be true before calling. Effects in the type list every external system touched. A code reviewer — or an LLM generating the caller — can understand the full contract from the signature alone, without reading the body.</p>
 
     <h2>Why now?</h2>
 

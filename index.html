@@ -71,10 +71,9 @@
           <span class="code-window__title">fetch_user.nv</span>
         </div>
         <pre><code><span class="tok-comment">// Algebraic effects in signatures</span>
-<span class="tok-kw">fn</span> <span class="tok-fn">fetch_user</span>(id <span class="tok-type">u64</span>) -&gt; <span class="tok-type">Result</span>[<span class="tok-type">User</span>, <span class="tok-type">NotFound</span>]
+<span class="tok-kw">fn</span> <span class="tok-fn">fetch_user</span>(id <span class="tok-type">u64</span>) <span class="tok-effect">Db</span> <span class="tok-effect">Log</span> -&gt; <span class="tok-type">Result</span>[<span class="tok-type">User</span>, <span class="tok-type">NotFound</span>]
     <span class="tok-kw">requires</span> id &gt; <span class="tok-num">0</span>
-    <span class="tok-kw">ensures</span>  result <span class="tok-kw">is</span> <span class="tok-type">Ok</span>(u) <span class="tok-kw">implies</span> u.id == id
-    <span class="tok-kw">uses</span>     <span class="tok-effect">Db</span>, <span class="tok-effect">Log</span>
+    <span class="tok-kw">ensures</span>  result.<span class="tok-fn">is_ok</span>() ==&gt; result.<span class="tok-fn">unwrap</span>().id == id
 {
     <span class="tok-fn">log</span>(<span class="tok-str">"fetching"</span>, {id: id.<span class="tok-fn">to_str</span>()})
     <span class="tok-kw">match</span> db.<span class="tok-fn">find_user</span>(id) {
@@ -109,7 +108,7 @@
         <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
       </div>
       <h3>Algebraic Effects</h3>
-      <p>Network, I/O, randomness, time, and mutation are declared in every function's signature with <code>uses</code>. No hidden control flow. No surprise <code>await</code>. The caller always knows what a function does.</p>
+      <p>Network, I/O, randomness, time, and mutation appear directly in the function's type — between the parameters and the return arrow. No hidden control flow. No surprise <code>await</code>. The caller always knows what a function does.</p>
     </div>
 
     <div class="feature-card">
@@ -137,7 +136,7 @@
     <div>
       <p class="section-label">Effects in action</p>
       <h2 style="font-size:clamp(1.4rem,3vw,1.9rem);margin-bottom:.75rem;">Every dependency visible at a glance</h2>
-      <p style="color:var(--fg-muted);">The HTTP server's signature tells you it binds to the network (<code>Net</code>), speaks HTTP (<code>Http</code>), and writes logs (<code>Log</code>). Nothing is implicit. The effect system is the documentation.</p>
+      <p style="color:var(--fg-muted);">The HTTP server's signature tells you it binds to the network (<code>Net</code>), speaks HTTP (<code>Http</code>), and writes logs (<code>Log</code>) — effects appear between the parameter list and the return arrow. Nothing is implicit.</p>
       <a href="/spec/" class="btn btn-outline" style="margin-top:.5rem;">Read the spec</a>
     </div>
     <div class="code-window">
@@ -146,8 +145,7 @@
         <span class="code-window__title">server.nv</span>
       </div>
       <pre><code><span class="tok-comment">// HTTP server — effects track every dependency</span>
-<span class="tok-kw">fn</span> <span class="tok-fn">serve_api</span>() !
-    <span class="tok-kw">uses</span> <span class="tok-effect">Net</span>, <span class="tok-effect">Http</span>, <span class="tok-effect">Log</span>
+<span class="tok-kw">fn</span> <span class="tok-fn">serve_api</span>() <span class="tok-effect">Net</span> <span class="tok-effect">Http</span> <span class="tok-effect">Log</span> -&gt; !
 {
     <span class="tok-kw">let</span> router = <span class="tok-type">Router</span>.<span class="tok-fn">new</span>()
         |&gt; <span class="tok-fn">route</span>(<span class="tok-type">Get</span>,  <span class="tok-str">"/users/:id"</span>, get_user)
