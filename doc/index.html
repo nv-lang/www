@@ -115,7 +115,7 @@
       <h2 id="hello-world">Hello, World</h2>
       <p>Create a file named <code>hello.nv</code>:</p>
 
-      <pre><code><span class="tok-kw">fn</span> <span class="tok-fn">main</span>() <span class="tok-effect">Io</span> -&gt; !
+      <pre><code><span class="tok-kw">fn</span> <span class="tok-fn">main</span>() <span class="tok-effect">Io</span> -&gt; <span class="tok-type">()</span>
 {
     println(<span class="tok-str">"Hello, World!"</span>)
 }</code></pre>
@@ -125,7 +125,7 @@
       <pre><code>nova build hello.nv
 ./hello</code></pre>
 
-      <p>Notice that <code>main</code> declares <code>Io</code> before the return arrow — even the top-level entry point is honest about its effects. <code>!</code> in the return position means the function can propagate any error.</p>
+      <p>Notice that <code>main</code> declares <code>Io</code> before the return arrow — even the top-level entry point is honest about its effects. <code>()</code> is the unit return type (no value returned).</p>
 
       <h2 id="next-steps">Next steps</h2>
       <p>The language guide sections below explain effects, contracts, the type system, and the concurrency model in detail. For the formal treatment of every language construct, see the <a href="/spec/">Language Specification</a>.</p>
