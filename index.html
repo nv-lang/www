@@ -3,78 +3,223 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nova — a systems language with effects, contracts, AI-first design</title>
-<meta name="description" content="Nova is an in-development general-purpose language built around algebraic effects, static contracts, and AI-first ergonomics. Bootstrap stage — not for production.">
+<title>Nova — a systems language with effects, contracts, and M:N runtime</title>
+<meta name="description" content="Nova is a general-purpose systems language built around algebraic effects, static contracts, and an M:N concurrency runtime. Designed for correctness and clarity.">
+<link rel="canonical" href="https://nv-lang.org/">
 <link rel="stylesheet" href="style.css">
+<!-- OpenGraph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nv-lang.org/">
+<meta property="og:title" content="Nova — systems language with effects and contracts">
+<meta property="og:description" content="A general-purpose systems language built around algebraic effects, static contracts, and an M:N concurrency runtime.">
+<meta property="og:site_name" content="Nova">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Nova — systems language with effects and contracts">
+<meta name="twitter:description" content="A general-purpose systems language built around algebraic effects, static contracts, and an M:N concurrency runtime.">
 </head>
 <body>
 
+<!-- ── Header ──────────────────────────────────────────────────────────── -->
 <header class="site-header">
-  <a class="brand" href="/">Nova</a>
-  <nav class="lang-switch">
-    <a class="active" href="/">EN</a>
-    <a href="/ru/">RU</a>
-  </nav>
+  <div class="site-header__inner">
+    <a class="site-logo" href="/">Nova</a>
+    <button class="nav-toggle" aria-label="Toggle navigation" onclick="this.closest('header').querySelector('.site-nav').classList.toggle('open')">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/>
+      </svg>
+    </button>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/" class="active">Home</a>
+      <a href="/doc/">Doc</a>
+      <a href="/spec/">Spec</a>
+      <a href="/blog/">Blog</a>
+    </nav>
+    <div class="site-header__right">
+      <div class="lang-switch" aria-label="Language">
+        <a href="/" class="active">EN</a>
+        <a href="/ru/">RU</a>
+      </div>
+      <a href="https://github.com/nv-lang/nova" class="btn btn-outline" style="padding:.3rem .75rem;font-size:.83rem;" aria-label="GitHub">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
 </header>
 
-<main>
-
-<section class="hero">
-  <h1>Nova</h1>
-  <p class="tagline">A general-purpose language built around algebraic effects, static contracts, and AI-first ergonomics.</p>
-</section>
-
-<section class="status">
-  <strong>Status: Bootstrap.</strong>
-  Nova is in active early development. The compiler works, the standard library is partial, breaking changes happen weekly. <strong>Do not use in production.</strong>
-</section>
-
-<section class="features">
-  <h2>What makes it different</h2>
-  <ul>
-    <li><strong>Effects in signatures.</strong> Network, I/O, time, randomness, mutation — every side effect declared in the type. No hidden control flow, no surprise <code>await</code>.</li>
-    <li><strong>Contracts as first-class.</strong> <code>requires</code> / <code>ensures</code> / <code>invariant</code> checked statically (SMT) when possible, at runtime in debug, zero-cost in release.</li>
-    <li><strong>AI-first ergonomics.</strong> Designed for the era where LLMs write 50–80% of code: explicit signatures, locality, compiler errors as a learning signal.</li>
-    <li><strong>M:N runtime.</strong> Go-style fibers with work-stealing scheduler. Managed by default (Boehm GC today, concurrent GC planned), <code>realtime nogc</code> for hot paths.</li>
-  </ul>
-</section>
-
-<section class="sample">
-  <h2>A taste</h2>
-  <pre><code>fn fetch_user(id u64) Result[User, NotFound]
-    requires id &gt; 0
-    ensures result is Ok(u) implies u.id == id
-    uses Db, Log
+<!-- ── Hero split ───────────────────────────────────────────────────────── -->
+<section style="background:var(--hero-bg);border-bottom:1px solid var(--border);">
+  <div class="hero-split">
+    <div class="hero-split__text">
+      <span class="badge">Bootstrap · pre-alpha</span>
+      <h1>A language that<br>says what it means</h1>
+      <p>Nova is a general-purpose systems language built around <strong>algebraic effects</strong>, <strong>static contracts</strong>, and an <strong>M:N concurrency runtime</strong>. Every side effect is declared. Every invariant is verified.</p>
+      <div class="hero-split__actions">
+        <a href="/doc/" class="btn btn-primary">Get started</a>
+        <a href="https://github.com/nv-lang/nova" class="btn btn-outline github-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          View on GitHub
+        </a>
+      </div>
+    </div>
+    <div class="hero-split__code">
+      <div class="code-window">
+        <div class="code-window__bar">
+          <div class="code-window__dots">
+            <span></span><span></span><span></span>
+          </div>
+          <span class="code-window__title">fetch_user.nv</span>
+        </div>
+        <pre><code><span class="tok-comment">// Algebraic effects in signatures</span>
+<span class="tok-kw">fn</span> <span class="tok-fn">fetch_user</span>(id <span class="tok-type">u64</span>) -&gt; <span class="tok-type">Result</span>[<span class="tok-type">User</span>, <span class="tok-type">NotFound</span>]
+    <span class="tok-kw">requires</span> id &gt; <span class="tok-num">0</span>
+    <span class="tok-kw">ensures</span>  result <span class="tok-kw">is</span> <span class="tok-type">Ok</span>(u) <span class="tok-kw">implies</span> u.id == id
+    <span class="tok-kw">uses</span>     <span class="tok-effect">Db</span>, <span class="tok-effect">Log</span>
 {
-    log("fetching user", id)
-    match db.find_user(id) {
-        Some(u) -&gt; Ok(u)
-        None    -&gt; Err(NotFound)
+    <span class="tok-fn">log</span>(<span class="tok-str">"fetching"</span>, {id: id.<span class="tok-fn">to_str</span>()})
+    <span class="tok-kw">match</span> db.<span class="tok-fn">find_user</span>(id) {
+        <span class="tok-type">Some</span>(u) -&gt; <span class="tok-type">Ok</span>(u)
+        <span class="tok-type">None</span>    -&gt; <span class="tok-type">Err</span>(<span class="tok-type">NotFound</span>)
     }
 }</code></pre>
-  <p class="caption">
-    Effects (<code>Db</code>, <code>Log</code>) and a postcondition right in the signature — the caller knows exactly what this function does and what to expect back.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Status banner ─────────────────────────────────────────────────────── -->
+<div style="padding:1.25rem 1.5rem;background:var(--bg);">
+  <div style="max-width:1100px;margin-inline:auto;">
+    <div class="status-banner">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:.1rem"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span><strong>Bootstrap stage.</strong> Nova is in active early development — the compiler runs, the standard library is partial, and breaking changes happen regularly. Not ready for production use.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Feature cards ─────────────────────────────────────────────────────── -->
+<section class="features">
+  <p class="section-label" style="text-align:center;">Why Nova</p>
+  <h2 class="features__heading">Built for the next decade of software</h2>
+  <p class="features__sub">Three language-level primitives that change how you reason about programs.</p>
+  <div class="feature-grid">
+
+    <div class="feature-card">
+      <div class="feature-card__icon">
+        <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </div>
+      <h3>Algebraic Effects</h3>
+      <p>Network, I/O, randomness, time, and mutation are declared in every function's signature with <code>uses</code>. No hidden control flow. No surprise <code>await</code>. The caller always knows what a function does.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-card__icon">
+        <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      </div>
+      <h3>Static Contracts</h3>
+      <p><code>requires</code>, <code>ensures</code>, and <code>invariant</code> clauses are checked by an SMT solver at compile time when possible, verified at runtime in debug mode, and erased at zero cost in release builds.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-card__icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <h3>M:N Runtime</h3>
+      <p>Go-style fibers multiplexed onto OS threads with a work-stealing scheduler. Managed memory by default (Boehm GC today, concurrent GC on the roadmap). Use <code>realtime nogc</code> for latency-sensitive paths.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Second code example ───────────────────────────────────────────────── -->
+<section style="background:var(--bg-alt);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:4rem 1.5rem;">
+  <div style="max-width:1100px;margin-inline:auto;display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:center;">
+    <div>
+      <p class="section-label">Effects in action</p>
+      <h2 style="font-size:clamp(1.4rem,3vw,1.9rem);margin-bottom:.75rem;">Every dependency visible at a glance</h2>
+      <p style="color:var(--fg-muted);">The HTTP server's signature tells you it binds to the network (<code>Net</code>), speaks HTTP (<code>Http</code>), and writes logs (<code>Log</code>). Nothing is implicit. The effect system is the documentation.</p>
+      <a href="/spec/" class="btn btn-outline" style="margin-top:.5rem;">Read the spec</a>
+    </div>
+    <div class="code-window">
+      <div class="code-window__bar">
+        <div class="code-window__dots"><span></span><span></span><span></span></div>
+        <span class="code-window__title">server.nv</span>
+      </div>
+      <pre><code><span class="tok-comment">// HTTP server — effects track every dependency</span>
+<span class="tok-kw">fn</span> <span class="tok-fn">serve_api</span>() !
+    <span class="tok-kw">uses</span> <span class="tok-effect">Net</span>, <span class="tok-effect">Http</span>, <span class="tok-effect">Log</span>
+{
+    <span class="tok-kw">let</span> router = <span class="tok-type">Router</span>.<span class="tok-fn">new</span>()
+        |&gt; <span class="tok-fn">route</span>(<span class="tok-type">Get</span>,  <span class="tok-str">"/users/:id"</span>, get_user)
+        |&gt; <span class="tok-fn">route</span>(<span class="tok-type">Post</span>, <span class="tok-str">"/users"</span>,    create_user)
+
+    <span class="tok-fn">serve</span>(<span class="tok-str">"0.0.0.0:8080"</span>, router.<span class="tok-fn">dispatch</span>())
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ── Install ────────────────────────────────────────────────────────────── -->
+<section class="install">
+  <h2>Try Nova</h2>
+  <p>Install the compiler with a single command. Runs on Linux and macOS.</p>
+  <div class="install-cmd">
+    <span class="install-cmd__prefix">$</span>
+    <code>curl -sSf https://nv-lang.org/install.sh | sh</code>
+  </div>
+  <p style="margin-top:1.25rem;font-size:.88rem;color:var(--fg-subtle);">
+    Or <a href="https://github.com/nv-lang/nova/releases">download a release</a> &middot; <a href="https://github.com/nv-lang/nova">build from source</a>
   </p>
 </section>
 
-<section class="links">
-  <h2>Where to go</h2>
-  <ul>
-    <li><a href="https://github.com/nv-lang/nova">Source on GitHub</a> — compiler, stdlib, tests, spec</li>
-    <li><a href="https://github.com/nv-lang/nova/tree/main/spec">Language specification</a> — design decisions (D-blocks), grammar, open questions</li>
-    <li><a href="https://github.com/nv-lang/nova/tree/main/docs/plans">Roadmap</a> — current and historical plans</li>
-    <li>Contact: <a href="mailto:hello@nv-lang.org">hello@nv-lang.org</a> · Security: <a href="mailto:security@nv-lang.org">security@nv-lang.org</a></li>
-  </ul>
+<!-- ── Community ─────────────────────────────────────────────────────────── -->
+<section class="community">
+  <h2>Join the conversation</h2>
+  <p>Nova is open source and built in public. Follow the design process, file bugs, contribute code, or just watch the compiler grow.</p>
+  <div style="display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;">
+    <a href="https://github.com/nv-lang/nova" class="btn btn-primary github-icon">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+      nv-lang/nova on GitHub
+    </a>
+    <a href="mailto:hello@nv-lang.org" class="btn btn-outline">hello@nv-lang.org</a>
+  </div>
 </section>
 
-</main>
-
-<footer>
-  <p>
-    Code: MIT OR Apache-2.0 ·
-    Docs: <a href="https://creativecommons.org/licenses/by/4.0/">CC&nbsp;BY&nbsp;4.0</a> ·
-    Site source: <a href="https://github.com/nv-lang/www">nv-lang/www</a>
-  </p>
+<!-- ── Footer ─────────────────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div>
+      <div class="footer-brand">Nova</div>
+      <p style="font-size:.85rem;color:var(--fg-muted);margin-top:.5rem;max-width:220px;">A systems language built for clarity and correctness.</p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col__title">Language</div>
+      <ul>
+        <li><a href="/doc/">Documentation</a></li>
+        <li><a href="/spec/">Specification</a></li>
+        <li><a href="/blog/">Blog</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col__title">Project</div>
+      <ul>
+        <li><a href="https://github.com/nv-lang/nova">GitHub</a></li>
+        <li><a href="https://github.com/nv-lang/nova/releases">Releases</a></li>
+        <li><a href="https://github.com/nv-lang/nova/tree/main/docs/plans">Roadmap</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col__title">Contact</div>
+      <ul>
+        <li><a href="mailto:hello@nv-lang.org">hello@nv-lang.org</a></li>
+        <li><a href="mailto:security@nv-lang.org">security@nv-lang.org</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>Nova &copy; 2026. Code: MIT OR Apache-2.0. Docs: <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</span>
+    <span><a href="https://github.com/nv-lang/www">Site source</a></span>
+  </div>
 </footer>
 
 </body>
