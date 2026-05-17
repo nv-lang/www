@@ -112,8 +112,8 @@
 <span class="tok-kw">fn</span> <span class="tok-fn">serve_api</span>() <span class="tok-effect">Net</span> <span class="tok-effect">Http</span> <span class="tok-effect">Log</span> -&gt; <span class="tok-type">()</span>
 {
     <span class="tok-kw">let</span> router = <span class="tok-type">Router</span>.<span class="tok-fn">new</span>()
-        |&gt; <span class="tok-fn">route</span>(<span class="tok-type">Get</span>,  <span class="tok-str">"/users/:id"</span>, get_user)
-        |&gt; <span class="tok-fn">route</span>(<span class="tok-type">Post</span>, <span class="tok-str">"/users"</span>,    create_user)
+        .<span class="tok-fn">route</span>(<span class="tok-type">Get</span>,  <span class="tok-str">"/users/:id"</span>, get_user)
+        .<span class="tok-fn">route</span>(<span class="tok-type">Post</span>, <span class="tok-str">"/users"</span>,    create_user)
 
     <span class="tok-fn">serve</span>(<span class="tok-str">"0.0.0.0:8080"</span>, router.<span class="tok-fn">dispatch</span>())
 }</code></pre>
