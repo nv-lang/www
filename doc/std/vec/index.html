@@ -151,7 +151,7 @@ assert(v.all(|x| x % 2 == 0))</code></pre>
         <h4>Examples</h4>
         <pre><code class="language-nova">let v []int = [10, 20, 30]
 assert(v.first() == Some(10))
-assert(([]int []).first() == None)</code></pre>
+assert([]int.new().first() == None)</code></pre>
       </div>
 
       <hr class="divider">
@@ -164,7 +164,7 @@ assert(([]int []).first() == None)</code></pre>
         <h4>Examples</h4>
         <pre><code class="language-nova">let v []int = [10, 20, 30]
 assert(v.last() == Some(30))
-assert(([]int []).last() == None)</code></pre>
+assert([]int.new().last() == None)</code></pre>
       </div>
 
     </article>
