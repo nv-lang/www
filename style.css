@@ -434,8 +434,8 @@ code.language-nova {
 
 /* Nova code blocks — always dark, VS Code-style */
 pre.nova-block {
-  background: #1e1e2e;
-  border-color: #313244;
+  background: #1e1e2e !important;
+  border-color: #313244 !important;
   color: #cdd6f4;
 }
 
