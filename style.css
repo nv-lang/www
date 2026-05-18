@@ -453,7 +453,7 @@ pre.nova-block .tok-comment { color: #4ecdc4; font-style: italic; }
 pre.nova-block .tok-num     { color: #fab387; }
 pre.nova-block .tok-fn      { color: #89b4fa; font-weight: 600; }
 pre.nova-block .tok-effect  { color: #89dceb; font-weight: 600; }
-pre.nova-block .tok-punct   { color: #6c7086; }
+pre.nova-block .tok-punct   { color: #9399b2; }
 
 /* Code window chrome */
 .code-window {
