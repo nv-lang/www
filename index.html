@@ -56,7 +56,7 @@
       <h1>A language that<br>says what it means</h1>
       <p>Nova is a general-purpose systems language built around <strong>algebraic effects</strong>, <strong>static contracts</strong>, and an <strong>M:N concurrency runtime</strong>. Every side effect is declared. Every invariant is verified.</p>
       <div class="hero-split__actions">
-        <a href="/doc/" class="btn btn-primary">Get started</a>
+        <a href="/install/" class="btn btn-primary">Get started</a>
         <a href="https://github.com/nv-lang/nova" class="btn btn-outline github-icon">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
           View on GitHub
@@ -76,8 +76,8 @@
     <span class="tok-kw">requires</span> id &gt; <span class="tok-num">0</span>
     <span class="tok-kw">ensures</span>  result.<span class="tok-fn">is_ok</span>() ==&gt; result.<span class="tok-fn">unwrap</span>().id == id
 {
-    <span class="tok-fn">log</span>(<span class="tok-str">"fetching"</span>, {id: id.<span class="tok-fn">to_str</span>()})
-    <span class="tok-kw">match</span> db.<span class="tok-fn">find_user</span>(id) {
+    <span class="tok-type">Log</span>.<span class="tok-fn">info</span>(<span class="tok-str">"fetching ${id}"</span>)
+    <span class="tok-kw">match</span> <span class="tok-type">Db</span>.<span class="tok-fn">find_user</span>(id) {
         <span class="tok-type">Some</span>(u) =&gt; <span class="tok-type">Ok</span>(u)
         <span class="tok-type">None</span>    =&gt; <span class="tok-type">Err</span>(<span class="tok-type">NotFound</span>)
     }
@@ -152,7 +152,7 @@
         .<span class="tok-fn">route</span>(<span class="tok-type">Get</span>,  <span class="tok-str">"/users/:id"</span>, get_user)
         .<span class="tok-fn">route</span>(<span class="tok-type">Post</span>, <span class="tok-str">"/users"</span>,    create_user)
 
-    <span class="tok-fn">serve</span>(<span class="tok-str">"0.0.0.0:8080"</span>, router.<span class="tok-fn">dispatch</span>())
+    <span class="tok-type">Http</span>.<span class="tok-fn">serve</span>(<span class="tok-str">"0.0.0.0:8080"</span>, router.<span class="tok-fn">dispatch</span>())
 }</code></pre>
     </div>
   </div>
