@@ -77,16 +77,16 @@
         <div class="code-window__dots"><span></span><span></span><span></span></div>
         <span class="code-window__title">fetch_user.nv</span>
       </div>
-      <pre><code><span class="tok-comment">// The signature is the contract with the caller:</span>
-<span class="tok-comment">// give me a positive id, I give you a User or NotFound,</span>
-<span class="tok-comment">// and I will only touch Db and Log — nothing else.</span>
-<span class="tok-kw">fn</span> <span class="tok-fn">fetch_user</span>(id <span class="tok-type">u64</span>) <span class="tok-effect">Db</span> <span class="tok-effect">Log</span> -&gt; <span class="tok-type">Result</span>[<span class="tok-type">User</span>, <span class="tok-type">NotFound</span>]
-    <span class="tok-kw">requires</span> id &gt; <span class="tok-num">0</span>
+      <pre><code class="language-nova">// The signature is the contract with the caller:
+// give me a positive id, I give you a User or NotFound,
+// and I will only touch Db and Log — nothing else.
+fn fetch_user(id u64) Db Log -> Result[User, NotFound]
+    requires id > 0
 {
-    <span class="tok-fn">log</span>(<span class="tok-str">"fetching"</span>, {id: id.<span class="tok-fn">to_str</span>()})
-    <span class="tok-kw">match</span> db.<span class="tok-fn">find_user</span>(id) {
-        <span class="tok-type">Some</span>(u) =&gt; <span class="tok-type">Ok</span>(u)
-        <span class="tok-type">None</span>    =&gt; <span class="tok-type">Err</span>(<span class="tok-type">NotFound</span>)
+    log("fetching", {id: id.to_str()})
+    match db.find_user(id) {
+        Some(u) => Ok(u)
+        None    => Err(NotFound)
     }
 }</code></pre>
     </div>
@@ -108,15 +108,15 @@
         <div class="code-window__dots"><span></span><span></span><span></span></div>
         <span class="code-window__title">server.nv</span>
       </div>
-      <pre><code><span class="tok-comment">// The full set of capabilities is in the signature.</span>
-<span class="tok-comment">// No hidden globals. No implicit async runtime.</span>
-<span class="tok-kw">fn</span> <span class="tok-fn">serve_api</span>() <span class="tok-effect">Net</span> <span class="tok-effect">Http</span> <span class="tok-effect">Log</span> -&gt; <span class="tok-type">()</span>
+      <pre><code class="language-nova">// The full set of capabilities is in the signature.
+// No hidden globals. No implicit async runtime.
+fn serve_api() Net Http Log -> ()
 {
-    <span class="tok-kw">let</span> router = <span class="tok-type">Router</span>.<span class="tok-fn">new</span>()
-        .<span class="tok-fn">route</span>(<span class="tok-type">Get</span>,  <span class="tok-str">"/users/:id"</span>, get_user)
-        .<span class="tok-fn">route</span>(<span class="tok-type">Post</span>, <span class="tok-str">"/users"</span>,    create_user)
+    let router = Router.new()
+        .route(Get,  "/users/:id", get_user)
+        .route(Post, "/users",    create_user)
 
-    <span class="tok-fn">serve</span>(<span class="tok-str">"0.0.0.0:8080"</span>, router.<span class="tok-fn">dispatch</span>())
+    serve("0.0.0.0:8080", router.dispatch())
 }</code></pre>
     </div>
 
@@ -146,19 +146,19 @@
         <div class="code-window__dots"><span></span><span></span><span></span></div>
         <span class="code-window__title">billing.nv</span>
       </div>
-      <pre><code><span class="tok-kw">fn</span> <span class="tok-fn">charge_card</span>(
-    ctx    <span class="tok-type">AuthCtx</span>,
-    amount <span class="tok-type">Money</span>,
-    card   <span class="tok-type">CardToken</span>,
-) <span class="tok-effect">Db</span> <span class="tok-effect">Net</span> <span class="tok-effect">Log</span> -&gt; <span class="tok-type">Result</span>[<span class="tok-type">ChargeId</span>, <span class="tok-type">PaymentError</span>]
-    <span class="tok-kw">requires</span> ctx.<span class="tok-fn">is_authenticated</span>()
-    <span class="tok-kw">requires</span> amount &gt; <span class="tok-type">Money</span>.ZERO
-    <span class="tok-kw">requires</span> amount &lt;= <span class="tok-type">Money</span>.MAX_SINGLE_CHARGE
+      <pre><code class="language-nova">fn charge_card(
+    ctx    AuthCtx,
+    amount Money,
+    card   CardToken,
+) Db Net Log -> Result[ChargeId, PaymentError]
+    requires ctx.is_authenticated()
+    requires amount > Money.ZERO
+    requires amount <= Money.MAX_SINGLE_CHARGE
 {
-    <span class="tok-fn">log</span>(<span class="tok-str">"charging"</span>, {user: ctx.user_id.<span class="tok-fn">to_str</span>(), amount: amount.<span class="tok-fn">to_str</span>()})
-    <span class="tok-kw">let</span> result = payment_gateway.<span class="tok-fn">charge</span>(card, amount)?
-    db.<span class="tok-fn">record_charge</span>(ctx.user_id, result.id, amount)?
-    <span class="tok-type">Ok</span>(result.id)
+    log("charging", {user: ctx.user_id.to_str(), amount: amount.to_str()})
+    let result = payment_gateway.charge(card, amount)?
+    db.record_charge(ctx.user_id, result.id, amount)?
+    Ok(result.id)
 }</code></pre>
     </div>
 
@@ -243,5 +243,6 @@
   </div>
 </footer>
 
+<script src="../js/nova-highlight.js"></script>
 </body>
 </html>

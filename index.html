@@ -71,15 +71,15 @@
           </div>
           <span class="code-window__title">fetch_user.nv</span>
         </div>
-        <pre><code><span class="tok-comment">// Algebraic effects in signatures</span>
-<span class="tok-kw">fn</span> <span class="tok-fn">fetch_user</span>(id <span class="tok-type">u64</span>) <span class="tok-effect">Db</span> <span class="tok-effect">Log</span> -&gt; <span class="tok-type">Result</span>[<span class="tok-type">User</span>, <span class="tok-type">NotFound</span>]
-    <span class="tok-kw">requires</span> id &gt; <span class="tok-num">0</span>
-    <span class="tok-kw">ensures</span>  result.<span class="tok-fn">is_ok</span>() ==&gt; result.<span class="tok-fn">unwrap</span>().id == id
+        <pre><code class="language-nova">// Algebraic effects in signatures
+fn fetch_user(id u64) Db Log -> Result[User, NotFound]
+    requires id > 0
+    ensures  result.is_ok() ==> result.unwrap().id == id
 {
-    <span class="tok-type">Log</span>.<span class="tok-fn">info</span>(<span class="tok-str">"fetching ${id}"</span>)
-    <span class="tok-kw">match</span> <span class="tok-type">Db</span>.<span class="tok-fn">find_user</span>(id) {
-        <span class="tok-type">Some</span>(u) =&gt; <span class="tok-type">Ok</span>(u)
-        <span class="tok-type">None</span>    =&gt; <span class="tok-type">Err</span>(<span class="tok-type">NotFound</span>)
+    Log.info("fetching ${id}")
+    match Db.find_user(id) {
+        Some(u) => Ok(u)
+        None    => Err(NotFound)
     }
 }</code></pre>
       </div>
@@ -145,14 +145,14 @@
         <div class="code-window__dots"><span></span><span></span><span></span></div>
         <span class="code-window__title">server.nv</span>
       </div>
-      <pre><code><span class="tok-comment">// HTTP server — effects track every dependency</span>
-<span class="tok-kw">fn</span> <span class="tok-fn">serve_api</span>() <span class="tok-effect">Net</span> <span class="tok-effect">Http</span> <span class="tok-effect">Log</span> -&gt; <span class="tok-type">()</span>
+      <pre><code class="language-nova">// HTTP server — effects track every dependency
+fn serve_api() Net Http Log -> ()
 {
-    <span class="tok-kw">let</span> router = <span class="tok-type">Router</span>.<span class="tok-fn">new</span>()
-        .<span class="tok-fn">route</span>(<span class="tok-type">Get</span>,  <span class="tok-str">"/users/:id"</span>, get_user)
-        .<span class="tok-fn">route</span>(<span class="tok-type">Post</span>, <span class="tok-str">"/users"</span>,    create_user)
+    let router = Router.new()
+        .route(Get,  "/users/:id", get_user)
+        .route(Post, "/users",    create_user)
 
-    <span class="tok-type">Http</span>.<span class="tok-fn">serve</span>(<span class="tok-str">"0.0.0.0:8080"</span>, router.<span class="tok-fn">dispatch</span>())
+    Http.serve("0.0.0.0:8080", router.dispatch())
 }</code></pre>
     </div>
   </div>
@@ -221,5 +221,6 @@
   </div>
 </footer>
 
+<script src="/js/nova-highlight.js"></script>
 </body>
 </html>

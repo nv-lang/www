@@ -116,8 +116,8 @@
       <h2 id="hello-world">Hello, World</h2>
       <p>Create a file named <code>hello.nv</code>:</p>
 
-      <pre><code><span class="tok-kw">fn</span> <span class="tok-fn">main</span>() {
-    println(<span class="tok-str">"Hello, World!"</span>)
+      <pre><code class="language-nova">fn main() {
+    println("Hello, World!")
 }</code></pre>
 
       <p>Compile and run:</p>
@@ -151,21 +151,21 @@
 
       <p>User-defined effects are supported. You declare an effect interface, provide a handler, and inject it at the call boundary — no global state, no hidden dependency injection framework.</p>
 
-      <pre><code><span class="tok-kw">type</span> <span class="tok-type">Cache</span> <span class="tok-kw">effect</span> {
-    <span class="tok-fn">get</span>(key <span class="tok-type">str</span>) -&gt; <span class="tok-type">Option</span>[<span class="tok-type">[]byte</span>]
-    <span class="tok-fn">set</span>(key <span class="tok-type">str</span>, val <span class="tok-type">[]byte</span>) -&gt; ()
+      <pre><code class="language-nova">type Cache effect {
+    get(key str) -> Option[[]byte]
+    set(key str, val []byte) -> ()
 }
 
-<span class="tok-comment">// Cache and Db effects are looked up from the active with-scope.</span>
-<span class="tok-kw">fn</span> <span class="tok-fn">get_profile</span>(user_id <span class="tok-type">u64</span>) <span class="tok-effect">Cache</span> <span class="tok-effect">Db</span> -&gt; <span class="tok-type">Profile</span>
+// Cache and Db effects are looked up from the active with-scope.
+fn get_profile(user_id u64) Cache Db -> Profile
 {
-    <span class="tok-kw">let</span> key = <span class="tok-str">"profile:${user_id}"</span>
-    <span class="tok-kw">if</span> <span class="tok-kw">let</span> <span class="tok-type">Some</span>(raw) = <span class="tok-type">Cache</span>.<span class="tok-fn">get</span>(key) {
-        <span class="tok-kw">return</span> <span class="tok-type">Profile</span>.<span class="tok-fn">decode</span>(raw)
+    let key = "profile:${user_id}"
+    if let Some(raw) = Cache.get(key) {
+        return Profile.decode(raw)
     }
-    <span class="tok-kw">let</span> rows = <span class="tok-type">Db</span>.<span class="tok-fn">query</span>(sql`SELECT * FROM profiles WHERE id = ${user_id}`)
-    <span class="tok-kw">let</span> p = <span class="tok-type">Profile</span>.<span class="tok-fn">from_row</span>(rows[<span class="tok-num">0</span>])
-    <span class="tok-type">Cache</span>.<span class="tok-fn">set</span>(key, p.<span class="tok-fn">encode</span>())
+    let rows = Db.query(sql`SELECT * FROM profiles WHERE id = ${user_id}`)
+    let p = Profile.from_row(rows[0])
+    Cache.set(key, p.encode())
     p
 }</code></pre>
 
@@ -182,12 +182,12 @@
 
       <p>Contracts are checked in three modes: <strong>static</strong> (SMT solver, compile-time, no cost), <strong>dynamic</strong> (runtime assertion in debug builds), and <strong>erased</strong> (zero overhead in release builds). The mode is selected per-clause with an optional <code>@static</code>, <code>@runtime</code>, or <code>@erased</code> attribute; the default is <code>@static</code> with automatic fallback to dynamic if the solver cannot decide.</p>
 
-      <pre><code><span class="tok-kw">fn</span> <span class="tok-fn">sqrt</span>(x <span class="tok-type">f64</span>) -&gt; <span class="tok-type">f64</span>
-    <span class="tok-kw">requires</span> x &gt;= <span class="tok-num">0.0</span>
-    <span class="tok-kw">ensures</span>  result &gt;= <span class="tok-num">0.0</span>
+      <pre><code class="language-nova">fn sqrt(x f64) -> f64
+    requires x >= 0.0
+    ensures  result >= 0.0
 {
-    <span class="tok-comment">// compiler knows x is non-negative here</span>
-    x.<span class="tok-fn">sqrt</span>()
+    // compiler knows x is non-negative here
+    x.sqrt()
 }</code></pre>
 
       <hr class="divider">
@@ -208,17 +208,17 @@
       <h1 id="concurrency">Concurrency</h1>
       <p>Nova's runtime multiplexes <em>fibers</em> (lightweight green threads) across OS threads using a work-stealing scheduler. You spawn a fiber with <code>spawn</code> and communicate over channels:</p>
 
-      <pre><code><span class="tok-comment">// parallel for runs each iteration as a fiber, collects results</span>
-<span class="tok-kw">let</span> squares = <span class="tok-kw">parallel for</span> i <span class="tok-kw">in</span> 0..8 { i * i }
-<span class="tok-comment">// squares == [0, 1, 4, 9, 16, 25, 36, 49]</span>
+      <pre><code class="language-nova">// parallel for runs each iteration as a fiber, collects results
+let squares = parallel for i in 0..8 { i * i }
+// squares == [0, 1, 4, 9, 16, 25, 36, 49]
 
-<span class="tok-comment">// spawn for fire-and-forget work; supervised waits for all fibers</span>
-<span class="tok-kw">let</span> <span class="tok-kw">mut</span> count = 0
-<span class="tok-kw">supervised</span> {
-    <span class="tok-kw">spawn</span> { count = count + 1 }
-    <span class="tok-kw">spawn</span> { count = count + 1 }
+// spawn for fire-and-forget work; supervised waits for all fibers
+let mut count = 0
+supervised {
+    spawn { count = count + 1 }
+    spawn { count = count + 1 }
 }
-<span class="tok-comment">// count == 2</span></code></pre>
+// count == 2</code></pre>
 
       <hr class="divider">
 
@@ -227,10 +227,10 @@
 
       <p>For latency-sensitive code, annotate a scope or function with <code>realtime nogc</code> to opt out of GC pauses. The compiler enforces that no GC-managed allocations occur inside such scopes.</p>
 
-      <pre><code><span class="tok-kw">fn</span> <span class="tok-fn">process_audio_frame</span>(frame <span class="tok-type">AudioFrame</span>) <span class="tok-effect">Dsp</span> -&gt; <span class="tok-type">AudioFrame</span> {
-    <span class="tok-kw">realtime</span> <span class="tok-kw">nogc</span> {
-        <span class="tok-comment">// only stack allocation allowed here</span>
-        frame.<span class="tok-fn">apply_eq</span>()
+      <pre><code class="language-nova">fn process_audio_frame(frame AudioFrame) Dsp -> AudioFrame {
+    realtime nogc {
+        // only stack allocation allowed here
+        frame.apply_eq()
     }
 }</code></pre>
 
@@ -294,5 +294,6 @@
   </div>
 </footer>
 
+<script src="../js/nova-highlight.js"></script>
 </body>
 </html>
