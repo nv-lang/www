@@ -400,6 +400,7 @@ pre {
 pre code {
   background: none;
   padding: 0;
+  border: none;
   font-size: 0.875rem;
 }
 
@@ -408,17 +409,6 @@ code {
   padding: 0.12em 0.38em;
   border-radius: 4px;
   border: 1px solid var(--border-soft);
-}
-
-/* Nova code blocks — always dark, VS Code-style */
-pre:has(code.language-nova) {
-  background: #1e1e2e;
-  border-color: #313244;
-  color: #cdd6f4;
-}
-
-pre:has(code.language-nova) code {
-  color: #cdd6f4;
 }
 
 /* Syntax highlight classes — light theme defaults */
@@ -431,15 +421,28 @@ pre:has(code.language-nova) code {
 .tok-effect  { color: var(--tok-effect);   font-weight: 600; }
 .tok-punct   { color: var(--fg-muted); }
 
-/* Nova code token colors — always dark (override light/dark theme vars) */
-pre:has(code.language-nova) .tok-kw      { color: #ff79c6; font-weight: 600; }
-pre:has(code.language-nova) .tok-type    { color: #a6e3a1; }
-pre:has(code.language-nova) .tok-str     { color: #f9e2af; }
-pre:has(code.language-nova) .tok-comment { color: #4ecdc4; font-style: italic; }
-pre:has(code.language-nova) .tok-num     { color: #fab387; }
-pre:has(code.language-nova) .tok-fn      { color: #89b4fa; font-weight: 600; }
-pre:has(code.language-nova) .tok-effect  { color: #89dceb; font-weight: 600; }
-pre:has(code.language-nova) .tok-punct   { color: #6c7086; }
+/* Nova code blocks — always dark, VS Code-style */
+pre.nova-block {
+  background: #1e1e2e;
+  border-color: #313244;
+  color: #cdd6f4;
+}
+
+pre.nova-block code {
+  color: #cdd6f4;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+pre.nova-block .tok-kw      { color: #ff79c6; font-weight: 600; }
+pre.nova-block .tok-type    { color: #a6e3a1; }
+pre.nova-block .tok-str     { color: #f9e2af; }
+pre.nova-block .tok-comment { color: #4ecdc4; font-style: italic; }
+pre.nova-block .tok-num     { color: #fab387; }
+pre.nova-block .tok-fn      { color: #89b4fa; font-weight: 600; }
+pre.nova-block .tok-effect  { color: #89dceb; font-weight: 600; }
+pre.nova-block .tok-punct   { color: #6c7086; }
 
 /* Code window chrome */
 .code-window {

@@ -233,6 +233,10 @@
   function highlightAll() {
     document.querySelectorAll('code.language-nova').forEach(el => {
       el.innerHTML = highlight(el.textContent);
+      // Add class to parent <pre> for CSS scoping (avoids :has() browser compat issues)
+      if (el.parentElement && el.parentElement.tagName === 'PRE') {
+        el.parentElement.classList.add('nova-block');
+      }
     });
   }
 
