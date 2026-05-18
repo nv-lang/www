@@ -218,7 +218,7 @@
     'type':      'tok-type',
     'effect':    'tok-type',
     'fn-name':   'tok-fn',
-    'ident':     null,
+    'ident':     'tok-ident',
     'op':        'tok-op',
     'punct':     null,
     'text':      null,

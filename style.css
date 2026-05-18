@@ -454,6 +454,7 @@ pre.nova-block .tok-comment { color: #6a9955; font-style: italic; }/* green  —
 pre.nova-block .tok-num     { color: #b5cea8; }                    /* light green — numbers */
 pre.nova-block .tok-fn      { color: #dcdcaa; }                    /* yellow — function names/calls */
 pre.nova-block .tok-op      { color: #569cd6; }                    /* blue   — operators (->, =>) */
+pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue — variables/identifiers */
 
 /* Code window chrome */
 .code-window {
