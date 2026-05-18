@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>nova-codegen — Nova</title>
+<meta name="description" content="Справочник nova-codegen: команды, переменные окружения, Cargo features, Library API, архитектура и runtime.">
+<link rel="canonical" href="https://nv-lang.org/ru/doc/nova-codegen/">
+<link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-logo" href="/">Nova</a>
+    <button class="nav-toggle" aria-label="Toggle navigation" onclick="this.closest('header').querySelector('.site-nav').classList.toggle('open')">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/>
+      </svg>
+    </button>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/">Home</a>
+      <a href="/install/">Install</a>
+      <a href="/doc/" class="active">Doc</a>
+      <a href="/spec/">Spec</a>
+      <a href="/blog/">Blog</a>
+    </nav>
+    <div class="site-header__right">
+      <div class="lang-switch">
+        <a href="/ru/doc/nova-codegen/" class="active">RU</a>
+        <a href="/doc/nova-codegen/">EN</a>
+      </div>
+      <a href="https://github.com/nv-lang/nova" class="btn btn-outline" style="padding:.3rem .75rem;font-size:.83rem;" aria-label="GitHub">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</header>
+
+<div class="page-header">
+  <div class="container--narrow">
+    <p style="font-size:.85rem;color:var(--fg-muted);margin-bottom:.4rem;"><a href="/ru/doc/">Документация</a></p>
+    <h1>nova-codegen</h1>
+    <p>Внутренний компилятор Nova: парсер + type-checker + treewalk-интерпретатор + C-бэкенд + cross-file resolver + SMT-верификатор контрактов. Версия: <code>0.1.0</code> (bootstrap).</p>
+  </div>
+</div>
+
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Обзор</div>
+      <ul>
+        <li><a href="#note">Внутренний компонент</a></li>
+        <li><a href="#install">Сборка</a></li>
+        <li><a href="#exit-codes">Коды выхода</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Команды</div>
+      <ul>
+        <li><a href="#check">check</a></li>
+        <li><a href="#run">run</a></li>
+        <li><a href="#test">test</a></li>
+        <li><a href="#compile">compile</a></li>
+        <li><a href="#emit-runtime-stubs">emit-runtime-stubs</a></li>
+        <li><a href="#dump-runtime">dump-runtime</a></li>
+        <li><a href="#test-build">test-build</a></li>
+        <li><a href="#test-all">test-all</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Справочник</div>
+      <ul>
+        <li><a href="#env">Переменные окружения</a></li>
+        <li><a href="#features">Cargo features</a></li>
+        <li><a href="#library-api">Library API</a></li>
+        <li><a href="#architecture">Архитектура</a></li>
+        <li><a href="#runtime">Runtime (nova_rt/)</a></li>
+        <li><a href="/ru/doc/nova-cli/">nova CLI &#8599;</a></li>
+        <li><a href="/ru/doc/">&#8592; Документация</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <article class="prose">
+
+      <p id="note" style="background:rgba(78,201,176,.08);border:1px solid rgba(78,201,176,.2);border-radius:4px;padding:.75rem 1rem;font-size:.93rem;"><strong>Внутренний компонент.</strong> Для повседневной работы используй <a href="/ru/doc/nova-cli/"><code>nova</code> CLI</a>. <code>nova-codegen</code> остаётся точкой входа для IDE, CI, прямой отладки codegen — и используется <code>nova-cli</code> как path-зависимость.</p>
+
+      <hr class="divider">
+
+      <h2 id="install">Установка и сборка</h2>
+      <pre><code class="language-bash"># Debug-сборка
+cargo build --manifest-path compiler-codegen/Cargo.toml
+
+# Release (для bootstrap opt-level=0, без size-оптимизаций)
+cargo build --release --manifest-path compiler-codegen/Cargo.toml
+
+# С Z3-бэкендом для контрактов (Plan 33.1)
+cargo build --release --manifest-path compiler-codegen/Cargo.toml --features z3-backend
+
+# Rust-уровневые юнит-тесты компилятора
+cargo test --manifest-path compiler-codegen/Cargo.toml</code></pre>
+      <p>Результат: <code>compiler-codegen/target/{debug,release}/nova-codegen[.exe]</code></p>
+      <p>Главный поток запускается с <strong>64 MiB</strong> стеком — AST-обходы взаимно рекурсивны (expr ↔ block ↔ stmt), type-checker / SCC-purity / SMT-encoder требуют глубокого стека на больших модулях. Default Windows 1 MiB недостаточен.</p>
+      <p>Минимум зависимостей: <code>clap</code>, <code>anyhow</code>. Собирается с пустым lockfile на любом stable Rust 1.85+.</p>
+
+      <hr class="divider">
+
+      <h2 id="exit-codes">Коды выхода</h2>
+      <table>
+        <thead><tr><th>Код</th><th>Значение</th></tr></thead>
+        <tbody>
+          <tr><td><code>0</code></td><td>Успех</td></tr>
+          <tr><td><code>1</code></td><td>Ошибка (parse fail, type-check fail, codegen fail, runtime fail, тесты упали)</td></tr>
+        </tbody>
+      </table>
+      <p>В отличие от <a href="/ru/doc/nova-cli/#exit-codes"><code>nova</code></a>, <code>nova-codegen</code> использует <strong>бинарный</strong> exit-режим (0/1) — без разделения usage-ошибки и диагностики.</p>
+
+      <hr class="divider">
+
+      <h2 id="check">nova-codegen check</h2>
+      <p>Type-check файла без запуска.</p>
+      <pre><code class="language-bash">nova-codegen check FILE</code></pre>
+      <p><strong>Pipeline:</strong></p>
+      <ol>
+        <li><code>read_file(path)</code></li>
+        <li><code>parser::parse(&amp;src)</code> → AST</li>
+        <li><code>check_module_path</code> — D78 path/module enforcement</li>
+        <li><code>types::check_module</code> → type-check + effect-inference</li>
+        <li>Печатает <code>ok: {} parsed and checked</code></li>
+      </ol>
+      <p>При ошибке — рендерится через <code>Diagnostic::render</code> с line:col и underline'ом исходника.</p>
+
+      <hr class="divider">
+
+      <h2 id="run">nova-codegen run</h2>
+      <p>Type-check + интерпретировать (вызывается <code>fn main</code>).</p>
+      <pre><code class="language-bash">nova-codegen run FILE</code></pre>
+      <p><strong>Pipeline:</strong></p>
+      <ol>
+        <li>parse + path-check + type-check</li>
+        <li><code>types::annotate_map_literals</code> — аннотация <code>[k: v]</code>-литералов inferred K/V</li>
+        <li><code>desugar::desugar_module</code> — десугаринг map-литералов в <code>with_capacity</code> + <code>@insert</code></li>
+        <li><code>interp::Interpreter::new()</code> → <code>load_module</code> → <code>run_main</code></li>
+      </ol>
+      <p>Treewalk-интерпретатор имеет паритет с codegen-бэкендом — те же эффекты, handler'ы, structured concurrency, контракты, defer, channels.</p>
+
+      <hr class="divider">
+
+      <h2 id="test">nova-codegen test</h2>
+      <p>Запустить <code>test "..." { ... }</code> блоки в файле через интерпретатор.</p>
+      <pre><code class="language-bash">nova-codegen test FILE</code></pre>
+      <p><strong>Pipeline:</strong> parse → path-check → annotate_map_literals → desugar → <code>interp::run_tests</code> → <code>tests: N passed, N failed</code>.</p>
+      <p>Exit <code>1</code> если хотя бы один тест fail'нул; печатает имена failed-тестов.</p>
+      <p>Это интерпретаторный тест-режим (быстро, без C-pipeline). Для проверки codegen-pipeline используй <a href="#test-build">test-build</a> или <a href="#test-all">test-all</a>.</p>
+
+      <hr class="divider">
+
+      <h2 id="compile">nova-codegen compile</h2>
+      <p>Скомпилировать <code>.nv</code> в <code>.c</code> (без линковки).</p>
+      <pre><code class="language-bash">nova-codegen compile FILE [-o OUTPUT] [--no-annotate-source] [--no-lint]</code></pre>
+      <table>
+        <thead><tr><th>Флаг</th><th>По умолчанию</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td><code>FILE</code></td><td>—</td><td><code>.nv</code> файл.</td></tr>
+          <tr><td><code>-o OUTPUT</code></td><td><code>&lt;name&gt;.c</code> рядом с source</td><td>Путь к выходному <code>.c</code>.</td></tr>
+          <tr><td><code>--no-annotate-source</code></td><td>off (аннотации включены)</td><td>Не вставлять <code>/* SRC: ... */</code> комментарии — для compact-вывода.</td></tr>
+          <tr><td><code>--no-lint</code></td><td>off (lint включён)</td><td>Отключить lint-проверки.</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Pipeline:</strong></p>
+      <ol>
+        <li>parse + path-check + type-check</li>
+        <li><code>annotate_map_literals</code> + <code>desugar_module</code></li>
+        <li><code>types::infer_effects</code> — D28 effect-inference для private fn</li>
+        <li><code>lints::lint_module</code> (если lint включён)</li>
+        <li><code>CEmitter::new()</code> + <code>set_source_for_annotations(src)</code></li>
+        <li><code>set_proven_contracts</code> — selective contract stripping (Plan 33.3, true zero-cost)</li>
+        <li><code>emit_module</code> → C-код + warnings</li>
+        <li>Запись в output path</li>
+      </ol>
+      <p><strong>SRC-аннотации (<code>/* SRC: ... */</code>)</strong> — сопоставляют C-строки с Nova-исходником. По умолчанию включены; удобны для <code>.c</code>-отладки.</p>
+
+      <hr class="divider">
+
+      <h2 id="emit-runtime-stubs">nova-codegen emit-runtime-stubs</h2>
+      <p>Регенерация <code>std/runtime/string.nv</code> и <code>std/runtime/math.nv</code> из <code>runtime_registry.rs</code> (Plan 13).</p>
+      <pre><code class="language-bash">nova-codegen emit-runtime-stubs [--root PATH] [--check]</code></pre>
+      <table>
+        <thead><tr><th>Флаг</th><th>По умолчанию</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td><code>--root PATH</code></td><td><code>.</code> (CWD)</td><td>Корень репозитория (где <code>std/runtime/</code>).</td></tr>
+          <tr><td><code>--check</code></td><td>off</td><td>Только сравнить; exit <code>1</code> при diff (CI / pre-commit guard).</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Workflow добавления новой runtime fn</strong> (например <code>f64.@cbrt</code>):</p>
+      <ol>
+        <li>Добавить <code>RuntimeFn { ... }</code> в <code>src/codegen/runtime_registry.rs</code>.</li>
+        <li>Реализовать в <code>nova_rt/&lt;module&gt;.c</code> (или wrapper к libc).</li>
+        <li>Регенерация: <code>nova regen-runtime</code> (или <code>nova-codegen emit-runtime-stubs --root .</code>).</li>
+        <li>Коммит всех трёх (registry + <code>.c</code> + <code>.nv</code>).</li>
+      </ol>
+      <p><code>--check</code> нормализует line endings (CRLF → LF) перед сравнением. Сгенерированные файлы охраняются <code>nova regen-runtime --check</code> в CI — не править вручную.</p>
+
+      <hr class="divider">
+
+      <h2 id="dump-runtime">nova-codegen dump-runtime</h2>
+      <p>Sanity-print registry runtime-функций (Plan 13) — для аудита расхождений registry vs реальных C-сигнатур в <code>nova_rt/</code>.</p>
+      <pre><code class="language-bash">nova-codegen dump-runtime</code></pre>
+      <pre><code>Nova runtime registry: N function(s) total.
+
+=== &lt;module&gt; (N fns) ===
+  &lt;receiver&gt; [mut] &lt;.|@&gt;&lt;name&gt;(&lt;params&gt;) -&gt; &lt;return-ty&gt;    [c: &lt;c-name&gt;]
+  ...</code></pre>
+      <p><code>.</code> = static fn (<code>Type.fn</code>). <code>@</code> = instance method (<code>obj.@fn</code>).</p>
+
+      <hr class="divider">
+
+      <h2 id="test-build">nova-codegen test-build</h2>
+      <p>Cross-platform per-file test runner (Plan 24): компиляция одного <code>.nv</code> в <code>.exe</code> и проверка EXPECT-маркеров (D89).</p>
+      <pre><code class="language-bash">nova-codegen test-build FILE [--mode dev|release] [--toolchain auto|clang|msvc|gcc]
+                             [--vcvars PATH] [--clang PATH]
+                             [--cg-include PATH] [--rt-dir PATH] [--tmp-dir PATH]
+                             [--display NAME] [--keep-artifacts]
+                             [--timeout SECS] [--gc boehm|malloc]</code></pre>
+      <table>
+        <thead><tr><th>Флаг</th><th>По умолчанию</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td><code>FILE</code></td><td>—</td><td><code>.nv</code> test-файл.</td></tr>
+          <tr><td><code>--mode</code></td><td><code>dev</code></td><td><code>dev</code> или <code>release</code>.</td></tr>
+          <tr><td><code>--toolchain</code></td><td><code>auto</code></td><td><code>auto</code>, <code>clang</code>, <code>msvc</code>, <code>gcc</code>.</td></tr>
+          <tr><td><code>--vcvars PATH</code></td><td>auto через vswhere</td><td>Путь к <code>vcvars64.bat</code> (Windows).</td></tr>
+          <tr><td><code>--clang PATH</code></td><td>auto detect</td><td>Путь к <code>clang.exe</code>.</td></tr>
+          <tr><td><code>--cg-include PATH</code></td><td><code>&lt;cwd&gt;/compiler-codegen</code></td><td>Путь к <code>compiler-codegen/</code> для include <code>nova_rt/</code>.</td></tr>
+          <tr><td><code>--rt-dir PATH</code></td><td><code>&lt;cwd&gt;/compiler-codegen/nova_rt</code></td><td>Runtime sources.</td></tr>
+          <tr><td><code>--tmp-dir PATH</code></td><td><code>$TEMP/nova_tests</code> или <code>$TMPDIR/nova_tests</code></td><td>Tmp директория для <code>.c</code>/<code>.exe</code>/<code>.obj</code>.</td></tr>
+          <tr><td><code>--display NAME</code></td><td>basename</td><td>Override display-name в выводе.</td></tr>
+          <tr><td><code>--keep-artifacts</code></td><td>off</td><td>Не удалять артефакты.</td></tr>
+          <tr><td><code>--timeout SECS</code></td><td><code>60</code></td><td>Per-test timeout.</td></tr>
+          <tr><td><code>--gc</code></td><td><code>boehm</code></td><td><code>boehm</code> или <code>malloc</code>.</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Pipeline:</strong> detect toolchain → detect/build libuv → compile <code>.nv</code> → <code>.c</code> → <code>.exe</code> → run → проверить EXPECT-маркеры.</p>
+      <p>Output format: <code>&lt;STATUS:14&gt; &lt;display&gt;  # &lt;detail&gt;</code></p>
+      <p><strong>EXPECT-маркеры (D89):</strong></p>
+      <ul>
+        <li><code>// EXPECT: &lt;line&gt;</code> — точное совпадение stdout-строки</li>
+        <li><code>// EXPECT_STDERR: &lt;line&gt;</code> — для stderr</li>
+        <li><code>// EXPECT_COMPILE_ERROR: &lt;substring&gt;</code> — должен fail при компиляции</li>
+        <li><code>// EXPECT_RUNTIME_ERROR: &lt;substring&gt;</code> — panic с подстрокой</li>
+        <li><code>// REQUIRES_SMT_BACKEND</code> — пропуск если SMT недоступен</li>
+      </ul>
+
+      <hr class="divider">
+
+      <h2 id="test-all">nova-codegen test-all</h2>
+      <p>Batch test runner (Plan 24): рекурсивный прогон всех <code>.nv</code> в <code>--tests-dir</code>. Используется как движок для <code>nova test</code>.</p>
+      <pre><code class="language-bash">nova-codegen test-all [--tests-dir PATH] [--stdlib-dir PATH] [--include-stdlib]
+                      [--filter SUBSTR] [--mode dev|release]
+                      [--toolchain auto|clang|msvc|gcc]
+                      [--vcvars PATH] [--clang PATH]
+                      [--cg-include PATH] [--rt-dir PATH] [--tmp-dir PATH]
+                      [--keep-artifacts] [--timeout SECS] [--jobs N]
+                      [--format text|json|tap] [-v|-q]
+                      [--results-file PATH] [--rerun-failed]
+                      [--retries N] [--gc boehm|malloc]</code></pre>
+      <table>
+        <thead><tr><th>Флаг</th><th>По умолчанию</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td><code>--tests-dir PATH</code></td><td><code>nova_tests</code></td><td>Корень тестового корпуса.</td></tr>
+          <tr><td><code>--stdlib-dir PATH</code></td><td><code>std</code></td><td>Корень <code>std/</code> (если <code>--include-stdlib</code>).</td></tr>
+          <tr><td><code>--include-stdlib</code></td><td>off</td><td>Включить <code>std/*</code> файлы.</td></tr>
+          <tr><td><code>--filter SUBSTR</code></td><td>—</td><td>Filter по display-name.</td></tr>
+          <tr><td><code>--mode</code></td><td><code>dev</code></td><td>См. <a href="#test-build">test-build</a>.</td></tr>
+          <tr><td><code>--toolchain</code></td><td><code>auto</code></td><td></td></tr>
+          <tr><td><code>--vcvars</code>, <code>--clang</code></td><td>auto</td><td></td></tr>
+          <tr><td><code>--cg-include</code>, <code>--rt-dir</code></td><td>вычисляются из CWD</td><td></td></tr>
+          <tr><td><code>--tmp-dir</code></td><td><code>$TEMP/nova_tests</code> или эквивалент</td><td></td></tr>
+          <tr><td><code>--keep-artifacts</code></td><td>off</td><td></td></tr>
+          <tr><td><code>--timeout</code></td><td><code>60</code></td><td>Per-test timeout.</td></tr>
+          <tr><td><code>--jobs N</code></td><td><code>0</code> (= num_cpus)</td><td>Параллельные worker'ы.</td></tr>
+          <tr><td><code>--format</code></td><td><code>text</code></td><td><code>text</code>, <code>json</code>, <code>tap</code>.</td></tr>
+          <tr><td><code>-v</code>, <code>--verbose</code></td><td>off</td><td>Output PASS-тестов.</td></tr>
+          <tr><td><code>-q</code>, <code>--quiet</code></td><td>off</td><td>Только FAIL + summary.</td></tr>
+          <tr><td><code>--results-file PATH</code></td><td>—</td><td>Файл <code>last-results.json</code>.</td></tr>
+          <tr><td><code>--rerun-failed</code></td><td>off</td><td>Перезапустить только failed/timeout из results file.</td></tr>
+          <tr><td><code>--retries N</code></td><td><code>0</code></td><td>Retry на transient AV/race fail'ах (CI default 2).</td></tr>
+          <tr><td><code>--gc</code></td><td><code>boehm</code></td><td>См. <a href="#test-build">test-build</a>.</td></tr>
+        </tbody>
+      </table>
+      <p>Информационные сообщения (toolchain, libuv) — в stderr. Per-test events и summary — в stdout.</p>
+      <p><strong>Примечание:</strong> <code>--list</code>, <code>--filter-from</code>, <code>--shuffle</code>, <code>--skip</code>, <code>--mono-depth</code> поддерживаются только через <a href="/ru/doc/nova-cli/#test"><code>nova test</code></a>.</p>
+
+      <hr class="divider">
+
+      <h2 id="env">Переменные окружения</h2>
+      <table>
+        <thead><tr><th>Переменная</th><th>Эффект</th></tr></thead>
+        <tbody>
+          <tr><td><code>NOVA_NO_CACHE=1</code></td><td>Отключить SMT-кэш контрактов (Plan 33.3).</td></tr>
+          <tr><td><code>NOVA_PERF_TIMER=1</code></td><td>Включить <code>__PERF__</code> маркеры в компиляторе (per-pass timing).</td></tr>
+          <tr><td><code>NOVA_MONO_DEPTH=N</code></td><td>Лимит monomorphization-инстанциаций (default 500).</td></tr>
+          <tr><td><code>NOVA_DEBUG_MONO=1</code></td><td>Verbose debug-print mono-instances.</td></tr>
+          <tr><td><code>NOVA_SMT_BACKEND=trivial|z3</code></td><td>Override SMT-backend для контрактов.</td></tr>
+          <tr><td><code>NOVA_CACHE_DIR=PATH</code></td><td>Override директории SMT proof cache (default <code>&lt;cwd&gt;/target/</code>).</td></tr>
+          <tr><td><code>NOVA_CLANG=PATH</code></td><td>Override <code>clang.exe</code> для test-build/test-all.</td></tr>
+          <tr><td><code>NOVA_GCC=PATH</code></td><td>Override пути к <code>gcc</code>.</td></tr>
+          <tr><td><code>NOVA_VCVARS=PATH</code></td><td>Override <code>vcvars64.bat</code> (Windows MSVC).</td></tr>
+          <tr><td><code>NOVA_MARCH_NATIVE=1</code></td><td>Включить <code>-march=native</code> (release builds; non-portable binary).</td></tr>
+          <tr><td><code>NOVA_GC_LIB_DIR=PATH</code></td><td>Override директории <code>libgc.a</code> / <code>gc.lib</code> (Boehm).</td></tr>
+          <tr><td><code>NOVA_GC_INCLUDE_DIR=PATH</code></td><td>Override include path для <code>gc.h</code>.</td></tr>
+          <tr><td><code>VCPKG_ROOT=PATH</code></td><td>Корень vcpkg (для авто-резолва libuv / libz3).</td></tr>
+          <tr><td><code>CC=name</code></td><td>Fallback C compiler (POSIX).</td></tr>
+          <tr><td><code>NOVA_VERSION=N.M.K</code></td><td>Текущая версия для deprecation diagnostics (Plan 45).</td></tr>
+          <tr><td><code>NOVA_FEATURES=f1,f2</code></td><td>Cfg feature-set (Plan 42.12).</td></tr>
+          <tr><td><code>NOVA_TARGET_OS=name</code></td><td>Override <code>target_os</code> для cfg-resolve.</td></tr>
+          <tr><td><code>TEMP</code> (Windows)</td><td>Tmp директория для build/test artifacts.</td></tr>
+          <tr><td><code>TMPDIR</code> (Unix)</td><td>То же.</td></tr>
+          <tr><td><code>PATH</code></td><td>Поиск <code>clang</code>/<code>gcc</code>/<code>cl</code>/<code>vswhere</code>.</td></tr>
+          <tr><td><code>ProgramFiles(x86)</code></td><td>Поиск vswhere для MSVC auto-detect.</td></tr>
+        </tbody>
+      </table>
+
+      <hr class="divider">
+
+      <h2 id="features">Cargo features</h2>
+      <table>
+        <thead><tr><th>Feature</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td>(default)</td><td>TrivialBackend SMT (reflexive <code>ensures</code>), без external dependencies.</td></tr>
+          <tr><td><code>z3-backend</code></td><td>Подключает libz3 через vcpkg (Plan 33.1). FFI bindings — собственные в <code>src/verify/backend/z3_ffi.rs</code> (без <code>z3</code>/<code>z3-sys</code> crate'ов). Linkage контролируется через <code>build.rs</code> + <code>vcpkg.json</code>.</td></tr>
+        </tbody>
+      </table>
+      <pre><code class="language-bash"># Сборка с Z3:
+cargo build --release --features z3-backend
+
+# Запуск тестов с Z3:
+NOVA_SMT_BACKEND=z3 nova test</code></pre>
+
+      <hr class="divider">
+
+      <h2 id="library-api">Library API (<code>nova_codegen</code>)</h2>
+      <p><code>nova-cli</code> использует <code>nova-codegen</code> как path-зависимость и работает с library-API напрямую (без subprocess). Публичные модули из <code>lib.rs</code>:</p>
+      <table>
+        <thead><tr><th>Модуль</th><th>Что</th></tr></thead>
+        <tbody>
+          <tr><td><code>argbind</code></td><td>Named/positional arg binding (Plan 46 / D102).</td></tr>
+          <tr><td><code>ast</code></td><td>Типы AST: <code>Module</code>, <code>Item</code>, <code>Expr</code>, <code>Stmt</code>, <code>Pattern</code>, …</td></tr>
+          <tr><td><code>callnorm</code></td><td>Call-site normalization для named params.</td></tr>
+          <tr><td><code>codegen</code></td><td>C-бэкенд: <code>CEmitter::emit_module</code>, <code>runtime_registry::all</code>, …</td></tr>
+          <tr><td><code>desugar</code></td><td>Desugar map-литералов, <code>for-in</code>, и прочих сахаров.</td></tr>
+          <tr><td><code>diag</code></td><td>Структурированные диагностики (<code>Diagnostic</code>, <code>Span</code>, <code>byte_to_line_col</code>).</td></tr>
+          <tr><td><code>doc</code></td><td>Plan 45 — DocModel, рендеры, MCP-server.</td></tr>
+          <tr><td><code>imports</code></td><td>Plan 35 R31 — cross-file resolver (<code>resolve_imports_inline</code>).</td></tr>
+          <tr><td><code>interp</code></td><td>Treewalk-интерпретатор (<code>Interpreter::new</code> / <code>load_module</code> / <code>run_main</code> / <code>run_tests</code>).</td></tr>
+          <tr><td><code>lexer</code></td><td>Токенизация: <code>lex(&amp;src) -&gt; Vec&lt;Token&gt;</code>.</td></tr>
+          <tr><td><code>lints</code></td><td>D-rule based lints (<code>lint_module</code>).</td></tr>
+          <tr><td><code>manifest</code></td><td><code>nova.toml</code> + D78 path/module enforcement.</td></tr>
+          <tr><td><code>parser</code></td><td>Recursive-descent parser (<code>parse(&amp;src) -&gt; Result&lt;Module, Diagnostic&gt;</code>).</td></tr>
+          <tr><td><code>perf_timer</code></td><td><code>NOVA_PERF_TIMER</code> instrumentation.</td></tr>
+          <tr><td><code>test_runner</code></td><td>Test discovery + parallel execution + toolchain detect.</td></tr>
+          <tr><td><code>types</code></td><td>Type-checker + effect inference (<code>check_module</code>, <code>infer_effects</code>, <code>annotate_map_literals</code>).</td></tr>
+          <tr><td><code>verify</code></td><td>SMT contracts integration (<code>TrivialBackend</code>, <code>Z3Backend</code> под feature).</td></tr>
+        </tbody>
+      </table>
+      <p>Re-exports: <code>Diagnostic</code>, <code>Span</code> напрямую из <code>nova_codegen::*</code>.</p>
+
+      <hr class="divider">
+
+      <h2 id="architecture">Внутренняя архитектура</h2>
+      <pre><code>src/
+  lexer/                  токенизация
+  parser/                 recursive-descent parser
+  ast/                    типы AST
+  types/                  type checker + effect inference + lints
+  interp/                 treewalk interpreter
+  codegen/                C-бэкенд
+    emit_c.rs             основной codegen (~20k LOC)
+    runtime_registry.rs   source-of-truth для std/runtime/*.nv stubs
+  imports.rs              Plan 35 R31: cross-file resolver
+  diag/                   структурированные ошибки (с FileId для cross-file)
+  manifest.rs             nova.toml + D78 path enforcement
+  lints.rs                D-rule based lints
+  test_runner.rs          test discovery + parallel execution
+  verify/                 contracts SMT (TrivialBackend + Z3 опционально)
+  doc/                    Plan 45 nova doc (parser, renderer, MCP)
+  desugar.rs              desugaring passes
+  argbind.rs              named-params binding (Plan 46)
+  callnorm.rs             call-site normalization
+  perf_timer.rs           NOVA_PERF_TIMER markers
+  lib.rs                  re-exports
+  main.rs                 CLI dispatch (~664 LOC)</code></pre>
+
+      <h3>Cross-file resolver (Plan 35 R31)</h3>
+      <p><code>imports::resolve_imports_inline</code> — shared между <code>nova check</code>, <code>nova build</code>, <code>nova test</code>:</p>
+      <ul>
+        <li>DFS с cycle detection (<code>in_progress</code> + <code>visited</code> множества).</li>
+        <li>Selective import <code>X.{A, B}</code> (синтаксис; bootstrap MVP не enforce'ит filter).</li>
+        <li><code>export import X.{A}</code> re-export.</li>
+        <li>Auto-import <code>std/prelude.nv</code> (R27).</li>
+      </ul>
+
+      <h3>Folder-modules (Plan 42)</h3>
+      <p>Module = single-file <code>X.nv</code> ИЛИ folder <code>X/</code> с peers (Go-style):</p>
+      <ul>
+        <li><code>manifest::resolve_module_paths</code> → <code>Vec&lt;PathBuf&gt;</code>, alphabetical sort для deterministic build.</li>
+        <li><code>*_test.nv</code> peers фильтруются если <code>!include_test_peers</code>.</li>
+        <li><code>X.nv</code> + <code>X/</code> с direct <code>.nv</code> → ambiguous error.</li>
+        <li><code>internal/&lt;…&gt;</code> path-protection — import только из parent's descendants.</li>
+        <li><code>_module.nv</code> convention для module-level <code>#forbid</code> / <code>#cfg</code> / <code>#doc</code>.</li>
+      </ul>
+
+      <h3>D78 path/module enforcement</h3>
+      <p>Если файл лежит внутри пакета (<code>nova.toml</code> в parent dirs), компилятор проверяет соответствие <code>module X.Y.Z</code> ↔ filesystem path. Standalone <code>.nv</code> без <code>nova.toml</code> проверку проходят.</p>
+
+      <h3>Effect inference (D28)</h3>
+      <p><code>types::infer_effects</code> добавляет <code>Fail</code> в effect-row private fn, если тело содержит <code>throw</code> и нет явного <code>Fail</code>. Public fn — explicit only (D28: «public API не должно неявно throw'ить»).</p>
+
+      <h3>Plan 33.3 contract stripping (Ф.9.9)</h3>
+      <p><code>CEmitter::set_proven_contracts</code> selectively strip'ает body proven контрактов в codegen (true zero-cost даже в debug). SMT-доказанные <code>requires</code>/<code>ensures</code>/<code>invariant</code> не эмитятся как runtime assertions.</p>
+
+      <hr class="divider">
+
+      <h2 id="runtime">Runtime (<code>nova_rt/</code>)</h2>
+      <p>C-исходники линкуются в каждый <code>.exe</code>. Минимум 3 <code>.c</code>:</p>
+      <table>
+        <thead><tr><th>Файл</th><th>Что</th></tr></thead>
+        <tbody>
+          <tr><td><code>alloc.c</code> (или <code>alloc_boehm.c</code>, <code>alloc_rc.c</code>)</td><td>Allocator (Boehm GC default с Plan 27).</td></tr>
+          <tr><td><code>effects.c</code></td><td>Handler-стек (D61), <code>nova_interrupt</code> / <code>nova_interrupt_ptr</code>.</td></tr>
+          <tr><td><code>fibers.c</code></td><td>Shim над <code>minicoro.h</code> + structured concurrency (Plan 44.5).</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Header-only:</strong></p>
+      <table>
+        <thead><tr><th>Header</th><th>Что</th></tr></thead>
+        <tbody>
+          <tr><td><code>array.h</code></td><td><code>NovaArray_&lt;T&gt;</code>, <code>NovaOpt_&lt;T&gt;</code> auto-gen helpers.</td></tr>
+          <tr><td><code>cast.h</code></td><td>D54 narrow casts (saturation, wrap-around semantics).</td></tr>
+          <tr><td><code>effects.h</code></td><td><code>NovaThrowKind</code>, <code>nova_throw_cancel</code>, <code>Handler[E, IRT]</code> API.</td></tr>
+          <tr><td><code>fibers.h</code></td><td><code>nova_spawn</code>, <code>nova_supervised</code>, <code>nova_cancel_*</code>, M:N runtime.</td></tr>
+          <tr><td><code>channels.h</code></td><td><code>Channel[T]</code> mpsc (Plan 44.1), <code>select</code> waiter.</td></tr>
+          <tr><td><code>sync.h</code></td><td>C11 atomics + mutex для channel hardening.</td></tr>
+          <tr><td><code>minicoro.h</code></td><td>Vendored stackful coroutines (version-pinned, не патчим).</td></tr>
+          <tr><td><code>nova_rt.h</code></td><td>Единый include — <code>nova_str_cmp</code>/<code>lt</code>/<code>le</code>/<code>gt</code>/<code>ge</code> byte-wise compare и пр.</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Build scripts</strong> в <code>compiler-codegen/</code>: <code>build_c.bat</code> / <code>build_c.ps1</code> / <code>build_c.sh</code>, <code>vcpkg.json</code> / <code>vcpkg_installed/</code> (vendored libuv + libz3), <code>build.rs</code> (feature-flag wiring).</p>
+
+    </article>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div>
+      <div class="footer-brand">Nova</div>
+      <p style="font-size:.85rem;color:var(--fg-muted);margin-top:.5rem;max-width:220px;">A systems language built for clarity and correctness.</p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col__title">Язык</div>
+      <ul>
+        <li><a href="/ru/doc/">Документация</a></li>
+        <li><a href="/spec/">Спецификация</a></li>
+        <li><a href="/blog/">Блог</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col__title">Проект</div>
+      <ul>
+        <li><a href="https://github.com/nv-lang/nova">GitHub</a></li>
+        <li><a href="https://github.com/nv-lang/nova/releases">Releases</a></li>
+        <li><a href="https://github.com/nv-lang/nova/tree/main/docs/plans">Roadmap</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col__title">Контакты</div>
+      <ul>
+        <li><a href="mailto:hello@nv-lang.org">hello@nv-lang.org</a></li>
+        <li><a href="mailto:security@nv-lang.org">security@nv-lang.org</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>Nova &copy; 2026. Код: MIT OR Apache-2.0. Документация: <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</span>
+    <span><a href="https://github.com/nv-lang/www">Исходники сайта</a></span>
+  </div>
+</footer>
+
+<script src="../../../js/nova-highlight.js"></script>
+</body>
+</html>
