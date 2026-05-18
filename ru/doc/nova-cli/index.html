@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>nova CLI — Nova</title>
+<meta name="description" content="Справочник Nova CLI: nova check, run, build, test, doc, doc-query, doc-mcp, contracts, bench — все субкоманды, флаги и переменные окружения.">
+<link rel="canonical" href="https://nv-lang.org/ru/doc/nova-cli/">
+<link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-logo" href="/">Nova</a>
+    <button class="nav-toggle" aria-label="Toggle navigation" onclick="this.closest('header').querySelector('.site-nav').classList.toggle('open')">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/>
+      </svg>
+    </button>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/">Home</a>
+      <a href="/install/">Install</a>
+      <a href="/doc/" class="active">Doc</a>
+      <a href="/spec/">Spec</a>
+      <a href="/blog/">Blog</a>
+    </nav>
+    <div class="site-header__right">
+      <div class="lang-switch">
+        <a href="/ru/doc/nova-cli/" class="active">RU</a>
+        <a href="/doc/nova-cli/">EN</a>
+      </div>
+      <a href="https://github.com/nv-lang/nova" class="btn btn-outline" style="padding:.3rem .75rem;font-size:.83rem;" aria-label="GitHub">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</header>
+
+<div class="page-header">
+  <div class="container--narrow">
+    <p style="font-size:.85rem;color:var(--fg-muted);margin-bottom:.4rem;"><a href="/ru/doc/">Документация</a></p>
+    <h1>nova CLI</h1>
+    <p>Единая точка входа в инструментарий языка Nova. Версия: <code>0.1.0</code> (bootstrap). Бинарник: <code>nova</code> (Cargo package <code>nova</code>, crate <code>nova-cli</code>).</p>
+  </div>
+</div>
+
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Обзор</div>
+      <ul>
+        <li><a href="#quickstart">Quickstart</a></li>
+        <li><a href="#install">Сборка</a></li>
+        <li><a href="#global-flags">Глобальные флаги</a></li>
+        <li><a href="#exit-codes">Коды выхода</a></li>
+        <li><a href="#project-root">Корень проекта</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Команды</div>
+      <ul>
+        <li><a href="#check">nova check</a></li>
+        <li><a href="#run">nova run</a></li>
+        <li><a href="#build">nova build</a></li>
+        <li><a href="#test">nova test</a></li>
+        <li><a href="#test-build">nova test-build</a></li>
+        <li><a href="#regen-runtime">nova regen-runtime</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">nova doc</div>
+      <ul>
+        <li><a href="#doc">Флаги</a></li>
+        <li><a href="#doc-comments">Doc-комментарии</a></li>
+        <li><a href="#doc-sections">Секции</a></li>
+        <li><a href="#doc-links">Intra-doc ссылки</a></li>
+        <li><a href="#doc-tests">Doc-тесты</a></li>
+        <li><a href="#doc-stability">Стабильность</a></li>
+        <li><a href="#doc-json">JSON-вывод</a></li>
+        <li><a href="#doc-jq">jq-рецепты</a></li>
+        <li><a href="#doc-ci">CI-интеграция</a></li>
+        <li><a href="#doc-style">Стиль</a></li>
+        <li><a href="#doc-query">doc-query</a></li>
+        <li><a href="#doc-mcp">doc-mcp</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">nova contracts</div>
+      <ul>
+        <li><a href="#contracts">Обзор</a></li>
+        <li><a href="#contracts-list">list</a></li>
+        <li><a href="#contracts-verify">verify</a></li>
+        <li><a href="#contracts-suggest">suggest</a></li>
+        <li><a href="#contracts-counterexample">counterexample</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">nova bench</div>
+      <ul>
+        <li><a href="#bench">Обзор</a></li>
+        <li><a href="#bench-run">run</a></li>
+        <li><a href="#bench-diff">diff</a></li>
+        <li><a href="#bench-gate">gate</a></li>
+        <li><a href="#bench-calibrate">calibrate</a></li>
+        <li><a href="#bench-cpu-instr">cpu-instr-check</a></li>
+        <li><a href="#bench-membw">membw-check</a></li>
+        <li><a href="#bench-hyperfine">hyperfine</a></li>
+        <li><a href="#bench-callgrind">callgrind</a></li>
+        <li><a href="#bench-remote">remote</a></li>
+        <li><a href="#bench-history">history-*</a></li>
+        <li><a href="#bench-dashboard">dashboard</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Справочник</div>
+      <ul>
+        <li><a href="#env">Переменные окружения</a></li>
+        <li><a href="#migration">Migration-бинарники</a></li>
+        <li><a href="/ru/doc/">&#8592; Документация</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <article class="prose">
+
+      <h2 id="quickstart">Quickstart</h2>
+      <pre><code class="language-bash"># Внутри Nova-проекта (рядом есть nova.toml):
+nova check                       # type-check всего workspace
+nova check src/                  # рекурсивно по директории
+nova check src/lib.nv            # одиночный файл
+
+nova run hello.nv                # запустить через интерпретатор
+nova build app.nv -o app         # скомпилировать в native binary
+nova test                        # запустить все nova_tests/
+nova test --filter basics        # подмножество по подстроке
+
+nova doc src/lib.nv              # markdown в stdout
+nova doc src/ --format json      # JSON-схема D107
+nova doc src/ --check --strict   # CI-валидация документации
+
+nova bench run bench.nv          # запустить бенчмарки
+nova contracts verify foo.nv     # SMT-верификация контрактов</code></pre>
+
+      <hr class="divider">
+
+      <h2 id="install">Установка и сборка</h2>
+      <p><code>nova-cli</code> живёт в <code>nova-cli/</code> рядом с <code>compiler-codegen/</code>. Оба crate самостоятельные (workspace не используется).</p>
+      <pre><code class="language-bash"># Debug-сборка (default, opt-level=0)
+cargo build --manifest-path nova-cli/Cargo.toml
+
+# Release (opt-level=2, LTO thin)
+cargo build --release --manifest-path nova-cli/Cargo.toml
+
+# С Z3-бэкендом для контрактов (Plan 33.1)
+cargo build --release --manifest-path nova-cli/Cargo.toml --features z3-backend</code></pre>
+      <p>Результаты сборки:</p>
+      <ul>
+        <li><code>nova-cli/target/{debug,release}/nova[.exe]</code></li>
+        <li><code>nova-cli/target/{debug,release}/migrate_plan60[.exe]</code></li>
+        <li><code>nova-cli/target/{debug,release}/migrate_plan65[.exe]</code></li>
+      </ul>
+      <p><code>nova</code> имеет path-зависимость на <code>nova_codegen</code> (<code>../compiler-codegen</code>) — rebuild compiler автоматически перекомпилирует CLI.</p>
+
+      <hr class="divider">
+
+      <h2 id="global-flags">Глобальные флаги</h2>
+      <p>Применяются ко всем субкомандам:</p>
+      <table>
+        <thead><tr><th>Флаг</th><th>Значения</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td><code>--color</code></td><td><code>auto</code> (default), <code>always</code>, <code>never</code></td><td>Управление ANSI-цветами.</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Авто-детект цвета</strong> (priority high → low):</p>
+      <ol>
+        <li>CLI <code>--color always|never</code> — принудительно</li>
+        <li><code>CLICOLOR_FORCE=1</code> → always</li>
+        <li><code>NO_COLOR</code> (любое значение) → never</li>
+        <li><code>CLICOLOR=0</code> → never</li>
+        <li><code>CI=true</code> → never</li>
+        <li><code>TERM=dumb</code> → never</li>
+        <li>По умолчанию — включено</li>
+      </ol>
+
+      <hr class="divider">
+
+      <h2 id="exit-codes">Коды выхода</h2>
+      <table>
+        <thead><tr><th>Код</th><th>Значение</th></tr></thead>
+        <tbody>
+          <tr><td><code>0</code></td><td>Успех</td></tr>
+          <tr><td><code>1</code></td><td>Диагностическая ошибка (тип-чек fail, тест fail, contract violation, etc.)</td></tr>
+          <tr><td><code>2</code></td><td>Usage error (неверный флаг, файл не найден, не <code>.nv</code>, нет <code>nova.toml</code>)</td></tr>
+          <tr><td><code>101</code></td><td>Internal panic</td></tr>
+        </tbody>
+      </table>
+      <p><code>nova doc --diff</code> дополнительно использует <code>3</code> = patch-level breaking change. См. <a href="#doc">nova doc</a>.</p>
+
+      <hr class="divider">
+
+      <h2 id="project-root">Поиск корня проекта</h2>
+      <p>Большинство команд ищут <code>nova.toml</code> снизу вверх от CWD (workspace-aware, D78 AD6):</p>
+      <ol>
+        <li>Идём от CWD вверх до filesystem root.</li>
+        <li>На каждом уровне читаем <code>nova.toml</code> если есть.</li>
+        <li>Если в нём есть <code>[workspace]</code> — это корень, останавливаемся.</li>
+        <li>Иначе запоминаем последний найденный <code>nova.toml</code> и идём дальше.</li>
+        <li>Возвращаем workspace root если найден; иначе — самый верхний <code>nova.toml</code>.</li>
+      </ol>
+      <p>Защищает от ситуации «вложенный <code>nova_tests/nova.toml</code> затмил основной». Если <code>nova.toml</code> не найден — exit <code>2</code>:</p>
+      <pre><code class="language-bash">error: nova.toml not found — are you inside a Nova project?</code></pre>
+      <p>Пути, резолвящиеся под workspace root: <code>nova_tests/</code>, <code>std/</code>, <code>compiler-codegen/</code>, <code>target/last-test-results.json</code>.</p>
+
+      <hr class="divider">
+
+      <h2 id="check">nova check</h2>
+      <p>Type-check одного или нескольких <code>.nv</code> файлов / директорий.</p>
+      <pre><code class="language-bash">nova check [PATHS...] [--jobs N] [-q|-v] [--list] [--format human|short]
+           [--include-runtime] [--skip PATTERN]...</code></pre>
+      <table>
+        <thead><tr><th>Флаг</th><th>По умолчанию</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td><code>PATHS</code></td><td>workspace root</td><td>Файлы или директории. Пусто = workspace root (рекурсивно).</td></tr>
+          <tr><td><code>--jobs N</code></td><td><code>0</code> (= num_cpus)</td><td>Параллельных воркеров.</td></tr>
+          <tr><td><code>-q</code>, <code>--quiet</code></td><td>off</td><td>Только FAIL-строки и summary.</td></tr>
+          <tr><td><code>-v</code>, <code>--verbose</code></td><td>off</td><td>Дополнительная информация (timing).</td></tr>
+          <tr><td><code>--list</code></td><td>off</td><td>Показать список файлов, не проверяя.</td></tr>
+          <tr><td><code>--format</code></td><td><code>human</code></td><td><code>human</code> (цветной) или <code>short</code> (<code>file:line:col: msg</code>).</td></tr>
+          <tr><td><code>--include-runtime</code></td><td>off</td><td>Включить <code>std/runtime/</code> (auto-gen, по умолчанию пропускается).</td></tr>
+          <tr><td><code>--skip PATTERN</code></td><td><code>[]</code></td><td>Пропустить файлы по substring (repeatable).</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Всегда пропускаются:</strong> <code>target/</code>, <code>node_modules/</code>, <code>vendor/</code>, <code>.git/</code>, <code>.hg/</code>, <code>.svn/</code>, директории начинающиеся с <code>_</code> или <code>.</code>, <code>std/runtime/</code>.</p>
+      <p>Summary: <code>pass=N fail=N warnings=N (X.YYs)</code>. Exit <code>1</code> при наличии FAIL.</p>
+
+      <hr class="divider">
+
+      <h2 id="run">nova run</h2>
+      <p>Запустить <code>.nv</code>-файл через интерпретатор (без компиляции в C).</p>
+      <pre><code class="language-bash">nova run FILE</code></pre>
+      <p><code>FILE</code> — путь к <code>.nv</code>-файлу с <code>fn main</code>.</p>
+
+      <hr class="divider">
+
+      <h2 id="build">nova build</h2>
+      <p>Скомпилировать <strong>один</strong> <code>.nv</code>-файл в native binary (через C-backend).</p>
+      <pre><code class="language-bash">nova build FILE [-o OUTPUT] [--mode dev|release] [--toolchain auto|clang|msvc|gcc]
+           [--vcvars PATH] [--clang PATH] [--timeout SECS] [--keep-artifacts]
+           [--mono-depth N]</code></pre>
+      <table>
+        <thead><tr><th>Флаг</th><th>По умолчанию</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td><code>FILE</code></td><td>—</td><td>Entry-point <code>.nv</code> с <code>fn main</code>.</td></tr>
+          <tr><td><code>-o OUTPUT</code></td><td><code>&lt;name&gt;[.exe]</code> в CWD</td><td>Путь к выходному бинарнику.</td></tr>
+          <tr><td><code>--mode</code></td><td><code>dev</code></td><td><code>dev</code> (unoptimized) или <code>release</code> (<code>-O2</code> + LTO).</td></tr>
+          <tr><td><code>--toolchain</code></td><td><code>auto</code></td><td><code>auto</code> (Clang → MSVC → GCC), <code>clang</code>, <code>msvc</code>, <code>gcc</code>.</td></tr>
+          <tr><td><code>--vcvars</code></td><td>auto via vswhere</td><td>Путь к <code>vcvars64.bat</code> (Windows).</td></tr>
+          <tr><td><code>--clang</code></td><td>auto detect</td><td>Путь к <code>clang.exe</code>.</td></tr>
+          <tr><td><code>--timeout</code></td><td><code>120</code></td><td>Таймаут компиляции в секундах.</td></tr>
+          <tr><td><code>--keep-artifacts</code></td><td>off</td><td>Не удалять <code>.c</code>/<code>.exe</code>/<code>.obj</code> в tmp.</td></tr>
+          <tr><td><code>--mono-depth N</code></td><td><code>500</code></td><td>Лимит monomorphization-инстанциаций.</td></tr>
+        </tbody>
+      </table>
+      <p>Только один файл за раз. Для multi-file проектов используй <code>import</code> внутри entry-point.</p>
+      <p><strong>Pipeline:</strong> parse + typecheck + infer_effects → C emit → toolchain detect → libuv detect/build → compile → copy → cleanup tmp.</p>
+
+      <hr class="divider">
+
+      <h2 id="test">nova test</h2>
+      <p>Запуск тестов из директории или файла.</p>
+      <pre><code class="language-bash">nova test [PATH] [--filter SUBSTR] [--jobs N] [--format text|json|tap|junit]
+          [--mode dev|release] [--toolchain auto|clang|msvc|gcc]
+          [--vcvars PATH] [--clang PATH] [--timeout SECS] [-v|-q]
+          [--results-file PATH] [--rerun-failed] [--retries N]
+          [--include-stdlib] [--keep-artifacts] [--gc boehm|malloc]
+          [--list] [--filter-from PATH] [--shuffle [SEED]]
+          [--skip PATTERN]... [--mono-depth N]</code></pre>
+      <table>
+        <thead><tr><th>Флаг</th><th>По умолчанию</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td><code>PATH</code></td><td><code>&lt;root&gt;/nova_tests/</code></td><td>Файл или директория с тестами.</td></tr>
+          <tr><td><code>--filter SUBSTR</code></td><td>—</td><td>Фильтр по display-name (substring).</td></tr>
+          <tr><td><code>--jobs N</code></td><td><code>0</code> (= num_cpus)</td><td>Параллельные воркеры.</td></tr>
+          <tr><td><code>--format</code></td><td><code>text</code></td><td><code>text</code>, <code>json</code>, <code>tap</code>, <code>junit</code>.</td></tr>
+          <tr><td><code>--mode</code></td><td><code>dev</code></td><td><code>dev</code> или <code>release</code>.</td></tr>
+          <tr><td><code>--toolchain</code></td><td><code>auto</code></td><td>См. <a href="#build">nova build</a>.</td></tr>
+          <tr><td><code>--timeout</code></td><td><code>60</code></td><td>Per-test timeout (секунды).</td></tr>
+          <tr><td><code>-v</code>, <code>--verbose</code></td><td>off</td><td>Вывод проходящих тестов.</td></tr>
+          <tr><td><code>-q</code>, <code>--quiet</code></td><td>off</td><td>Только FAIL + summary.</td></tr>
+          <tr><td><code>--results-file PATH</code></td><td><code>&lt;root&gt;/target/last-test-results.json</code></td><td>Куда писать результаты.</td></tr>
+          <tr><td><code>--rerun-failed</code></td><td>off</td><td>Перезапустить только failed/timed-out из последнего прогона.</td></tr>
+          <tr><td><code>--retries N</code></td><td><code>0</code></td><td>Повторов на transient-фейлах.</td></tr>
+          <tr><td><code>--include-stdlib</code></td><td>off</td><td>Включить <code>std/</code>.</td></tr>
+          <tr><td><code>--keep-artifacts</code></td><td>off</td><td>Не удалять <code>.c</code>/<code>.exe</code>/<code>.obj</code>.</td></tr>
+          <tr><td><code>--gc</code></td><td><code>boehm</code></td><td><code>boehm</code> (default) или <code>malloc</code>.</td></tr>
+          <tr><td><code>--list</code></td><td>off</td><td>Список тестов без запуска.</td></tr>
+          <tr><td><code>--filter-from PATH</code></td><td>—</td><td>Файл с именами тестов (по одному на строку, exact match).</td></tr>
+          <tr><td><code>--shuffle [SEED]</code></td><td>off</td><td>Случайный порядок; опц. seed для воспроизводимости.</td></tr>
+          <tr><td><code>--skip PATTERN</code></td><td><code>[]</code></td><td>Пропустить тесты по substring имени или пути (repeatable).</td></tr>
+          <tr><td><code>--mono-depth N</code></td><td><code>500</code></td><td>Лимит mono-instantiation.</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Форматы вывода:</strong> <code>text</code> (человекочитаемый, цветной), <code>json</code> (массив с <code>name</code>/<code>status</code>/<code>duration_ms</code>/<code>stderr</code>), <code>tap</code> (TAP v13), <code>junit</code> (JUnit XML для CI-агрегаторов).</p>
+      <p><strong>EXPECT-маркеры</strong> в тестовых файлах:</p>
+      <ul>
+        <li><code>// EXPECT: &lt;stdout-line&gt;</code> — точное совпадение строки</li>
+        <li><code>// EXPECT_STDERR: &lt;line&gt;</code> — для stderr</li>
+        <li><code>// EXPECT_COMPILE_ERROR: &lt;substring&gt;</code> — должно упасть при компиляции</li>
+        <li><code>// EXPECT_RUNTIME_ERROR: &lt;substring&gt;</code> — panic с подстрокой</li>
+        <li><code>// REQUIRES_SMT_BACKEND</code> — пропуск если SMT недоступен</li>
+      </ul>
+
+      <hr class="divider">
+
+      <h2 id="test-build">nova test-build</h2>
+      <p>Build + run <strong>одного</strong> тестового файла. Используется IDE / CI для точечной отладки.</p>
+      <pre><code class="language-bash">nova test-build FILE [--mode dev|release] [--toolchain auto|clang|msvc|gcc]
+                [--vcvars PATH] [--clang PATH] [--timeout SECS]
+                [--keep-artifacts] [--gc boehm|malloc] [--mono-depth N]</code></pre>
+      <p>Эквивалентно <code>nova test &lt;FILE&gt;</code>, но без machinery для bulk-runner'а. Дефолты: <code>--timeout 60</code>, <code>--gc boehm</code>, <code>--mono-depth 500</code>.</p>
+
+      <hr class="divider">
+
+      <h2 id="regen-runtime">nova regen-runtime</h2>
+      <p>Регенерация <code>std/runtime/*.nv</code> стабов из compiler-runtime реестра. Заменяет <code>regen_runtime.ps1</code>.</p>
+      <pre><code class="language-bash">nova regen-runtime [--check]</code></pre>
+      <table>
+        <thead><tr><th>Флаг</th><th>По умолчанию</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td><code>--check</code></td><td>off</td><td>Только сравнить — exit <code>1</code> если файлы расходятся с реестром (CI guard).</td></tr>
+        </tbody>
+      </table>
+
+      <hr class="divider">
+
+      <h2 id="doc">nova doc</h2>
+      <p>Production-grade документация (Plan 45 / D107). Markdown / JSON / HTML + doc-tests + coverage + mutation testing + watch + workspace-mode.</p>
+      <pre><code class="language-bash">nova doc [FILE] [--format markdown|json|html] [--json-schema]
+         [--include-private] [--test] [--check] [--watch]
+         [--coverage [--coverage-threshold PERCENT]] [--jobs N]
+         [--diff OLD NEW] [--scrape-examples WORKSPACE]
+         [--strict] [--mutate-contracts [--real-exec]]
+         [--output-dir DIR]</code></pre>
+      <table>
+        <thead><tr><th>Флаг</th><th>По умолчанию</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td><code>FILE</code></td><td>— (обязателен кроме <code>--json-schema</code>)</td><td><code>.nv</code> файл или директория.</td></tr>
+          <tr><td><code>--format</code></td><td><code>markdown</code></td><td><code>markdown</code>, <code>json</code> (D107 schema), <code>html</code>.</td></tr>
+          <tr><td><code>--json-schema</code></td><td>off</td><td>Вывести встроенную JSON Schema 2020-12 и выйти.</td></tr>
+          <tr><td><code>--include-private</code></td><td>off</td><td>Включить non-exported items.</td></tr>
+          <tr><td><code>--test</code></td><td>off</td><td>Запустить doc-tests.</td></tr>
+          <tr><td><code>--check</code></td><td>off</td><td>Валидировать без рендера (broken links, missing summaries).</td></tr>
+          <tr><td><code>--watch</code></td><td>off</td><td>Re-render по mtime-poll (500 мс); Ctrl-C для выхода.</td></tr>
+          <tr><td><code>--coverage</code></td><td>off</td><td>Метрики coverage (% items with summary).</td></tr>
+          <tr><td><code>--coverage-threshold N</code></td><td>—</td><td>CI-gate: exit <code>1</code> если coverage% &lt; N.</td></tr>
+          <tr><td><code>--jobs N</code></td><td><code>0</code> (= num_cpus)</td><td>Параллельных parse-jobs для workspace.</td></tr>
+          <tr><td><code>--diff OLD NEW</code></td><td>—</td><td>Сравнить два JSON-вывода (semver detection).</td></tr>
+          <tr><td><code>--scrape-examples WORKSPACE</code></td><td>—</td><td>Привязать top-3 usage examples к каждой fn.</td></tr>
+          <tr><td><code>--strict</code></td><td>off</td><td>Warnings → errors (CI).</td></tr>
+          <tr><td><code>--mutate-contracts</code></td><td>off</td><td>Mutation testing для contracts.</td></tr>
+          <tr><td><code>--real-exec</code></td><td>off</td><td>Реально исполнять mutants (требует <code>--mutate-contracts</code>).</td></tr>
+          <tr><td><code>--output-dir DIR</code></td><td>—</td><td>Multi-page HTML; только с <code>--format html</code>.</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Exit-коды для <code>--diff OLD NEW</code>:</strong></p>
+      <table>
+        <thead><tr><th>Код</th><th>Значение</th></tr></thead>
+        <tbody>
+          <tr><td><code>0</code></td><td>Нет breaking changes</td></tr>
+          <tr><td><code>1</code></td><td>Major change (breaking)</td></tr>
+          <tr><td><code>2</code></td><td>Minor change (additive)</td></tr>
+          <tr><td><code>3</code></td><td>Patch change (cosmetic)</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Mutation testing (<code>--mutate-contracts</code>):</strong> генерирует мутанты для каждой функции с контрактами (<code>&gt;</code>↔<code>&gt;=</code>, <code>==</code>↔<code>!=</code>, дроп <code>requires</code>/<code>ensures</code>). Default — text heuristic (~1 мс/мутант). С <code>--real-exec</code> — запускает мутированные doc-tests (~100 мс/мутант, true positive guarantee).</p>
+
+      <h3 id="doc-comments">Doc-комментарии</h3>
+      <p>Используются два вида:</p>
+      <ul>
+        <li><code>///</code> <strong>(outer)</strong> — относится к следующей декларации.</li>
+        <li><code>//!</code> <strong>(inner)</strong> — относится к module целиком.</li>
+      </ul>
+      <pre><code class="language-nova">//! Модульный doc — описание всего файла.
+
+module my.module
+
+/// Краткое summary в одно предложение.
+///
+/// Длинное описание ниже. Может занимать несколько строк.
+///
+/// # Examples
+///
+/// ```nova
+/// let x = double(3)
+/// assert(x == 6)
+/// ```
+export fn double(x int) -> int => x * 2</code></pre>
+
+      <h3 id="doc-sections">Секции</h3>
+      <p>Распознаются стандартные секции (D107, fixed order):</p>
+      <table>
+        <thead><tr><th>Секция</th><th>Назначение</th></tr></thead>
+        <tbody>
+          <tr><td><code># Examples</code></td><td>Примеры использования. <code>```nova</code> блоки — doc-tests.</td></tr>
+          <tr><td><code># Errors</code></td><td>Какие <code>Fail[X]</code> функция может вернуть.</td></tr>
+          <tr><td><code># Panics</code></td><td>Условия runtime panic.</td></tr>
+          <tr><td><code># Safety</code></td><td>Invariants для <code>unsafe</code>-вызывающих.</td></tr>
+          <tr><td><code># Effects</code></td><td>Список effects (если не очевиден из signature).</td></tr>
+          <tr><td><code># Contracts</code></td><td>Pre/post-conditions.</td></tr>
+          <tr><td><code># Since</code></td><td>Версия, с которой fn появилась.</td></tr>
+          <tr><td><code># See also</code></td><td>Cross-references.</td></tr>
+          <tr><td><code># Deprecated</code></td><td>Причина + рекомендация замены.</td></tr>
+        </tbody>
+      </table>
+      <p>Другие <code># Heading</code> сохраняются в текущей секции как часть text'а.</p>
+
+      <h3 id="doc-links">Intra-doc ссылки</h3>
+      <pre><code class="language-nova">/// Возвращает [Point] для координаты.
+/// См. также [translate] и [std.math.abs].</code></pre>
+      <p>Резолвинг:</p>
+      <ul>
+        <li><code>[Name]</code> — short-match по item-id.</li>
+        <li><code>[Type.method]</code> — короткая форма метода.</li>
+        <li><code>[mod.path.Name]</code> — fully-qualified.</li>
+      </ul>
+      <p>Broken links → <code>target_id: null</code> в JSON и сообщение от <code>nova doc --check</code>.</p>
+
+      <h3 id="doc-tests">Doc-тесты</h3>
+      <p><code>```nova</code>-блоки в doc'е — это doc-tests, исполняемые <code>nova doc --test</code>.</p>
+      <h4>Модификаторы</h4>
+      <pre><code>```nova,no_run        — компилируется, не запускается
+```nova,ignore        — не компилируется (только display)
+```nova,compile_fail  — ожидается compile-error
+```nova,should_panic  — ожидается runtime panic
+```nova,must_verify   — ожидается successful SMT verify</code></pre>
+      <p>Можно комбинировать: <code>```nova,no_run,ignore</code>.</p>
+      <h4>Скрытые строки</h4>
+      <p>Строки <code># code</code> скрыты в визуальном выводе, но включаются в компиляцию:</p>
+      <pre><code class="language-nova">/// ```nova
+/// # import std.io
+/// let r = compute()
+/// assert(r == 42)
+/// ```</code></pre>
+
+      <h3 id="doc-stability">Стабильность и deprecation</h3>
+      <p><strong>Через секции</strong> (version-based):</p>
+      <pre><code class="language-nova">/// API.
+///
+/// # Since
+///
+/// 1.0.0
+export fn add(a int, b int) -> int => a + b</code></pre>
+      <p><code># Since &gt;= 1.0</code> → <code>stability.tier = "stable"</code>, иначе <code>unstable</code>.</p>
+      <p><strong>Через doc-attrs</strong> (D96 синтаксис <code>#name(...)</code> — пишется отдельной строкой между doc-comment'ом и item'ом, не внутри <code>///</code>):</p>
+      <pre><code class="language-nova">/// Экспериментальное API.
+#experimental(note = "may change in 0.5")
+#since("0.3.0")
+export fn experimental_api() -> int => 0</code></pre>
+      <table>
+        <thead><tr><th>Атрибут</th><th>Параметры</th></tr></thead>
+        <tbody>
+          <tr><td><code>#deprecated(since = "X", note = "...", until = "Y"?)</code></td><td><code>since</code>/<code>note</code> обязательны, <code>until</code> опционален</td></tr>
+          <tr><td><code>#since("X.Y")</code> или <code>#since(version = "X.Y")</code></td><td>версия появления</td></tr>
+          <tr><td><code>#stable</code> или <code>#stable(since = "X.Y")</code></td><td>stable API</td></tr>
+          <tr><td><code>#unstable(feature = "name")</code></td><td>за named feature-флагом</td></tr>
+          <tr><td><code>#experimental(note = "..."?)</code></td><td>proof-of-concept</td></tr>
+          <tr><td><code>#hide_doc</code></td><td>item exported, но скрыт из <code>nova doc</code></td></tr>
+          <tr><td><code>#doc_alias("alt", ...)</code></td><td>search-aliases</td></tr>
+          <tr><td><code>#doc(inline)</code> / <code>#doc(no_inline)</code></td><td>re-export rendering</td></tr>
+          <tr><td><code>#doc(summary = "...")</code></td><td>override автосаммари</td></tr>
+        </tbody>
+      </table>
+      <p><code>#deprecated</code> приоритетнее, чем <code># Deprecated</code> section.</p>
+
+      <h3 id="doc-json">JSON-вывод</h3>
+      <p>D107 schema v1. Ключи в алфавитном порядке, byte-for-byte deterministic. Top-level fields:</p>
+      <ul>
+        <li><code>format_version: 1</code></li>
+        <li><code>nova_version: "0.1.0"</code></li>
+        <li><code>generated_at</code> — опускается по умолчанию; управляется через <code>NOVA_DOC_GENERATED_AT</code> или <code>SOURCE_DATE_EPOCH</code>.</li>
+        <li><code>doc_tests[]</code> — извлечённые <code>```nova</code> блоки.</li>
+        <li><code>links[]</code> — intra-doc-links (resolved + broken).</li>
+        <li><code>modules[]</code> — DocModule entries.</li>
+        <li><code>items[]</code> — DocItem entries (fn/type/const/effect/protocol).</li>
+      </ul>
+      <p>Полная спецификация: <code>nova doc --json-schema</code>.</p>
+
+      <h3 id="doc-jq">jq-рецепты</h3>
+      <pre><code class="language-bash"># Список всех public fn с summary
+nova doc src/api.nv --format json \
+  | jq '[.items[] | select(.kind=="fn" and .visibility=="export") | {id,summary}]'
+
+# Все items без summary (не задокументированные)
+nova doc src/api.nv --format json \
+  | jq '[.items[] | select(.summary == null) | .id]'
+
+# Все #unstable или #experimental items
+nova doc src/api.nv --format json \
+  | jq '[.items[] | select(.stability.tier != null and .stability.tier != "stable") | {id, tier: .stability.tier}]'
+
+# Все #deprecated items с заменой
+nova doc src/api.nv --format json \
+  | jq '[.items[] | select(.deprecation != null) | {id, note: .deprecation.note}]'
+
+# Функции с @realtime
+nova doc src/api.nv --format json \
+  | jq '[.items[] | select(.capabilities.realtime==true) | .id]'
+
+# Функции с SMT-контрактами (Proven)
+nova doc src/api.nv --format json \
+  | jq '[.items[] | select(.signature?.verify_status=="proven") | .id]'
+
+# Все re-exports (doc_inline=true)
+nova doc src/api.nv --format json \
+  | jq '[.items[] | select(.kind=="reexport" and .doc_inline==true) | {id, source: .reexport_from}]'
+
+# Items с scraped examples
+nova doc src/api.nv --format json --scrape-examples . \
+  | jq '[.items[] | select(.scraped_examples | length > 0) | {id, count: (.scraped_examples | length)}]'
+
+# Все broken intra-doc links (target_id == null)
+nova doc src/api.nv --format json \
+  | jq '[.links[] | select(.target_id == null) | .text]'
+
+# Семver diff: список major changes
+nova doc --diff old.json new.json 2>&1 | grep '\[major\]'</code></pre>
+
+      <h3 id="doc-ci">CI-интеграция</h3>
+      <pre><code class="language-bash"># Проверить, что doc валиден (broken links, missing summaries)
+nova doc src/api.nv --check
+
+# Прогнать doc-tests (exit 1 на failure)
+nova doc src/api.nv --test
+
+# Reproducible builds
+SOURCE_DATE_EPOCH=1700000000 nova doc src/api.nv --format json > api.json</code></pre>
+
+      <h3 id="doc-style">Стиль (§11.5)</h3>
+      <ol>
+        <li>Первое предложение — summary, терминатор <code>.</code>.</li>
+        <li>Imperative mood: "Returns X" а не "This function returns X".</li>
+        <li>Fixed section order (см. таблицу выше).</li>
+        <li>Markdown subset: CommonMark + <code>```nova</code> fenced blocks.</li>
+        <li>Examples обязательны для public fn.</li>
+        <li>Deprecation note содержит замену + <code># Since</code>.</li>
+        <li>Stability tiers: stable / unstable / experimental.</li>
+      </ol>
+
+      <hr class="divider">
+
+      <h2 id="doc-query">nova doc-query</h2>
+      <p>DSL-запросы к JSON-выводу <code>nova doc --format json</code> (Plan 45). Фундамент для MCP-сервера.</p>
+      <pre><code class="language-bash">nova doc-query JSON_FILE [QUERY]</code></pre>
+      <p><strong>Синтаксис query:</strong> <code>key=value,key=value,...</code></p>
+      <table>
+        <thead><tr><th>Ключ</th><th>Значения</th></tr></thead>
+        <tbody>
+          <tr><td><code>kind</code></td><td><code>fn</code>, <code>type</code>, <code>effect</code>, <code>protocol</code>, <code>module</code>, …</td></tr>
+          <tr><td><code>name</code></td><td>substring</td></tr>
+          <tr><td><code>module</code></td><td>exact module path</td></tr>
+          <tr><td><code>module-prefix</code></td><td>префикс пути</td></tr>
+          <tr><td><code>capability</code></td><td>capability-name</td></tr>
+          <tr><td><code>effect</code></td><td>effect-name</td></tr>
+          <tr><td><code>has-contracts</code></td><td><code>true</code>, <code>false</code></td></tr>
+          <tr><td><code>verified</code></td><td><code>true</code>, <code>false</code></td></tr>
+          <tr><td><code>stability</code></td><td><code>stable</code>, <code>unstable</code>, <code>experimental</code></td></tr>
+          <tr><td><code>deprecated</code></td><td><code>true</code>, <code>false</code></td></tr>
+        </tbody>
+      </table>
+      <pre><code class="language-bash">nova doc src/ --format json > out.json
+nova doc-query out.json "kind=fn,capability=pure"
+nova doc-query out.json "name=add,has-contracts=true"
+nova doc-query out.json "module-prefix=std,effect=Fs"</code></pre>
+      <p>Пустой query → весь файл as-is.</p>
+
+      <hr class="divider">
+
+      <h2 id="doc-mcp">nova doc-mcp</h2>
+      <p>MCP-сервер (Model Context Protocol) — JSON-RPC over stdio или HTTP. Совместим с MCP-клиентами (Claude Code, MCP Inspector).</p>
+      <pre><code class="language-bash">nova doc-mcp FILE [--port PORT]</code></pre>
+      <table>
+        <thead><tr><th>Флаг</th><th>По умолчанию</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td><code>FILE</code></td><td>—</td><td><code>.nv</code>-исходник или pre-generated <code>.json</code>.</td></tr>
+          <tr><td><code>--port PORT</code></td><td>— (stdio)</td><td>HTTP-режим на <code>127.0.0.1:PORT</code>, POST <code>/mcp</code>.</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Tools (через <code>tools/list</code>):</strong></p>
+      <ul>
+        <li><code>query_items(query)</code> — поиск через DSL (см. <a href="#doc-query">nova doc-query</a>)</li>
+        <li><code>list_modules()</code> — список module-путей</li>
+        <li><code>get_item(item_id)</code> — полный JSON одного item</li>
+      </ul>
+      <p><strong>Protocol:</strong> MCP-клиент шлёт <code>initialize</code> → <code>tools/list</code> → <code>tools/call</code>.</p>
+
+      <hr class="divider">
+
+      <h2 id="contracts">nova contracts</h2>
+      <p>Инспекция и верификация контрактов (Plan 33 / D24). Output — JSON (AI-friendly schema, см. <code>docs/contracts-diag-schema.json</code>).</p>
+
+      <h3 id="contracts-list">nova contracts list</h3>
+      <p>Список всех контрактов в файле.</p>
+      <pre><code class="language-bash">nova contracts list FILE</code></pre>
+
+      <h3 id="contracts-verify">nova contracts verify</h3>
+      <p>SMT-верификация контрактов. Z3-бэкенд требует build с <code>--features z3-backend</code>.</p>
+      <pre><code class="language-bash">nova contracts verify FILE [--backend BACKEND]</code></pre>
+      <table>
+        <thead><tr><th>Флаг</th><th>По умолчанию</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td><code>FILE</code></td><td>—</td><td><code>.nv</code> файл.</td></tr>
+          <tr><td><code>--backend BACKEND</code></td><td>env <code>NOVA_SMT_BACKEND</code></td><td>Override SMT-backend: <code>trivial</code>, <code>z3</code>.</td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="contracts-suggest">nova contracts suggest</h3>
+      <p>AI-assisted предложения для контрактов (стабы).</p>
+      <pre><code class="language-bash">nova contracts suggest FILE FN_NAME</code></pre>
+
+      <h3 id="contracts-counterexample">nova contracts counterexample</h3>
+      <p>Контрпример для падающего контракта.</p>
+      <pre><code class="language-bash">nova contracts counterexample FILE FN_NAME [--contract-id N]</code></pre>
+      <table>
+        <thead><tr><th>Флаг</th><th>По умолчанию</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td><code>FN_NAME</code></td><td>—</td><td>Имя функции.</td></tr>
+          <tr><td><code>--contract-id N</code></td><td><code>0</code></td><td>Индекс контракта (0-based).</td></tr>
+        </tbody>
+      </table>
+
+      <hr class="divider">
+
+      <h2 id="bench">nova bench</h2>
+      <p>Бенчмарк-инфраструктура (Plan 57). Субкоманды:</p>
+      <p style="font-size:.9rem;color:var(--fg-muted);">
+        <a href="#bench-run">run</a> · <a href="#bench-diff">diff</a> · <a href="#bench-gate">gate</a> · <a href="#bench-calibrate">calibrate</a> · <a href="#bench-cpu-instr">cpu-instr-check</a> · <a href="#bench-membw">membw-check</a> · <a href="#bench-hyperfine">hyperfine</a> · <a href="#bench-callgrind">callgrind</a> · callgrind-check · runner-branch · <a href="#bench-history">history-anomalies / history-add / history-list / history-squash</a> · <a href="#bench-remote">remote</a> · corpus · <a href="#bench-dashboard">dashboard</a>
+      </p>
+
+      <h3 id="bench-run">nova bench run</h3>
+      <p>Запустить <code>bench "..." { measure { ... } }</code> декларации в файле.</p>
+      <pre><code class="language-bash">nova bench run FILE [--filter PATTERN] [--samples N] [--warmup-ms MS]
+                    [--time-budget SECS] [--gc boehm|malloc]
+                    [--mode release|dev] [--toolchain auto|clang|msvc|gcc]
+                    [--compile-timeout SECS] [--run-timeout SECS]
+                    [--keep-artifacts] [--mono-depth N]
+                    [--out PATH] [--out-csv PATH] [--out-md PATH]
+                    [--out-criterion DIR] [--profile MODE OUT]
+                    [--histogram]</code></pre>
+      <table>
+        <thead><tr><th>Флаг</th><th>По умолчанию</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td><code>FILE</code></td><td>—</td><td><code>.nv</code> файл с <code>bench "..."</code> блоками.</td></tr>
+          <tr><td><code>--filter PATTERN</code></td><td>—</td><td>Comma-separated bench-name fragments.</td></tr>
+          <tr><td><code>--samples N</code></td><td><code>100</code></td><td>Override sample count.</td></tr>
+          <tr><td><code>--warmup-ms</code></td><td><code>500</code></td><td>Warmup duration в мс.</td></tr>
+          <tr><td><code>--time-budget</code></td><td><code>10</code></td><td>Per-bench бюджет в секундах.</td></tr>
+          <tr><td><code>--gc</code></td><td><code>boehm</code></td><td>GC-режим.</td></tr>
+          <tr><td><code>--mode</code></td><td><code>release</code></td><td><code>release</code> (рекомендуется) или <code>dev</code>.</td></tr>
+          <tr><td><code>--toolchain</code></td><td><code>auto</code></td><td>См. <a href="#build">nova build</a>.</td></tr>
+          <tr><td><code>--compile-timeout</code></td><td><code>120</code></td><td>Таймаут компиляции.</td></tr>
+          <tr><td><code>--run-timeout</code></td><td><code>600</code></td><td>Таймаут запуска bench-процесса.</td></tr>
+          <tr><td><code>--out PATH</code></td><td>—</td><td>Записать JSON v1.</td></tr>
+          <tr><td><code>--out-csv PATH</code></td><td>—</td><td>Записать CSV.</td></tr>
+          <tr><td><code>--out-md PATH</code></td><td>—</td><td>Markdown (для PR comment).</td></tr>
+          <tr><td><code>--out-criterion DIR</code></td><td>—</td><td>Criterion-compatible JSON layout.</td></tr>
+          <tr><td><code>--profile MODE OUT</code></td><td>—</td><td><code>cpu</code> / <code>heap</code> / <code>gc</code> profile.</td></tr>
+          <tr><td><code>--histogram</code></td><td>off</td><td>ASCII-гистограмма на каждый bench.</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Output-форматы:</strong> <code>--out</code> (JSON v1 с git SHA, toolchain, CPU model); <code>--out-criterion</code> (<code>&lt;dir&gt;/&lt;name&gt;/new/{estimates,sample,benchmark}.json</code>); <code>--out-md</code> (markdown-таблица для PR); <code>--histogram</code> (40 buckets, Unicode blocks, медиана + Tukey fences).</p>
+      <p><strong>Profile-режимы:</strong> <code>cpu</code> — заворачивает в <code>samply</code> (нужен <code>cargo install samply</code>); <code>heap</code> — <code>NOVA_BENCH_HEAP_SAMPLE_MS=10</code>; <code>gc</code> — <code>NOVA_BENCH_GC_TRACE=1</code>.</p>
+
+      <h3 id="bench-diff">nova bench diff</h3>
+      <p>Сравнение двух bench-результатов. Welch's t-test, geomean delta, reproducibility check.</p>
+      <pre><code class="language-bash">nova bench diff BASELINE NEW [--format terminal|markdown|json]
+                              [--explain [--ai-config PATH] [--ai-max-tokens N] [--ai-dry-run]]
+                              [--baseline-sha SHA] [--new-sha SHA]</code></pre>
+      <table>
+        <thead><tr><th>Флаг</th><th>По умолчанию</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td><code>BASELINE</code>, <code>NEW</code></td><td>—</td><td>JSON-файлы из <code>nova bench run --out</code>.</td></tr>
+          <tr><td><code>--format</code></td><td><code>terminal</code></td><td><code>terminal</code>, <code>markdown</code>, <code>json</code>.</td></tr>
+          <tr><td><code>--explain</code></td><td>off</td><td>AI-интерпретация regressions (opt-in).</td></tr>
+          <tr><td><code>--ai-config PATH</code></td><td><code>~/.nova-ai.toml</code></td><td>Путь к AI-конфигу.</td></tr>
+          <tr><td><code>--ai-max-tokens</code></td><td><code>4000</code></td><td>Override max tokens.</td></tr>
+          <tr><td><code>--ai-dry-run</code></td><td>off</td><td>Печатает request body без API call.</td></tr>
+        </tbody>
+      </table>
+      <p><code>--explain</code> использует <code>system curl</code> и требует <code>NOVA_AI_API_KEY</code> или конфиг.</p>
+
+      <h3 id="bench-gate">nova bench gate</h3>
+      <p>CI-gate: применяет пороги из <code>bench.toml</code>. Exit <code>0</code> = pass, <code>1</code> = regression.</p>
+      <pre><code class="language-bash">nova bench gate BASELINE NEW [--config PATH] [--noise PATH]</code></pre>
+      <table>
+        <thead><tr><th>Флаг</th><th>По умолчанию</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td><code>--config</code></td><td><code>./bench.toml</code></td><td>Путь к bench.toml.</td></tr>
+          <tr><td><code>--noise</code></td><td><code>./.nova-bench-noise.json</code> если есть</td><td>Auto-calibrated noise-floor (см. <a href="#bench-calibrate">calibrate</a>).</td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="bench-calibrate">nova bench calibrate</h3>
+      <p>Авто-калибровка noise-floor из ≥2 повторных прогонов того же baseline.</p>
+      <pre><code class="language-bash">nova bench calibrate RUNS... [--out PATH]</code></pre>
+      <table>
+        <thead><tr><th>Флаг</th><th>По умолчанию</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td><code>RUNS...</code></td><td>—</td><td>≥2 JSON-результата одного и того же source.</td></tr>
+          <tr><td><code>--out</code></td><td><code>.nova-bench-noise.json</code></td><td>Куда записать noise-floor.</td></tr>
+        </tbody>
+      </table>
+      <p>Файл machine-specific; в git добавлять не нужно.</p>
+
+      <h3 id="bench-cpu-instr">nova bench cpu-instr-check</h3>
+      <p>Диагностика доступности CPU-instruction-counter. Linux: проверяет <code>perf_event_open</code>. Other OS: stub.</p>
+      <pre><code class="language-bash">nova bench cpu-instr-check</code></pre>
+
+      <h3 id="bench-membw">nova bench membw-check</h3>
+      <p>Диагностика memory-bandwidth measurement. Linux: probes <code>/sys/devices/uncore_imc_*</code>. Other OS: stub.</p>
+      <pre><code class="language-bash">nova bench membw-check</code></pre>
+
+      <h3 id="bench-hyperfine">nova bench hyperfine</h3>
+      <p>Hyperfine-style cross-binary timing. Output совместим с <code>nova bench diff</code>.</p>
+      <pre><code class="language-bash">nova bench hyperfine SPECS... [--warmup N] [--samples N]
+                              [--timeout SECS] [--workdir PATH] [--out PATH]</code></pre>
+      <table>
+        <thead><tr><th>Флаг</th><th>По умолчанию</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td><code>SPECS...</code></td><td>≥1</td><td><code>"name=binary args..."</code> или просто <code>"binary args..."</code>.</td></tr>
+          <tr><td><code>--warmup</code></td><td><code>3</code></td><td>Warmup runs (отбрасываются).</td></tr>
+          <tr><td><code>--samples</code></td><td><code>10</code></td><td>Sample runs.</td></tr>
+          <tr><td><code>--timeout</code></td><td><code>300</code></td><td>Per-command timeout.</td></tr>
+          <tr><td><code>--workdir PATH</code></td><td>—</td><td>CWD для команд.</td></tr>
+          <tr><td><code>--out PATH</code></td><td>stdout</td><td>JSON output.</td></tr>
+        </tbody>
+      </table>
+      <pre><code class="language-bash">nova bench hyperfine \
+  "old=./nova-old build large.nv" \
+  "new=./nova-new build large.nv" \
+  --samples 10 --warmup 2 --out result.json</code></pre>
+
+      <h3 id="bench-callgrind">nova bench callgrind</h3>
+      <p>Запуск под Valgrind Callgrind — deterministic CPU-instructions count. Работает на macOS + Linux при наличии <code>valgrind</code>.</p>
+      <pre><code class="language-bash">nova bench callgrind BINARY [ARGS...] [--cache-sim] [--workdir PATH] [--out PATH]</code></pre>
+      <table>
+        <thead><tr><th>Флаг</th><th>По умолчанию</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td><code>BINARY</code></td><td>—</td><td>Путь к executable.</td></tr>
+          <tr><td><code>--cache-sim</code></td><td>off</td><td>I1/D1/LL miss counts (медленнее).</td></tr>
+          <tr><td><code>--workdir PATH</code></td><td>—</td><td>CWD для команды.</td></tr>
+          <tr><td><code>--out PATH</code></td><td>—</td><td>JSON <code>CallgrindResult</code>.</td></tr>
+        </tbody>
+      </table>
+      <p><code>nova bench callgrind-check</code> — проверить наличие и версию valgrind.</p>
+      <p><code>nova bench runner-branch</code> — рекомендованное имя history-branch на основе <code>NOVA_BENCH_RUNNER_ID</code> (возвращает <code>bench-history</code> или <code>bench-history-&lt;id&gt;</code>).</p>
+
+      <h3 id="bench-remote">nova bench remote</h3>
+      <p>SSH-distributed bench coordination.</p>
+      <pre><code class="language-bash">nova bench remote list [--config PATH]           # список remotes
+nova bench remote ping NAME [--config PATH]      # SSH health-check
+nova bench remote run BENCH [--remotes LIST] [--gather-into DIR] [--sha SHA] [--config PATH]</code></pre>
+      <p>Remote config: <code>~/.nova-bench-remotes.toml</code> (override через <code>NOVA_BENCH_REMOTES</code>).</p>
+      <p><code>nova bench corpus PATH</code> — per-pass compile time. Флаги: <code>--json</code>, <code>--html PATH</code>, <code>--echarts-url URL</code>, <code>--mode</code>, <code>--toolchain</code>, <code>--gc</code>.</p>
+
+      <h3 id="bench-history">nova bench history</h3>
+      <p>Управление orphan history-branch для CI regression tracking.</p>
+      <pre><code class="language-bash"># Добавить результат в history-branch
+nova bench history-add RESULT [--branch BRANCH] [--push] [--remote NAME] [--dry-run]
+
+# Список entries (newest first)
+nova bench history-list [--branch BRANCH]
+
+# Squash старых entries по дате (рекомендуется ежегодно)
+nova bench history-squash --before-date YYYY-MM-DD [--branch BRANCH] [--push] [--remote NAME] [--dry-run]
+
+# Детекция changepoints в historical median time-series (PELT)
+nova bench history-anomalies [--branch BRANCH] [--format text|json]</code></pre>
+      <p>Default history branch: <code>bench-history</code> (или <code>bench-history-&lt;NOVA_BENCH_RUNNER_ID&gt;</code> для multi-runner CI).</p>
+
+      <h3 id="bench-dashboard">nova bench dashboard</h3>
+      <p>Статический HTML dashboard из history.</p>
+      <pre><code class="language-bash">nova bench dashboard [--history-branch BRANCH] [--out DIR] [--max-entries N] [--echarts-url URL]</code></pre>
+      <table>
+        <thead><tr><th>Флаг</th><th>По умолчанию</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td><code>--history-branch</code></td><td>auto</td><td>History branch.</td></tr>
+          <tr><td><code>--out</code></td><td><code>dashboard</code></td><td>Output directory.</td></tr>
+          <tr><td><code>--max-entries</code></td><td><code>200</code></td><td>Max entries (newest first).</td></tr>
+          <tr><td><code>--echarts-url</code></td><td>jsdelivr URL</td><td>Custom echarts URL (offline = local).</td></tr>
+        </tbody>
+      </table>
+      <p>Генерирует <code>index.html</code> + <code>bench-&lt;safe&gt;.html</code> per bench + <code>data.json</code>.</p>
+
+      <hr class="divider">
+
+      <h2 id="env">Переменные окружения</h2>
+      <table>
+        <thead><tr><th>Переменная</th><th>Используется в</th><th>Эффект</th></tr></thead>
+        <tbody>
+          <tr><td><code>NOVA_MONO_DEPTH</code></td><td><code>build</code>, <code>test</code>, <code>test-build</code>, <code>bench</code></td><td>Лимит monomorphization-инстанциаций (default 500).</td></tr>
+          <tr><td><code>NOVA_SMT_BACKEND</code></td><td><code>contracts</code></td><td>SMT-backend (<code>trivial</code>, <code>z3</code>).</td></tr>
+          <tr><td><code>NOVA_PERF_TIMER</code></td><td><code>bench corpus</code> (auto-set)</td><td>Включает <code>__PERF__</code> маркеры в компиляторе.</td></tr>
+          <tr><td><code>NOVA_PERF_TIMER_AGGREGATE</code></td><td><code>bench corpus</code></td><td>Aggregate <code>__PERF__</code> по проходам.</td></tr>
+          <tr><td><code>NOVA_BENCH_RUNNER_ID</code></td><td><code>bench history-*</code>, <code>runner-branch</code></td><td>Multi-runner CI matrix; используется в branch name.</td></tr>
+          <tr><td><code>NOVA_BENCH_REMOTES</code></td><td><code>bench remote</code></td><td>Override пути к <code>.nova-bench-remotes.toml</code>.</td></tr>
+          <tr><td><code>NOVA_BENCH_FILTER</code></td><td><code>bench run</code> (auto-set)</td><td>Forwarded в bench-процесс.</td></tr>
+          <tr><td><code>NOVA_BENCH_SAMPLES</code></td><td><code>bench run</code> (auto-set)</td><td>Override sample count.</td></tr>
+          <tr><td><code>NOVA_BENCH_WARMUP_NS</code></td><td><code>bench run</code> (auto-set)</td><td>Warmup в наносекундах.</td></tr>
+          <tr><td><code>NOVA_BENCH_TIME_BUDGET_NS</code></td><td><code>bench run</code> (auto-set)</td><td>Time budget в наносекундах.</td></tr>
+          <tr><td><code>NOVA_BENCH_HEAP_SAMPLE_MS</code></td><td><code>bench run --profile heap</code></td><td>Sample interval в мс.</td></tr>
+          <tr><td><code>NOVA_BENCH_GC_TRACE</code></td><td><code>bench run --profile gc</code></td><td>Включает GC tracing.</td></tr>
+          <tr><td><code>NOVA_AI_PROVIDER</code></td><td><code>bench diff --explain</code></td><td>AI-provider (anthropic, openai, …).</td></tr>
+          <tr><td><code>NOVA_AI_MODEL</code></td><td><code>bench diff --explain</code></td><td>Модель override.</td></tr>
+          <tr><td><code>NOVA_AI_API_KEY</code></td><td><code>bench diff --explain</code></td><td>API key (или <code>~/.nova-ai.toml</code>).</td></tr>
+          <tr><td><code>NO_COLOR</code></td><td>global</td><td>Отключить ANSI цвета.</td></tr>
+          <tr><td><code>CLICOLOR</code></td><td>global</td><td><code>=0</code> → отключить.</td></tr>
+          <tr><td><code>CLICOLOR_FORCE</code></td><td>global</td><td><code>=1</code> → принудительно включить.</td></tr>
+          <tr><td><code>CI</code></td><td>global</td><td><code>=true</code> → отключить цвета.</td></tr>
+          <tr><td><code>TEMP</code></td><td>Windows</td><td>Tmp-директория для build/test artifacts.</td></tr>
+          <tr><td><code>TMPDIR</code></td><td>Unix</td><td>То же.</td></tr>
+        </tbody>
+      </table>
+
+      <hr class="divider">
+
+      <h2 id="migration">Migration-бинарники</h2>
+      <p>Одноразовые lexer-based инструменты в <code>nova-cli/src/bin/</code>. Хранятся в репозитории как reference для будущих атомарных API-rename планов.</p>
+
+      <h3>migrate_plan60</h3>
+      <p>Миграция field-style size-accessors в method-form (D117 / Plan 60):</p>
+      <table style="font-size:.9rem;">
+        <thead><tr><th>До</th><th>После</th></tr></thead>
+        <tbody>
+          <tr><td><code>expr.len</code></td><td><code>expr.len()</code></td></tr>
+          <tr><td><code>expr.is_empty</code></td><td><code>expr.is_empty()</code></td></tr>
+          <tr><td><code>expr.byte_len</code></td><td><code>expr.byte_len()</code></td></tr>
+          <tr><td><code>expr.cap</code></td><td><code>expr.capacity()</code></td></tr>
+          <tr><td><code>expr.capacity</code></td><td><code>expr.capacity()</code></td></tr>
+        </tbody>
+      </table>
+      <pre><code class="language-bash">migrate_plan60 [--apply] [--dry-run] [--md] [--paths DIR...]</code></pre>
+      <table>
+        <thead><tr><th>Флаг</th><th>По умолчанию</th><th>Описание</th></tr></thead>
+        <tbody>
+          <tr><td><code>--dry-run</code></td><td>(default)</td><td>Только показать diff.</td></tr>
+          <tr><td><code>--apply</code></td><td>off</td><td>Реально записать.</td></tr>
+          <tr><td><code>--md</code></td><td>off</td><td>Включить <code>.md</code> файлы (rewrite внутри <code>```nova</code> / <code>```nv</code> блоков).</td></tr>
+          <tr><td><code>--paths DIR...</code></td><td><code>std/</code>, <code>nova_tests/</code>, <code>examples/</code></td><td>Список директорий.</td></tr>
+        </tbody>
+      </table>
+      <p>Skip condition: предыдущий значимый token == <code>=</code> (method-value assignment). Комментарии / whitespace / formatting сохраняются 1:1.</p>
+
+      <h3>migrate_plan65</h3>
+      <p>Миграция <code>Time.after(&lt;lit&gt;)</code> → <code>ChanReader.close_after(Duration.from_*(&lt;lit&gt;))</code> (Plan 65 AD11):</p>
+      <table style="font-size:.9rem;">
+        <thead><tr><th>До</th><th>После</th></tr></thead>
+        <tbody>
+          <tr><td><code>Time.after(&lt;INT&gt;)</code></td><td><code>ChanReader.close_after(Duration.from_millis(&lt;INT&gt;))</code></td></tr>
+          <tr><td><code>Time.after(&lt;FLOAT&gt;)</code></td><td><code>ChanReader.close_after(Duration.from_secs_f64(&lt;FLOAT&gt;))</code></td></tr>
+          <tr><td><code>Time.after(&lt;expr&gt;)</code></td><td>без изменений + <code>// MIGRATE_MANUAL: Plan 65 — non-literal arg</code></td></tr>
+        </tbody>
+      </table>
+      <pre><code class="language-bash">migrate_plan65 [--apply] [--dry-run] [--md] [--paths DIR...]</code></pre>
+      <p><strong>Специальные exit-коды:</strong></p>
+      <table>
+        <thead><tr><th>Код</th><th>Значение</th></tr></thead>
+        <tbody>
+          <tr><td><code>0</code></td><td>Изменений не требуется (idempotent).</td></tr>
+          <tr><td><code>1</code></td><td>Emitted manual markers — CI gate fails.</td></tr>
+          <tr><td><code>2</code></td><td>Изменения применены (или были бы применены в dry-run).</td></tr>
+        </tbody>
+      </table>
+
+    </article>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div>
+      <div class="footer-brand">Nova</div>
+      <p style="font-size:.85rem;color:var(--fg-muted);margin-top:.5rem;max-width:220px;">A systems language built for clarity and correctness.</p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col__title">Язык</div>
+      <ul>
+        <li><a href="/ru/doc/">Документация</a></li>
+        <li><a href="/spec/">Спецификация</a></li>
+        <li><a href="/blog/">Блог</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col__title">Проект</div>
+      <ul>
+        <li><a href="https://github.com/nv-lang/nova">GitHub</a></li>
+        <li><a href="https://github.com/nv-lang/nova/releases">Releases</a></li>
+        <li><a href="https://github.com/nv-lang/nova/tree/main/docs/plans">Roadmap</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col__title">Контакты</div>
+      <ul>
+        <li><a href="mailto:hello@nv-lang.org">hello@nv-lang.org</a></li>
+        <li><a href="mailto:security@nv-lang.org">security@nv-lang.org</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>Nova &copy; 2026. Код: MIT OR Apache-2.0. Документация: <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</span>
+    <span><a href="https://github.com/nv-lang/www">Исходники сайта</a></span>
+  </div>
+</footer>
+
+<script src="../../../js/nova-highlight.js"></script>
+</body>
+</html>
