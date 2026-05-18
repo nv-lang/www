@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 <link rel="canonical" href="https://nv-lang.org/install/">
 <link rel="stylesheet" href="../style.css">
 <style>
-/* ── Install-page specific ───────────────────────────────────────────────── */
+/* в”Ђв”Ђ Install-page specific в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
 .os-tabs            { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1.75rem; }
 .os-tab             { padding:.45rem 1.1rem; border-radius:6px; border:1px solid var(--border);
                       font-size:.875rem; font-weight:500; cursor:pointer; background:var(--bg);
@@ -88,8 +88,9 @@
     </nav>
     <div class="site-header__right">
       <div class="lang-switch" aria-label="Language">
-        <a href="/install/" class="active">EN</a>
         <a href="/">RU</a>
+        <a href="/install/" class="active">EN</a>
+
       </div>
       <a href="https://github.com/nv-lang/nova" class="btn btn-outline" style="padding:.3rem .75rem;font-size:.83rem;" aria-label="GitHub">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
@@ -114,7 +115,7 @@
     <span><strong>Pre-alpha.</strong> Nova is in active development. The compiler builds and runs real programs, but the language is not yet API-stable. Expect rough edges.</span>
   </div>
 
-  <!-- ── System requirements ──────────────────────────────────────────────── -->
+  <!-- в”Ђв”Ђ System requirements в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ -->
   <h2 style="margin-bottom:1.25rem;">System requirements</h2>
   <div class="reqs-grid">
     <div class="req-card">
@@ -135,7 +136,7 @@
     </div>
   </div>
 
-  <!-- ── OS tabs ───────────────────────────────────────────────────────────── -->
+  <!-- в”Ђв”Ђ OS tabs в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ -->
   <h2 style="margin-bottom:1.25rem;">Installation</h2>
   <div class="os-tabs" role="tablist" aria-label="Operating system">
     <button class="os-tab active" role="tab" aria-selected="true"  onclick="switchTab('linux',this)">Linux</button>
@@ -144,7 +145,7 @@
     <button class="os-tab"        role="tab" aria-selected="false" onclick="switchTab('src',this)">From source</button>
   </div>
 
-  <!-- Linux ──────────────────────────────────────────────────────────────── -->
+  <!-- Linux в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ -->
   <div id="tab-linux" class="os-panel active">
 
     <div class="step">
@@ -191,7 +192,7 @@ source ~/.bashrc</code></pre>
 
   </div><!-- /tab-linux -->
 
-  <!-- macOS ──────────────────────────────────────────────────────────────── -->
+  <!-- macOS в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ -->
   <div id="tab-mac" class="os-panel">
 
     <div class="step">
@@ -228,7 +229,7 @@ brew install nova</code></pre>
 
   </div><!-- /tab-mac -->
 
-  <!-- Windows ────────────────────────────────────────────────────────────── -->
+  <!-- Windows в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ -->
   <div id="tab-win" class="os-panel">
 
     <div class="notice">
@@ -264,7 +265,7 @@ brew install nova</code></pre>
 
   </div><!-- /tab-win -->
 
-  <!-- From source ─────────────────────────────────────────────────────────── -->
+  <!-- From source в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ -->
   <div id="tab-src" class="os-panel">
 
     <div class="step">
@@ -307,7 +308,7 @@ cargo build --release</code></pre>
 
   </div><!-- /tab-src -->
 
-  <!-- ── First program ─────────────────────────────────────────────────────── -->
+  <!-- в”Ђв”Ђ First program в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ -->
   <h2 style="margin-top:3.5rem;margin-bottom:1.25rem;">Your first Nova program</h2>
   <p style="color:var(--fg-muted);margin-bottom:1.5rem;">Create a file called <code>hello.nv</code>:</p>
 
@@ -331,7 +332,7 @@ fn main() {
     <pre>Hello, Nova!</pre>
   </div>
 
-  <!-- ── A slightly more interesting example ─────────────────────────────── -->
+  <!-- в”Ђв”Ђ A slightly more interesting example в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ -->
   <h2 style="margin-top:3.5rem;margin-bottom:1.25rem;">Effects in 30 seconds</h2>
   <p style="color:var(--fg-muted);margin-bottom:1.5rem;">
     Nova requires every side effect to be declared in the function signature. The compiler verifies that no undeclared effects are performed — at compile time, not at runtime.
@@ -355,7 +356,7 @@ fn main() {
     Effects appear between parameters and the return type. The compiler verifies statically that every effect is declared — no hidden I/O, no surprise failures.
   </p>
 
-  <!-- ── IDE setup ─────────────────────────────────────────────────────────── -->
+  <!-- в”Ђв”Ђ IDE setup в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ -->
   <h2 style="margin-top:3.5rem;margin-bottom:1.25rem;">Editor setup</h2>
 
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem;">
@@ -376,26 +377,26 @@ fn main() {
     </div>
   </div>
 
-  <!-- ── Next steps ─────────────────────────────────────────────────────────── -->
+  <!-- в”Ђв”Ђ Next steps в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ -->
   <h2 style="margin-top:3rem;margin-bottom:1.25rem;">Next steps</h2>
   <div class="next-steps">
     <a href="/doc/" class="next-card">
-      <span class="next-card__icon">📖</span>
+      <span class="next-card__icon">рџ“–</span>
       <span class="next-card__title">Documentation</span>
       <span class="next-card__desc">Reference for the language, standard library, and CLI.</span>
     </a>
     <a href="/spec/" class="next-card">
-      <span class="next-card__icon">📐</span>
+      <span class="next-card__icon">рџ“ђ</span>
       <span class="next-card__title">Language spec</span>
       <span class="next-card__desc">Formal specification: types, effects, contracts, runtime.</span>
     </a>
     <a href="/blog/" class="next-card">
-      <span class="next-card__icon">📝</span>
+      <span class="next-card__icon">рџ“ќ</span>
       <span class="next-card__title">Blog</span>
       <span class="next-card__desc">Design notes, release announcements, and deep-dives.</span>
     </a>
     <a href="https://github.com/nv-lang/nova" class="next-card">
-      <span class="next-card__icon">⭐</span>
+      <span class="next-card__icon">в­ђ</span>
       <span class="next-card__title">GitHub</span>
       <span class="next-card__desc">Source code, issues, discussions, and contributions.</span>
     </a>
