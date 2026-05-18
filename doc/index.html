@@ -152,8 +152,8 @@
       <p>User-defined effects are supported. You declare an effect interface, provide a handler, and inject it at the call boundary — no global state, no hidden dependency injection framework.</p>
 
       <pre><code><span class="tok-kw">type</span> <span class="tok-type">Cache</span> <span class="tok-kw">effect</span> {
-    <span class="tok-fn">get</span>(key <span class="tok-type">str</span>) -&gt; <span class="tok-type">Option</span>[<span class="tok-type">bytes</span>]
-    <span class="tok-fn">set</span>(key <span class="tok-type">str</span>, val <span class="tok-type">bytes</span>) -&gt; ()
+    <span class="tok-fn">get</span>(key <span class="tok-type">str</span>) -&gt; <span class="tok-type">Option</span>[<span class="tok-type">[]byte</span>]
+    <span class="tok-fn">set</span>(key <span class="tok-type">str</span>, val <span class="tok-type">[]byte</span>) -&gt; ()
 }
 
 <span class="tok-comment">// Cache and Db effects are looked up from the active with-scope.</span>
