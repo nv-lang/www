@@ -338,27 +338,21 @@ fn main() {
   </p>
 
   <div class="copy-block" style="margin-bottom:1.5rem;">
-    <pre><code class="language-nova">module demo
-
-// Fail[E] means this function can fail with error type E.
-// Io means it may perform I/O.
-fn read_config(path str) Io Fail[str] -> str {
-    let content = File.read_text(path)?
-    content
+    <pre><code class="language-nova">// Effects appear between parameters and return type.
+// Io means this function may perform I/O.
+// The compiler rejects calls to Io functions from non-Io contexts.
+fn greet(name str) Io -> () {
+    println("Hello, ${name}!")
 }
 
-fn main() Io -> () {
-    let cfg = read_config("config.txt") else |err| {
-        println("Error: ${err}")
-        return
-    }
-    println("Config loaded: ${cfg}")
+fn main() {
+    greet("Nova")
 }</code></pre>
     <button class="copy-btn" onclick="copyCode(this)">Copy</button>
   </div>
 
   <p style="color:var(--fg-muted);">
-    If you try to call <code>File.read_text</code> inside a function that does not declare <code>Io</code>, the compiler rejects it. Effects compose, propagate, and are checked statically — no runtime surprises.
+    Effects appear between parameters and the return type. The compiler verifies statically that every effect is declared — no hidden I/O, no surprise failures.
   </p>
 
   <!-- ── IDE setup ─────────────────────────────────────────────────────────── -->
