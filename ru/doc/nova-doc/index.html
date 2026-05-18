@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>nova doc — Nova</title>
+<meta name="description" content="nova doc: генерация и проверка документации из исходников Nova. Синтаксис doc-комментариев, doc-тесты, атрибуты стабильности, флаги CLI, JSON-вывод.">
+<link rel="canonical" href="https://nv-lang.org/ru/doc/nova-doc/">
+<link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-logo" href="/">Nova</a>
+    <button class="nav-toggle" aria-label="Открыть меню" onclick="this.closest('header').querySelector('.site-nav').classList.toggle('open')">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/>
+      </svg>
+    </button>
+    <nav class="site-nav" aria-label="Основная">
+      <a href="/">Главная</a>
+      <a href="/ru/install/">Установка</a>
+      <a href="/ru/doc/" class="active">Doc</a>
+      <a href="/ru/spec/">Spec</a>
+      <a href="/ru/blog/">Blog</a>
+    </nav>
+    <div class="site-header__right">
+      <div class="lang-switch">
+        <a href="/ru/doc/nova-doc/" class="active">RU</a>
+        <a href="/doc/nova-doc/">EN</a>
+      </div>
+      <a href="https://github.com/nv-lang/nova" class="btn btn-outline" style="padding:.3rem .75rem;font-size:.83rem;" aria-label="GitHub">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</header>
+
+<div class="page-header">
+  <div class="container--narrow">
+    <h1>nova doc</h1>
+    <p>Генерация, тестирование и проверка документации из исходников Nova.</p>
+  </div>
+</div>
+
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Начало работы</div>
+      <ul>
+        <li><a href="#quick-start" class="active">Быстрый старт</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Написание доков</div>
+      <ul>
+        <li><a href="#doc-comments">Doc-комментарии</a></li>
+        <li><a href="#sections">Секции</a></li>
+        <li><a href="#intra-doc-links">Внутренние ссылки</a></li>
+        <li><a href="#doc-tests">Doc-тесты</a></li>
+        <li><a href="#stability">Стабильность</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Справочник</div>
+      <ul>
+        <li><a href="#cli-flags">Флаги CLI</a></li>
+        <li><a href="#json-output">JSON-вывод</a></li>
+        <li><a href="#ci">CI-интеграция</a></li>
+        <li><a href="#style-guide">Руководство по стилю</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Ещё</div>
+      <ul>
+        <li><a href="/ru/doc/">&#8592; К документации</a></li>
+        <li><a href="/ru/spec/">Спецификация</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <article class="prose">
+
+      <h1 id="quick-start">Быстрый старт</h1>
+      <p><code>nova doc</code> читает doc-комментарии из <code>.nv</code>-файлов и рендерит их в Markdown, JSON или HTML. Также запускает doc-тесты, встроенные в примеры кода.</p>
+
+      <pre><code>nova doc path/to/file.nv                # Markdown в stdout
+nova doc path/to/file.nv --format json  # JSON в stdout
+nova doc path/to/file.nv --test         # Запустить doc-тесты
+nova doc path/to/file.nv --check        # Проверить doc на ошибки (CI)</code></pre>
+
+      <p>Можно передать директорию — тогда команда работает со всем workspace. По умолчанию в вывод попадают только <code>export</code>-элементы; <code>--include-private</code> включает и приватные.</p>
+
+      <hr class="divider">
+
+      <h1 id="doc-comments">Doc-комментарии</h1>
+      <p>Распознаются два вида:</p>
+      <ul>
+        <li><code>///</code> <strong>outer</strong> — относится к следующей за ним декларации</li>
+        <li><code>//!</code> <strong>inner</strong> — относится к целому модулю (ставится в начале файла)</li>
+      </ul>
+      <p>Четыре и более слеша (<code>////</code>) — обычный комментарий, не doc.</p>
+
+      <pre><code class="language-nova">//! Модульный doc — описание всего файла.
+
+module my.module
+
+/// Возвращает удвоенное значение `x`.
+///
+/// Длинное описание. Может занимать
+/// несколько строк.
+///
+/// # Examples
+///
+/// ```nova
+/// let x = double(3)
+/// assert(x == 6)
+/// ```
+export fn double(x int) -> int => x * 2</code></pre>
+
+      <p>Первое предложение (до <code>.</code>) становится <em>summary</em>. Всё после первой пустой строки — расширенное описание.</p>
+
+      <hr class="divider">
+
+      <h1 id="sections">Секции</h1>
+      <p>Заголовки вида <code># Name</code> внутри doc-комментария задают стандартные секции. Распознаваемые имена в рекомендуемом порядке:</p>
+
+      <table style="width:100%;border-collapse:collapse;margin:1.25rem 0;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border);">
+            <th style="text-align:left;padding:.5rem .75rem;font-weight:600;">Секция</th>
+            <th style="text-align:left;padding:.5rem .75rem;font-weight:600;">Назначение</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code># Examples</code></td>
+            <td style="padding:.45rem .75rem;">Примеры использования. Блоки <code>```nova</code> — doc-тесты.</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code># Errors</code></td>
+            <td style="padding:.45rem .75rem;">Какие <code>Fail[X]</code>-ошибки может вернуть функция.</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code># Panics</code></td>
+            <td style="padding:.45rem .75rem;">Условия, при которых функция паникует в runtime.</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code># Safety</code></td>
+            <td style="padding:.45rem .75rem;">Инварианты для вызывающих <code>unsafe</code>-API.</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code># Effects</code></td>
+            <td style="padding:.45rem .75rem;">Перечень эффектов, если они не очевидны из сигнатуры.</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code># Contracts</code></td>
+            <td style="padding:.45rem .75rem;">Пред- и постусловия (см. <a href="/ru/spec/">Spec §5</a>).</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code># Since</code></td>
+            <td style="padding:.45rem .75rem;">Версия, с которой элемент появился.</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code># See also</code></td>
+            <td style="padding:.45rem .75rem;">Ссылки на связанные элементы.</td>
+          </tr>
+          <tr>
+            <td style="padding:.45rem .75rem;"><code># Deprecated</code></td>
+            <td style="padding:.45rem .75rem;">Причина устаревания и рекомендуемая замена.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>Любой другой <code># Заголовок</code> сохраняется как свободный текст в doc.</p>
+
+      <pre><code class="language-nova">/// Делит `a` на `b`.
+///
+/// Возвращает целочисленный quotient.
+///
+/// # Errors
+///
+/// Возвращает `DivisionByZero`, если `b == 0`.
+///
+/// # Panics
+///
+/// Никогда не паникует.
+///
+/// # Since
+///
+/// 0.1.0
+///
+/// #stable
+export fn divide(a int, b int) -> int =>
+    a / b</code></pre>
+
+      <hr class="divider">
+
+      <h1 id="intra-doc-links">Внутренние ссылки</h1>
+      <p>Ссылки на другие элементы — в квадратных скобках:</p>
+
+      <pre><code class="language-nova">/// Возвращает [Point] для переданной координаты.
+/// См. также [translate] и [std.math.abs].</code></pre>
+
+      <p>Правила резолвинга:</p>
+      <ul>
+        <li><code>[Name]</code> — короткий поиск по имени</li>
+        <li><code>[Type.method]</code> — форма метода</li>
+        <li><code>[mod.path.Name]</code> — полный путь</li>
+      </ul>
+      <p>Сломанные ссылки выдают предупреждение в <code>nova doc --check</code> и появляются как <code>"target_id": null</code> в JSON-выводе.</p>
+
+      <hr class="divider">
+
+      <h1 id="doc-tests">Doc-тесты</h1>
+      <p>Каждый блок <code>```nova</code> в doc-комментарии — это doc-тест, который компилируется и запускается командой <code>nova doc --test</code>.</p>
+
+      <h2>Модификаторы</h2>
+      <p>Добавляются через запятую к открывающему ограничителю:</p>
+
+      <table style="width:100%;border-collapse:collapse;margin:1.25rem 0;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border);">
+            <th style="text-align:left;padding:.5rem .75rem;font-weight:600;">Модификатор</th>
+            <th style="text-align:left;padding:.5rem .75rem;font-weight:600;">Поведение</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>no_run</code></td>
+            <td style="padding:.45rem .75rem;">Компилируется, но не запускается.</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>ignore</code></td>
+            <td style="padding:.45rem .75rem;">Пропускается полностью (только отображение).</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>compile_fail</code></td>
+            <td style="padding:.45rem .75rem;">Ожидается ошибка компиляции — тест проходит, если компиляция падает.</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>should_panic</code></td>
+            <td style="padding:.45rem .75rem;">Ожидается runtime panic.</td>
+          </tr>
+          <tr>
+            <td style="padding:.45rem .75rem;"><code>must_verify</code></td>
+            <td style="padding:.45rem .75rem;">Ожидается успешная SMT-верификация (требует контрактов).</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>Модификаторы можно комбинировать: <code>```nova,no_run,ignore</code>.</p>
+
+      <h2>Скрытые строки</h2>
+      <p>Строки, начинающиеся с <code># </code>, скрыты в визуальном выводе, но включаются в компиляцию. Используются для импортов и setup-кода:</p>
+
+      <pre><code class="language-nova">/// ```nova
+/// # import std.io
+/// let r = compute()
+/// assert(r == 42)
+/// ```</code></pre>
+
+      <hr class="divider">
+
+      <h1 id="stability">Стабильность и устаревание</h1>
+      <p>Стабильность объявляется через <em>doc-атрибуты</em> — однострочные аннотации между doc-комментарием и элементом. Синтаксис: <code>#name(...)</code>, не Rust-style <code>#[...]</code>:</p>
+
+      <pre><code class="language-nova">/// Стабильная функция, доступна с 1.0.
+#stable(since = "1.0.0")
+export fn add(a int, b int) -> int => a + b
+
+/// Экспериментальное API — может измениться.
+#experimental(note = "may change in 0.5")
+#since("0.3.0")
+export fn experimental_api() -> int => 0
+
+/// Устаревшая функция — используйте `add`.
+#deprecated("Use `add` instead.")
+#since("0.1.0")
+export fn plus(a int, b int) -> int => a + b</code></pre>
+
+      <p>Поддерживаемые атрибуты (D105):</p>
+
+      <table style="width:100%;border-collapse:collapse;margin:1.25rem 0;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border);">
+            <th style="text-align:left;padding:.5rem .75rem;font-weight:600;">Атрибут</th>
+            <th style="text-align:left;padding:.5rem .75rem;font-weight:600;">Параметры</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>#deprecated("note")</code></td>
+            <td style="padding:.45rem .75rem;">Причина устаревания и рекомендуемая замена</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>#since("X.Y")</code></td>
+            <td style="padding:.45rem .75rem;">Версия появления элемента</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>#stable</code> / <code>#stable(since = "X")</code></td>
+            <td style="padding:.45rem .75rem;">Стабильное публичное API</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>#unstable(feature = "name")</code></td>
+            <td style="padding:.45rem .75rem;">За named feature-флагом</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>#experimental(note = "..."?)</code></td>
+            <td style="padding:.45rem .75rem;">Proof-of-concept, может быть удалено</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>#hide_doc</code></td>
+            <td style="padding:.45rem .75rem;">Элемент экспортирован, но скрыт из docs</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>#doc_alias("alt", ...)</code></td>
+            <td style="padding:.45rem .75rem;">Поисковые алиасы</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>#doc(inline)</code> / <code>#doc(no_inline)</code></td>
+            <td style="padding:.45rem .75rem;">Рендеринг re-export'ов</td>
+          </tr>
+          <tr>
+            <td style="padding:.45rem .75rem;"><code>#doc(summary = "...")</code></td>
+            <td style="padding:.45rem .75rem;">Переопределить авто-summary</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <hr class="divider">
+
+      <h1 id="cli-flags">Флаги CLI</h1>
+
+      <table style="width:100%;border-collapse:collapse;margin:1.25rem 0;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border);">
+            <th style="text-align:left;padding:.5rem .75rem;font-weight:600;">Флаг</th>
+            <th style="text-align:left;padding:.5rem .75rem;font-weight:600;">Описание</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>--format markdown|json</code></td>
+            <td style="padding:.45rem .75rem;">Формат вывода (по умолчанию: <code>markdown</code>)</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>--include-private</code></td>
+            <td style="padding:.45rem .75rem;">Включить non-<code>export</code>-элементы</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>--test</code></td>
+            <td style="padding:.45rem .75rem;">Запустить doc-тесты вместо рендеринга</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>--check</code></td>
+            <td style="padding:.45rem .75rem;">Проверить doc (сломанные ссылки, отсутствующие summary); exit 1 при ошибках</td>
+          </tr>
+          <tr>
+            <td style="padding:.45rem .75rem;"><code>--json-schema</code></td>
+            <td style="padding:.45rem .75rem;">Вывести встроенный JSON Schema 2020-12 (D107)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <hr class="divider">
+
+      <h1 id="json-output">JSON-вывод</h1>
+      <p>Флаг <code>--format json</code> выдаёт машиночитаемый вывод по схеме v1 (D107). Вывод детерминирован побайтово — подходит для диффов и воспроизводимых сборок.</p>
+
+      <p>Top-level поля: <code>format_version</code>, <code>nova_version</code>, <code>modules[]</code>, <code>items[]</code>, <code>links[]</code>, <code>doc_tests[]</code>. Полная JSON Schema: <code>nova doc --json-schema</code>.</p>
+
+      <p>Распространённые <code>jq</code>-запросы:</p>
+
+      <pre><code># Все export-функции с summary
+nova doc src/api.nv --format json \
+  | jq '[.items[] | select(.kind=="fn" and .visibility=="export") | {id,summary}]'
+
+# Элементы без summary (незадокументированные)
+nova doc src/api.nv --format json \
+  | jq '[.items[] | select(.summary == null) | .id]'
+
+# Сломанные intra-doc ссылки
+nova doc src/api.nv --format json \
+  | jq '[.links[] | select(.target_id == null) | .text]'
+
+# Unstable и experimental элементы
+nova doc src/api.nv --format json \
+  | jq '[.items[] | select(.stability.tier != null and .stability.tier != "stable") | {id, tier: .stability.tier}]'</code></pre>
+
+      <hr class="divider">
+
+      <h1 id="ci">CI-интеграция</h1>
+
+      <pre><code># Проверить doc (сломанные ссылки + отсутствующие summary) — exit 1 при ошибках
+nova doc src/api.nv --check
+
+# Запустить doc-тесты — exit 1 при провале
+nova doc src/api.nv --test
+
+# Воспроизводимая сборка (подавить generated_at timestamp)
+SOURCE_DATE_EPOCH=1700000000 nova doc src/api.nv --format json > api.json</code></pre>
+
+      <hr class="divider">
+
+      <h1 id="style-guide">Руководство по стилю</h1>
+      <ol>
+        <li>Первое предложение — summary, заканчивается <code>.</code>.</li>
+        <li>Повелительное наклонение: «Возвращает X», не «Эта функция возвращает X».</li>
+        <li>Соблюдать порядок секций из таблицы <a href="#sections">Секции</a>.</li>
+        <li>Markdown-подмножество: CommonMark + <code>```nova</code>-блоки.</li>
+        <li><code># Examples</code> обязателен для всех export-функций.</li>
+        <li>Deprecation note должен содержать замену и атрибут <code>#since</code>.</li>
+        <li>Уровни стабильности: <code>#stable</code> / <code>#unstable</code> / <code>#experimental</code>.</li>
+      </ol>
+
+    </article>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div>
+      <div class="footer-brand">Nova</div>
+      <p style="font-size:.85rem;color:var(--fg-muted);margin-top:.5rem;max-width:220px;">Системный язык для ясности и корректности.</p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col__title">Язык</div>
+      <ul>
+        <li><a href="/ru/doc/">Документация</a></li>
+        <li><a href="/ru/spec/">Спецификация</a></li>
+        <li><a href="/ru/blog/">Блог</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col__title">Проект</div>
+      <ul>
+        <li><a href="https://github.com/nv-lang/nova">GitHub</a></li>
+        <li><a href="https://github.com/nv-lang/nova/releases">Релизы</a></li>
+        <li><a href="https://github.com/nv-lang/nova/tree/main/docs/plans">Roadmap</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col__title">Контакты</div>
+      <ul>
+        <li><a href="mailto:hello@nv-lang.org">hello@nv-lang.org</a></li>
+        <li><a href="mailto:security@nv-lang.org">security@nv-lang.org</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>Nova &copy; 2026. Код: MIT OR Apache-2.0. Документация: <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</span>
+    <span><a href="https://github.com/nv-lang/www">Исходник сайта</a></span>
+  </div>
+</footer>
+
+<script src="../../../js/nova-highlight.js"></script>
+</body>
+</html>

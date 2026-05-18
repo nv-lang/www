@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>nova doc — Nova</title>
+<meta name="description" content="nova doc: generate and check documentation from Nova source files. Doc-comment syntax, doc-tests, stability attributes, CLI flags, and JSON output.">
+<link rel="canonical" href="https://nv-lang.org/doc/nova-doc/">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-logo" href="/">Nova</a>
+    <button class="nav-toggle" aria-label="Toggle navigation" onclick="this.closest('header').querySelector('.site-nav').classList.toggle('open')">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/>
+      </svg>
+    </button>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/">Home</a>
+      <a href="/install/">Install</a>
+      <a href="/doc/" class="active">Doc</a>
+      <a href="/spec/">Spec</a>
+      <a href="/blog/">Blog</a>
+    </nav>
+    <div class="site-header__right">
+      <div class="lang-switch">
+        <a href="/ru/doc/nova-doc/">RU</a>
+        <a href="/doc/nova-doc/" class="active">EN</a>
+      </div>
+      <a href="https://github.com/nv-lang/nova" class="btn btn-outline" style="padding:.3rem .75rem;font-size:.83rem;" aria-label="GitHub">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</header>
+
+<div class="page-header">
+  <div class="container--narrow">
+    <h1>nova doc</h1>
+    <p>Generate, test, and validate documentation from Nova source files.</p>
+  </div>
+</div>
+
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Getting Started</div>
+      <ul>
+        <li><a href="#quick-start" class="active">Quick start</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Writing Docs</div>
+      <ul>
+        <li><a href="#doc-comments">Doc-comments</a></li>
+        <li><a href="#sections">Sections</a></li>
+        <li><a href="#intra-doc-links">Intra-doc links</a></li>
+        <li><a href="#doc-tests">Doc-tests</a></li>
+        <li><a href="#stability">Stability</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Reference</div>
+      <ul>
+        <li><a href="#cli-flags">CLI flags</a></li>
+        <li><a href="#json-output">JSON output</a></li>
+        <li><a href="#ci">CI integration</a></li>
+        <li><a href="#style-guide">Style guide</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">More</div>
+      <ul>
+        <li><a href="/doc/">&#8592; Back to Docs</a></li>
+        <li><a href="/spec/">Language Spec</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <article class="prose">
+
+      <h1 id="quick-start">Quick start</h1>
+      <p><code>nova doc</code> reads doc-comments from <code>.nv</code> source files and renders them as Markdown, JSON, or HTML. It also runs doc-tests embedded in code examples.</p>
+
+      <pre><code>nova doc path/to/file.nv                # Markdown to stdout
+nova doc path/to/file.nv --format json  # JSON to stdout
+nova doc path/to/file.nv --test         # Run doc-tests
+nova doc path/to/file.nv --check        # Validate docs (CI)</code></pre>
+
+      <p>Pass a directory to operate on an entire workspace. By default only <code>export</code>ed items appear in output; add <code>--include-private</code> to include private items too.</p>
+
+      <hr class="divider">
+
+      <h1 id="doc-comments">Doc-comments</h1>
+      <p>Two prefixes are recognised:</p>
+      <ul>
+        <li><code>///</code> <strong>outer</strong> — attaches to the declaration that follows it</li>
+        <li><code>//!</code> <strong>inner</strong> — attaches to the enclosing module (placed at the top of the file)</li>
+      </ul>
+      <p>Four or more slashes (<code>////</code>) are a plain comment, not a doc-comment.</p>
+
+      <pre><code class="language-nova">//! Module-level doc — describes the whole file.
+
+module my.module
+
+/// Returns twice the value of `x`.
+///
+/// Long description goes here. It can span
+/// multiple lines.
+///
+/// # Examples
+///
+/// ```nova
+/// let x = double(3)
+/// assert(x == 6)
+/// ```
+export fn double(x int) -> int => x * 2</code></pre>
+
+      <p>The first sentence (ending with <code>.</code>) becomes the <em>summary</em>. Everything after the first blank line is the extended description.</p>
+
+      <hr class="divider">
+
+      <h1 id="sections">Sections</h1>
+      <p>Headings of the form <code># Name</code> inside a doc-comment mark standard sections. Recognised names, in the recommended order:</p>
+
+      <table style="width:100%;border-collapse:collapse;margin:1.25rem 0;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border);">
+            <th style="text-align:left;padding:.5rem .75rem;font-weight:600;">Section</th>
+            <th style="text-align:left;padding:.5rem .75rem;font-weight:600;">Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code># Examples</code></td>
+            <td style="padding:.45rem .75rem;">Usage examples. <code>```nova</code> blocks are doc-tests.</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code># Errors</code></td>
+            <td style="padding:.45rem .75rem;">Which <code>Fail[X]</code> errors the function may return.</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code># Panics</code></td>
+            <td style="padding:.45rem .75rem;">Conditions under which the function panics at runtime.</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code># Safety</code></td>
+            <td style="padding:.45rem .75rem;">Invariants callers must uphold when using <code>unsafe</code> APIs.</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code># Effects</code></td>
+            <td style="padding:.45rem .75rem;">Lists effects if not obvious from the signature.</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code># Contracts</code></td>
+            <td style="padding:.45rem .75rem;">Pre/post-conditions (see <a href="/spec/">Spec §5</a>).</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code># Since</code></td>
+            <td style="padding:.45rem .75rem;">Version in which the item first appeared.</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code># See also</code></td>
+            <td style="padding:.45rem .75rem;">Cross-references to related items.</td>
+          </tr>
+          <tr>
+            <td style="padding:.45rem .75rem;"><code># Deprecated</code></td>
+            <td style="padding:.45rem .75rem;">Reason for deprecation and recommended replacement.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>Any other <code># Heading</code> is preserved as free-form text within the doc.</p>
+
+      <pre><code class="language-nova">/// Divides `a` by `b`.
+///
+/// Returns the integer quotient.
+///
+/// # Errors
+///
+/// Returns `DivisionByZero` if `b == 0`.
+///
+/// # Panics
+///
+/// Never panics.
+///
+/// # Since
+///
+/// 0.1.0
+///
+/// #stable
+export fn divide(a int, b int) -> int =>
+    a / b</code></pre>
+
+      <hr class="divider">
+
+      <h1 id="intra-doc-links">Intra-doc links</h1>
+      <p>Reference other items with square brackets:</p>
+
+      <pre><code class="language-nova">/// Returns a [Point] for the given coordinate.
+/// See also [translate] and [std.math.abs].</code></pre>
+
+      <p>Resolution rules:</p>
+      <ul>
+        <li><code>[Name]</code> — short match by item name</li>
+        <li><code>[Type.method]</code> — method form</li>
+        <li><code>[mod.path.Name]</code> — fully-qualified path</li>
+      </ul>
+      <p>Broken links produce a warning from <code>nova doc --check</code> and appear as <code>"target_id": null</code> in JSON output.</p>
+
+      <hr class="divider">
+
+      <h1 id="doc-tests">Doc-tests</h1>
+      <p>Every <code>```nova</code> block in a doc-comment is a doc-test — compiled and run by <code>nova doc --test</code>.</p>
+
+      <h2>Modifiers</h2>
+      <p>Append comma-separated modifiers to the opening fence:</p>
+
+      <table style="width:100%;border-collapse:collapse;margin:1.25rem 0;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border);">
+            <th style="text-align:left;padding:.5rem .75rem;font-weight:600;">Modifier</th>
+            <th style="text-align:left;padding:.5rem .75rem;font-weight:600;">Behaviour</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>no_run</code></td>
+            <td style="padding:.45rem .75rem;">Compile but do not execute.</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>ignore</code></td>
+            <td style="padding:.45rem .75rem;">Skip compilation entirely (display only).</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>compile_fail</code></td>
+            <td style="padding:.45rem .75rem;">Expect a compile error — test passes if compilation fails.</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>should_panic</code></td>
+            <td style="padding:.45rem .75rem;">Expect a runtime panic.</td>
+          </tr>
+          <tr>
+            <td style="padding:.45rem .75rem;"><code>must_verify</code></td>
+            <td style="padding:.45rem .75rem;">Expect successful SMT verification (requires contracts).</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>Modifiers can be combined: <code>```nova,no_run,ignore</code>.</p>
+
+      <h2>Hidden lines</h2>
+      <p>Lines beginning with <code># </code> are hidden in rendered output but included in compilation. Use them for imports and test setup:</p>
+
+      <pre><code class="language-nova">/// ```nova
+/// # import std.io
+/// let r = compute()
+/// assert(r == 42)
+/// ```</code></pre>
+
+      <hr class="divider">
+
+      <h1 id="stability">Stability and deprecation</h1>
+      <p>Stability is declared with <em>doc-attributes</em> — single-line annotations placed between the doc-comment and the item. The syntax is <code>#name(...)</code>, not Rust-style <code>#[...]</code>:</p>
+
+      <pre><code class="language-nova">/// Stable function, available since 1.0.
+#stable(since = "1.0.0")
+export fn add(a int, b int) -> int => a + b
+
+/// Experimental API — may change.
+#experimental(note = "may change in 0.5")
+#since("0.3.0")
+export fn experimental_api() -> int => 0
+
+/// Old function — use `add` instead.
+#deprecated("Use `add` instead.")
+#since("0.1.0")
+export fn plus(a int, b int) -> int => a + b</code></pre>
+
+      <p>Supported attributes (D105):</p>
+
+      <table style="width:100%;border-collapse:collapse;margin:1.25rem 0;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border);">
+            <th style="text-align:left;padding:.5rem .75rem;font-weight:600;">Attribute</th>
+            <th style="text-align:left;padding:.5rem .75rem;font-weight:600;">Parameters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>#deprecated("note")</code></td>
+            <td style="padding:.45rem .75rem;">Reason and recommended replacement</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>#since("X.Y")</code></td>
+            <td style="padding:.45rem .75rem;">Version the item first appeared</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>#stable</code> / <code>#stable(since = "X")</code></td>
+            <td style="padding:.45rem .75rem;">Stable public API</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>#unstable(feature = "name")</code></td>
+            <td style="padding:.45rem .75rem;">Behind a named feature flag</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>#experimental(note = "..."?)</code></td>
+            <td style="padding:.45rem .75rem;">Proof-of-concept, may be removed</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>#hide_doc</code></td>
+            <td style="padding:.45rem .75rem;">Item is exported but hidden from docs</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>#doc_alias("alt", ...)</code></td>
+            <td style="padding:.45rem .75rem;">Search aliases</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>#doc(inline)</code> / <code>#doc(no_inline)</code></td>
+            <td style="padding:.45rem .75rem;">Re-export rendering behaviour</td>
+          </tr>
+          <tr>
+            <td style="padding:.45rem .75rem;"><code>#doc(summary = "...")</code></td>
+            <td style="padding:.45rem .75rem;">Override the auto-extracted summary</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <hr class="divider">
+
+      <h1 id="cli-flags">CLI flags</h1>
+
+      <table style="width:100%;border-collapse:collapse;margin:1.25rem 0;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border);">
+            <th style="text-align:left;padding:.5rem .75rem;font-weight:600;">Flag</th>
+            <th style="text-align:left;padding:.5rem .75rem;font-weight:600;">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>--format markdown|json</code></td>
+            <td style="padding:.45rem .75rem;">Output format (default: <code>markdown</code>)</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>--include-private</code></td>
+            <td style="padding:.45rem .75rem;">Include non-<code>export</code> items</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>--test</code></td>
+            <td style="padding:.45rem .75rem;">Run doc-tests instead of rendering</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle,#eee);">
+            <td style="padding:.45rem .75rem;"><code>--check</code></td>
+            <td style="padding:.45rem .75rem;">Validate docs — broken links, missing summaries; exits 1 on issues</td>
+          </tr>
+          <tr>
+            <td style="padding:.45rem .75rem;"><code>--json-schema</code></td>
+            <td style="padding:.45rem .75rem;">Print the embedded JSON Schema 2020-12 (D107)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <hr class="divider">
+
+      <h1 id="json-output">JSON output</h1>
+      <p>Pass <code>--format json</code> to get machine-readable output conforming to schema v1 (D107). Output is byte-for-byte deterministic — suitable for diffs and reproducible builds.</p>
+
+      <p>Top-level fields: <code>format_version</code>, <code>nova_version</code>, <code>modules[]</code>, <code>items[]</code>, <code>links[]</code>, <code>doc_tests[]</code>. Run <code>nova doc --json-schema</code> for the full JSON Schema.</p>
+
+      <p>Common <code>jq</code> recipes:</p>
+
+      <pre><code># All exported functions with their summary
+nova doc src/api.nv --format json \
+  | jq '[.items[] | select(.kind=="fn" and .visibility=="export") | {id,summary}]'
+
+# Items without a summary (undocumented)
+nova doc src/api.nv --format json \
+  | jq '[.items[] | select(.summary == null) | .id]'
+
+# Broken intra-doc links
+nova doc src/api.nv --format json \
+  | jq '[.links[] | select(.target_id == null) | .text]'
+
+# Unstable and experimental items
+nova doc src/api.nv --format json \
+  | jq '[.items[] | select(.stability.tier != null and .stability.tier != "stable") | {id, tier: .stability.tier}]'</code></pre>
+
+      <hr class="divider">
+
+      <h1 id="ci">CI integration</h1>
+
+      <pre><code># Validate docs (broken links + missing summaries) — exits 1 on issues
+nova doc src/api.nv --check
+
+# Run doc-tests — exits 1 on any failure
+nova doc src/api.nv --test
+
+# Reproducible builds (suppresses the generated_at timestamp)
+SOURCE_DATE_EPOCH=1700000000 nova doc src/api.nv --format json > api.json</code></pre>
+
+      <hr class="divider">
+
+      <h1 id="style-guide">Style guide</h1>
+      <ol>
+        <li>First sentence is the summary — end it with <code>.</code>.</li>
+        <li>Use imperative mood: "Returns X", not "This function returns X".</li>
+        <li>Follow the section order in the <a href="#sections">Sections</a> table above.</li>
+        <li>Markdown subset: CommonMark + <code>```nova</code> fenced blocks.</li>
+        <li><code># Examples</code> is required for all exported functions.</li>
+        <li>Deprecation notes must include the replacement and a <code>#since</code> attribute.</li>
+        <li>Stability tiers: <code>#stable</code> / <code>#unstable</code> / <code>#experimental</code>.</li>
+      </ol>
+
+    </article>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div>
+      <div class="footer-brand">Nova</div>
+      <p style="font-size:.85rem;color:var(--fg-muted);margin-top:.5rem;max-width:220px;">A systems language built for clarity and correctness.</p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col__title">Language</div>
+      <ul>
+        <li><a href="/doc/">Documentation</a></li>
+        <li><a href="/spec/">Specification</a></li>
+        <li><a href="/blog/">Blog</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col__title">Project</div>
+      <ul>
+        <li><a href="https://github.com/nv-lang/nova">GitHub</a></li>
+        <li><a href="https://github.com/nv-lang/nova/releases">Releases</a></li>
+        <li><a href="https://github.com/nv-lang/nova/tree/main/docs/plans">Roadmap</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col__title">Contact</div>
+      <ul>
+        <li><a href="mailto:hello@nv-lang.org">hello@nv-lang.org</a></li>
+        <li><a href="mailto:security@nv-lang.org">security@nv-lang.org</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>Nova &copy; 2026. Code: MIT OR Apache-2.0. Docs: <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</span>
+    <span><a href="https://github.com/nv-lang/www">Site source</a></span>
+  </div>
+</footer>
+
+<script src="../../js/nova-highlight.js"></script>
+</body>
+</html>

@@ -15,13 +15,17 @@ www/
 ├── ru/
 │   ├── index.html                     # Redirect → / (301-style meta refresh)
 │   ├── install/index.html             # Russian install page
-│   ├── doc/index.html                 # Russian docs
+│   ├── doc/
+│   │   ├── index.html                 # Russian docs
+│   │   └── nova-doc/index.html        # nova doc tooling guide (RU)
 │   ├── spec/index.html                # Russian spec
 │   └── blog/
 │       ├── index.html                 # Russian blog index
 │       └── 2026-05-18-hello-nova.html # Russian blog post
 ├── install/index.html                 # English install page
-├── doc/index.html                     # English docs
+├── doc/
+│   ├── index.html                     # English docs
+│   └── nova-doc/index.html            # nova doc tooling guide (EN)
 ├── spec/index.html                    # English spec
 └── blog/
     ├── index.html                     # English blog index
@@ -43,6 +47,8 @@ www/
 | `/ru/doc/` | Russian | `/doc/` |
 | `/ru/spec/` | Russian | `/spec/` |
 | `/ru/blog/` | Russian | `/blog/` |
+| `/doc/nova-doc/` | English | `/ru/doc/nova-doc/` |
+| `/ru/doc/nova-doc/` | Russian | `/doc/nova-doc/` |
 
 ## CSS paths (relative to the HTML file)
 
@@ -54,6 +60,8 @@ www/
 | `/ru/blog/` | `../../style.css` | `../../js/nova-highlight.js` |
 | `/blog/SLUG.html` | `../style.css` | `../js/nova-highlight.js` |
 | `/ru/blog/SLUG.html` | `../../style.css` | `../../js/nova-highlight.js` |
+| `/doc/nova-doc/` | `../../style.css` | `../../js/nova-highlight.js` |
+| `/ru/doc/nova-doc/` | `../../../style.css` | `../../../js/nova-highlight.js` |
 
 ## Common header template
 
