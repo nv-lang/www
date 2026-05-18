@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hello, Nova вЂ” Nova Blog</title>
-<meta name="description" content="Introducing Nova: what it is, why we're building it, and what already works today вЂ” algebraic effects, static contracts, M:N runtime, and documentation tooling.">
+<title>Hello, Nova — Nova Blog</title>
+<meta name="description" content="Introducing Nova: what it is, why we're building it, and what already works today — algebraic effects, static contracts, M:N runtime, and documentation tooling.">
 <link rel="canonical" href="https://nv-lang.org/blog/2026-05-18-hello-nova.html">
 <link rel="stylesheet" href="../style.css">
 </head>
@@ -27,7 +27,7 @@
     </nav>
     <div class="site-header__right">
       <div class="lang-switch">
-        <a href="/">RU</a>
+        <a href="/ru/blog/2026-05-18-hello-nova.html">RU</a>
         <a href="/blog/2026-05-18-hello-nova.html" class="active">EN</a>
 
       </div>
@@ -55,23 +55,23 @@
       <span class="post-tag">Language</span>
     </div>
 
-    <p>Today we are opening the doors on <strong>Nova</strong> вЂ” a general-purpose systems programming language we have been building in the open for the past year. This post explains what Nova is, why it exists, and what already works right now.</p>
+    <p>Today we are opening the doors on <strong>Nova</strong> — a general-purpose systems programming language we have been building in the open for the past year. This post explains what Nova is, why it exists, and what already works right now.</p>
 
     <p>Nova is not yet another "safe C replacement" nor a JavaScript killer. It is a language whose central bet is this: <em>if you make side effects and invariants first-class citizens of the type system, you eliminate entire categories of bugs before the program ever runs.</em></p>
 
     <h2>The problem with invisible behavior</h2>
 
-    <p>Most languages let functions lie. A function named <code>get_user</code> might query a database, make an HTTP call, write a log line, and cache the result in a global map вЂ” and none of that is visible in its signature. The caller has no way to know without reading the body. Tests have to mock the world. Reviewers have to hold everything in their heads.</p>
+    <p>Most languages let functions lie. A function named <code>get_user</code> might query a database, make an HTTP call, write a log line, and cache the result in a global map — and none of that is visible in its signature. The caller has no way to know without reading the body. Tests have to mock the world. Reviewers have to hold everything in their heads.</p>
 
-    <p>This is the problem Nova is designed to solve. In Nova, every side effect must appear in the function's type вЂ” between the parameter list and the return arrow. If a function touches the database, <code>Db</code> appears in its type. If it writes logs, so does <code>Log</code>. If it does neither, the type checker proves it cannot.</p>
+    <p>This is the problem Nova is designed to solve. In Nova, every side effect must appear in the function's type — between the parameter list and the return arrow. If a function touches the database, <code>Db</code> appears in its type. If it writes logs, so does <code>Log</code>. If it does neither, the type checker proves it cannot.</p>
 
-    <p>The signature is not documentation that might be wrong вЂ” it is a constraint the compiler enforces.</p>
+    <p>The signature is not documentation that might be wrong — it is a constraint the compiler enforces.</p>
 
     <h2>Three ideas, one language</h2>
 
     <h3>1. Algebraic Effects</h3>
 
-    <p>Effects in Nova are first-class interfaces. You declare an effect, provide a handler, and inject it at the call boundary. This gives you all the power of dependency injection with none of the ceremony вЂ” and the type system tracks it automatically.</p>
+    <p>Effects in Nova are first-class interfaces. You declare an effect, provide a handler, and inject it at the call boundary. This gives you all the power of dependency injection with none of the ceremony — and the type system tracks it automatically.</p>
 
     <div class="code-window" style="margin:1.5rem 0;">
       <div class="code-window__bar">
@@ -80,7 +80,7 @@
       </div>
       <pre><code class="language-nova">// The signature is the contract with the caller:
 // give me a positive id, I give you a User or NotFound,
-// and I will only touch Db and Log вЂ” nothing else.
+// and I will only touch Db and Log — nothing else.
 fn fetch_user(id u64) Db Log -> Result[User, NotFound]
     requires id > 0
 {
@@ -96,13 +96,13 @@ fn fetch_user(id u64) Db Log -> Result[User, NotFound]
 
     <h3>2. Static Contracts</h3>
 
-    <p>Nova contracts are <code>requires</code>, <code>ensures</code>, and <code>invariant</code> clauses attached to functions and types. The compiler feeds them to an SMT solver (currently Z3) and tries to discharge them at compile time. When static checking is not possible вЂ” typically because the constraints depend on runtime data вЂ” they fall back to runtime assertions in debug builds and are erased in release builds.</p>
+    <p>Nova contracts are <code>requires</code>, <code>ensures</code>, and <code>invariant</code> clauses attached to functions and types. The compiler feeds them to an SMT solver (currently Z3) and tries to discharge them at compile time. When static checking is not possible — typically because the constraints depend on runtime data — they fall back to runtime assertions in debug builds and are erased in release builds.</p>
 
     <p>The key insight is that <em>contracts are not assertions</em>. An assertion is a runtime check you add after the fact. A contract is a specification you write alongside the code, and the compiler uses it to reason across call boundaries. A function that calls <code>fetch_user</code> with a literal <code>0</code> gets a compile-time error, not a runtime panic.</p>
 
     <h3>3. M:N Runtime</h3>
 
-    <p>Nova's runtime multiplexes lightweight fibers over OS threads using a work-stealing scheduler вЂ” the same model Go pioneered, applied to a statically typed language with effects. Spawning a fiber is cheap (a few hundred nanoseconds). Blocking on I/O yields the fiber and lets the scheduler run other work on the same thread. No <code>async</code> keyword. No colored functions. Blocking code and concurrent code look the same.</p>
+    <p>Nova's runtime multiplexes lightweight fibers over OS threads using a work-stealing scheduler — the same model Go pioneered, applied to a statically typed language with effects. Spawning a fiber is cheap (a few hundred nanoseconds). Blocking on I/O yields the fiber and lets the scheduler run other work on the same thread. No <code>async</code> keyword. No colored functions. Blocking code and concurrent code look the same.</p>
 
     <div class="code-window" style="margin:1.5rem 0;">
       <div class="code-window__bar">
@@ -121,19 +121,19 @@ fn serve_api() Net Http Log -> ()
 }</code></pre>
     </div>
 
-    <p>For latency-sensitive work, you can annotate a function <code>realtime nogc</code> to tell the compiler and runtime that no GC-managed allocation is allowed in that scope. The compiler verifies this statically. A competitive game loop, a DSP callback, a lock-free queue вЂ” these are first-class use cases, not afterthoughts.</p>
+    <p>For latency-sensitive work, you can annotate a function <code>realtime nogc</code> to tell the compiler and runtime that no GC-managed allocation is allowed in that scope. The compiler verifies this statically. A competitive game loop, a DSP callback, a lock-free queue — these are first-class use cases, not afterthoughts.</p>
 
     <h2>What works today</h2>
 
     <p>Nova is in the bootstrap stage. That means the compiler exists and compiles real programs, but the standard library is incomplete and the language surface is still stabilizing. Here is an honest accounting of what works:</p>
 
     <ul>
-      <li><strong>Core type system</strong> вЂ” structs, enums, generics, traits, <code>Option[T]</code>, <code>Result[T, E]</code>, type inference, and pattern matching all work.</li>
-      <li><strong>Effects</strong> вЂ” effect types in function signatures are enforced by the type checker. Built-in effects (<code>Io</code>, <code>Net</code>, <code>Db</code>, <code>Log</code>, <code>Rand</code>, <code>Time</code>, <code>Fs</code>) are recognized. User-defined effects with custom handlers work in the current compiler.</li>
-      <li><strong>Contracts</strong> вЂ” <code>requires</code> and <code>ensures</code> clauses are parsed and checked. SMT integration (Z3) is functional for linear arithmetic. Runtime fallback for non-provable constraints works. Struct <code>invariant</code> is implemented and enforced (including the rule that redundant field specs are rejected).</li>
-      <li><strong>M:N runtime</strong> вЂ” the fiber scheduler runs, <code>spawn</code> works, and channels are usable. Work-stealing across threads is implemented. I/O is fiber-aware on Linux (io_uring) and macOS (kqueue).</li>
-      <li><strong>Documentation tooling</strong> вЂ” <code>nv doc</code> generates HTML documentation from doc comments. The format is specified in D45.</li>
-      <li><strong>Standard library</strong> вЂ” <code>core</code> (types, traits), <code>io</code> (basic file and console I/O), <code>net</code> (TCP sockets), and <code>collections</code> (Vec, Map, Set) are usable. HTTP, crypto, and database drivers are in progress.</li>
+      <li><strong>Core type system</strong> — structs, enums, generics, traits, <code>Option[T]</code>, <code>Result[T, E]</code>, type inference, and pattern matching all work.</li>
+      <li><strong>Effects</strong> — effect types in function signatures are enforced by the type checker. Built-in effects (<code>Io</code>, <code>Net</code>, <code>Db</code>, <code>Log</code>, <code>Rand</code>, <code>Time</code>, <code>Fs</code>) are recognized. User-defined effects with custom handlers work in the current compiler.</li>
+      <li><strong>Contracts</strong> — <code>requires</code> and <code>ensures</code> clauses are parsed and checked. SMT integration (Z3) is functional for linear arithmetic. Runtime fallback for non-provable constraints works. Struct <code>invariant</code> is implemented and enforced (including the rule that redundant field specs are rejected).</li>
+      <li><strong>M:N runtime</strong> — the fiber scheduler runs, <code>spawn</code> works, and channels are usable. Work-stealing across threads is implemented. I/O is fiber-aware on Linux (io_uring) and macOS (kqueue).</li>
+      <li><strong>Documentation tooling</strong> — <code>nv doc</code> generates HTML documentation from doc comments. The format is specified in D45.</li>
+      <li><strong>Standard library</strong> — <code>core</code> (types, traits), <code>io</code> (basic file and console I/O), <code>net</code> (TCP sockets), and <code>collections</code> (Vec, Map, Set) are usable. HTTP, crypto, and database drivers are in progress.</li>
     </ul>
 
     <p>What is not ready: a stable package manager, a language server, Windows support, and the concurrent GC (the current GC is Boehm, which is stop-the-world). These are all on the near-term roadmap.</p>
@@ -163,7 +163,7 @@ fn serve_api() Net Http Log -> ()
 }</code></pre>
     </div>
 
-    <p>The preconditions (<code>requires</code>) tell callers exactly what must be true before calling. Effects in the type list every external system touched. A code reviewer вЂ” or an LLM generating the caller вЂ” can understand the full contract from the signature alone, without reading the body.</p>
+    <p>The preconditions (<code>requires</code>) tell callers exactly what must be true before calling. Effects in the type list every external system touched. A code reviewer — or an LLM generating the caller — can understand the full contract from the signature alone, without reading the body.</p>
 
     <h2>Why now?</h2>
 
@@ -171,7 +171,7 @@ fn serve_api() Net Http Log -> ()
 
     <p>First, the tooling to enforce these constraints has matured. SMT solvers like Z3 and CVC5 are fast enough to run in a compiler feedback loop. Algebraic effect systems have moved from academic papers to production compilers (Koka, Effekt, OCaml 5). The pieces exist; Nova assembles them into a practical language.</p>
 
-    <p>Second, LLMs now write a substantial fraction of production code. Code generated by LLMs tends to be syntactically correct but semantically underspecified вЂ” the effects and invariants are in the programmer's head, not in the code. A language where effects and contracts are mandatory, not optional, turns compiler errors into a learning signal for both humans and models. Nova is designed for the era where the compiler is the primary reviewer.</p>
+    <p>Second, LLMs now write a substantial fraction of production code. Code generated by LLMs tends to be syntactically correct but semantically underspecified — the effects and invariants are in the programmer's head, not in the code. A language where effects and contracts are mandatory, not optional, turns compiler errors into a learning signal for both humans and models. Nova is designed for the era where the compiler is the primary reviewer.</p>
 
     <h2>What comes next</h2>
 
@@ -190,7 +190,7 @@ fn serve_api() Net Http Log -> ()
 
     <p>The language is young. The ideas are not. We look forward to building it with you.</p>
 
-    <p style="margin-top:2.5rem;color:var(--fg-muted);font-size:.92rem;">вЂ” Evgeniy Golovin, May 18, 2026</p>
+    <p style="margin-top:2.5rem;color:var(--fg-muted);font-size:.92rem;">— Evgeniy Golovin, May 18, 2026</p>
 
     <hr class="divider">
 

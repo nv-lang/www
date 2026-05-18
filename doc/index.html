@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Documentation вЂ” Nova</title>
+<title>Documentation — Nova</title>
 <meta name="description" content="Nova language documentation: getting started guide, language reference, standard library, and specification.">
 <link rel="canonical" href="https://nv-lang.org/doc/">
 <link rel="stylesheet" href="../style.css">
@@ -27,7 +27,7 @@
     </nav>
     <div class="site-header__right">
       <div class="lang-switch">
-        <a href="/">RU</a>
+        <a href="/ru/doc/">RU</a>
         <a href="/doc/" class="active">EN</a>
 
       </div>
@@ -97,9 +97,9 @@
       </div>
 
       <h1 id="introduction">Introduction</h1>
-      <p>Nova is a general-purpose systems programming language designed around three core ideas: <strong>algebraic effects</strong>, <strong>static contracts</strong>, and a <strong>lightweight M:N runtime</strong>. These three primitives address the most common sources of software bugs вЂ” hidden behavior, broken invariants, and accidental blocking вЂ” at the language level rather than as library conventions.</p>
+      <p>Nova is a general-purpose systems programming language designed around three core ideas: <strong>algebraic effects</strong>, <strong>static contracts</strong>, and a <strong>lightweight M:N runtime</strong>. These three primitives address the most common sources of software bugs — hidden behavior, broken invariants, and accidental blocking — at the language level rather than as library conventions.</p>
 
-      <p>Nova targets the space where you need systems-level control (predictable performance, explicit resource management) but also want the safety guarantees that modern type theory enables. It is not a research language вЂ” it compiles to native code and is designed to build real software.</p>
+      <p>Nova targets the space where you need systems-level control (predictable performance, explicit resource management) but also want the safety guarantees that modern type theory enables. It is not a research language — it compiles to native code and is designed to build real software.</p>
 
       <h2 id="installation">Installation</h2>
       <p>The fastest way to get started is the installer script:</p>
@@ -126,7 +126,7 @@
       <pre><code>nova build hello.nv
 ./hello</code></pre>
 
-      <p>Notice that <code>main</code> declares <code>Io</code> before the return arrow вЂ” even the top-level entry point is honest about its effects. <code>()</code> is the unit return type (no value returned).</p>
+      <p>Notice that <code>main</code> declares <code>Io</code> before the return arrow — even the top-level entry point is honest about its effects. <code>()</code> is the unit return type (no value returned).</p>
 
       <h2 id="next-steps">Next steps</h2>
       <p>The language guide sections below explain effects, contracts, the type system, and the concurrency model in detail. For the formal treatment of every language construct, see the <a href="/spec/">Language Specification</a>.</p>
@@ -136,21 +136,21 @@
       <hr class="divider">
 
       <h1 id="effects">Effects</h1>
-      <p>Every function that performs a side effect declares it in its type вЂ” between the parameter list and the return arrow. The available built-in effects are:</p>
+      <p>Every function that performs a side effect declares it in its type — between the parameter list and the return arrow. The available built-in effects are:</p>
 
       <ul>
-        <li><code>Io</code> вЂ” standard input/output (console, files)</li>
-        <li><code>Net</code> вЂ” network access (sockets, DNS)</li>
-        <li><code>Http</code> вЂ” HTTP client and server primitives</li>
-        <li><code>Db</code> вЂ” database connections</li>
-        <li><code>Fs</code> вЂ” filesystem access</li>
-        <li><code>Log</code> вЂ” structured logging</li>
-        <li><code>Rand</code> вЂ” random number generation</li>
-        <li><code>Time</code> вЂ” wall-clock and monotonic time</li>
-        <li><code>Mut</code> вЂ” mutation of shared state (implicit in local scope)</li>
+        <li><code>Io</code> — standard input/output (console, files)</li>
+        <li><code>Net</code> — network access (sockets, DNS)</li>
+        <li><code>Http</code> — HTTP client and server primitives</li>
+        <li><code>Db</code> — database connections</li>
+        <li><code>Fs</code> — filesystem access</li>
+        <li><code>Log</code> — structured logging</li>
+        <li><code>Rand</code> — random number generation</li>
+        <li><code>Time</code> — wall-clock and monotonic time</li>
+        <li><code>Mut</code> — mutation of shared state (implicit in local scope)</li>
       </ul>
 
-      <p>User-defined effects are supported. You declare an effect interface, provide a handler, and inject it at the call boundary вЂ” no global state, no hidden dependency injection framework.</p>
+      <p>User-defined effects are supported. You declare an effect interface, provide a handler, and inject it at the call boundary — no global state, no hidden dependency injection framework.</p>
 
       <pre><code class="language-nova">type Cache effect {
     get(key str) -> Option[[]byte]
@@ -176,9 +176,9 @@ fn get_profile(user_id u64) Cache Db -> Profile
       <p>Nova contracts express machine-checkable intent directly on function boundaries. Three kinds:</p>
 
       <ul>
-        <li><code>requires &lt;expr&gt;</code> вЂ” precondition; must hold when the caller invokes the function</li>
-        <li><code>ensures &lt;expr&gt;</code> вЂ” postcondition; must hold when the function returns normally</li>
-        <li><code>invariant &lt;expr&gt;</code> вЂ” type invariant; must hold for every value of a type</li>
+        <li><code>requires &lt;expr&gt;</code> — precondition; must hold when the caller invokes the function</li>
+        <li><code>ensures &lt;expr&gt;</code> — postcondition; must hold when the function returns normally</li>
+        <li><code>invariant &lt;expr&gt;</code> — type invariant; must hold for every value of a type</li>
       </ul>
 
       <p>Contracts are checked in three modes: <strong>static</strong> (SMT solver, compile-time, no cost), <strong>dynamic</strong> (runtime assertion in debug builds), and <strong>erased</strong> (zero overhead in release builds). The mode is selected per-clause with an optional <code>@static</code>, <code>@runtime</code>, or <code>@erased</code> attribute; the default is <code>@static</code> with automatic fallback to dynamic if the solver cannot decide.</p>
@@ -246,13 +246,13 @@ supervised {
       <p>Standard input, output, and file I/O. Requires the <code>Io</code> effect. Includes <code>stdin()</code>, <code>stdout()</code>, <code>stderr()</code>, <code>File.open()</code>, <code>File.create()</code>, and buffered readers/writers.</p>
 
       <h2 id="stdlib-net">net</h2>
-      <p>TCP and UDP sockets, DNS resolution, and TLS. Requires the <code>Net</code> effect. All socket operations are fiber-aware вЂ” blocking calls yield to the scheduler transparently.</p>
+      <p>TCP and UDP sockets, DNS resolution, and TLS. Requires the <code>Net</code> effect. All socket operations are fiber-aware — blocking calls yield to the scheduler transparently.</p>
 
       <h2 id="stdlib-collections">collections</h2>
       <p>Extended data structures beyond the core: <code>BTreeMap</code>, <code>BTreeSet</code>, <code>LinkedList</code>, <code>Deque</code>, <code>PriorityQueue</code>, and persistent/immutable variants.</p>
 
       <div class="note" style="margin-top:2.5rem;">
-        The standard library is under active development. Many modules exist in skeleton form. Contributions are very welcome вЂ” see the <a href="https://github.com/nv-lang/nova/blob/main/CONTRIBUTING.md">contributor guide</a>.
+        The standard library is under active development. Many modules exist in skeleton form. Contributions are very welcome — see the <a href="https://github.com/nv-lang/nova/blob/main/CONTRIBUTING.md">contributor guide</a>.
       </div>
 
     </article>
