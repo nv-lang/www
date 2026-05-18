@@ -164,7 +164,7 @@
         <span class="tok-kw">return</span> <span class="tok-type">Profile</span>.<span class="tok-fn">decode</span>(raw)
     }
     <span class="tok-kw">let</span> rows = <span class="tok-type">Db</span>.<span class="tok-fn">query</span>(sql`SELECT * FROM profiles WHERE id = ${user_id}`)
-    <span class="tok-kw">let</span> p = <span class="tok-type">Profile</span>.<span class="tok-fn">from_row</span>(rows.<span class="tok-fn">first</span>())
+    <span class="tok-kw">let</span> p = <span class="tok-type">Profile</span>.<span class="tok-fn">from_row</span>(rows[<span class="tok-num">0</span>])
     <span class="tok-type">Cache</span>.<span class="tok-fn">set</span>(key, p.<span class="tok-fn">encode</span>())
     p
 }</code></pre>
@@ -187,7 +187,7 @@
     <span class="tok-kw">ensures</span>  result &gt;= <span class="tok-num">0.0</span>
 {
     <span class="tok-comment">// compiler knows x is non-negative here</span>
-    libm.<span class="tok-fn">sqrt</span>(x)
+    x.<span class="tok-fn">sqrt</span>()
 }</code></pre>
 
       <hr class="divider">
@@ -210,12 +210,16 @@
 
       <pre><code><span class="tok-kw">fn</span> <span class="tok-fn">process_batch</span>(items <span class="tok-type">[]Item</span>) <span class="tok-effect">Db</span> -&gt; <span class="tok-type">[]Result</span>[<span class="tok-type">Output</span>, <span class="tok-type">Err</span>]
 {
-    <span class="tok-kw">let</span> (tx, rx) = channel.<span class="tok-fn">bounded</span>(items.len())
-    <span class="tok-kw">for</span> item <span class="tok-kw">in</span> items {
-        <span class="tok-kw">let</span> tx = tx.<span class="tok-fn">clone</span>()
-        <span class="tok-kw">spawn</span> { tx.<span class="tok-fn">send</span>(<span class="tok-fn">process_one</span>(item)) }
+    <span class="tok-kw">let</span> (tx, rx) = <span class="tok-type">Channel</span>[<span class="tok-type">Result</span>[<span class="tok-type">Output</span>, <span class="tok-type">Err</span>]].<span class="tok-fn">new</span>(items.len())
+    <span class="tok-kw">supervised</span> {
+        <span class="tok-kw">for</span> item <span class="tok-kw">in</span> items {
+            <span class="tok-kw">let</span> tx = tx.<span class="tok-fn">clone</span>()
+            <span class="tok-kw">spawn</span> { tx.<span class="tok-fn">send</span>(<span class="tok-fn">process_one</span>(item)) }
+        }
     }
-    rx.<span class="tok-fn">collect</span>(items.len())
+    <span class="tok-kw">let</span> <span class="tok-kw">mut</span> out <span class="tok-type">[]Result</span>[<span class="tok-type">Output</span>, <span class="tok-type">Err</span>] = []
+    <span class="tok-kw">while</span> <span class="tok-kw">let</span> <span class="tok-type">Some</span>(v) = rx.<span class="tok-fn">recv</span>() { out.<span class="tok-fn">push</span>(v) }
+    out
 }</code></pre>
 
       <hr class="divider">
