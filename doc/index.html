@@ -209,14 +209,17 @@
       <h1 id="concurrency">Concurrency</h1>
       <p>Nova's runtime multiplexes <em>fibers</em> (lightweight green threads) across OS threads using a work-stealing scheduler. You spawn a fiber with <code>spawn</code> and communicate over channels:</p>
 
-      <pre><code><span class="tok-kw">fn</span> <span class="tok-fn">main</span>() <span class="tok-effect">Io</span> -&gt; <span class="tok-type">()</span> {
-    <span class="tok-kw">let</span> (tx, rx) = <span class="tok-type">Channel</span>[<span class="tok-type">int</span>].<span class="tok-fn">new</span>(1)
-    <span class="tok-kw">supervised</span> {
-        <span class="tok-kw">spawn</span> { tx.<span class="tok-fn">send</span>(42) }
-    }
-    <span class="tok-kw">let</span> v = rx.<span class="tok-fn">recv</span>()
-    println(<span class="tok-str">"got: ${v}"</span>)
-}</code></pre>
+      <pre><code><span class="tok-comment">// parallel for runs each iteration as a fiber, collects results</span>
+<span class="tok-kw">let</span> squares = <span class="tok-kw">parallel for</span> i <span class="tok-kw">in</span> 0..8 { i * i }
+<span class="tok-comment">// squares == [0, 1, 4, 9, 16, 25, 36, 49]</span>
+
+<span class="tok-comment">// spawn for fire-and-forget work; supervised waits for all fibers</span>
+<span class="tok-kw">let</span> <span class="tok-kw">mut</span> count = 0
+<span class="tok-kw">supervised</span> {
+    <span class="tok-kw">spawn</span> { count = count + 1 }
+    <span class="tok-kw">spawn</span> { count = count + 1 }
+}
+<span class="tok-comment">// count == 2</span></code></pre>
 
       <hr class="divider">
 
