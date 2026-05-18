@@ -432,28 +432,28 @@ code.language-nova {
 .tok-effect  { color: var(--tok-effect);   font-weight: 600; }
 .tok-punct   { color: var(--fg-muted); }
 
-/* Nova code blocks — always dark, VS Code-style */
+/* Nova code blocks — VS Code "Dark Modern" theme */
 pre.nova-block {
-  background: #1e1e2e !important;
-  border-color: #313244 !important;
-  color: #cdd6f4;
+  background: #1f1f1f !important;
+  border-color: #3c3c3c !important;
+  color: #d4d4d4;
 }
 
 pre.nova-block code {
-  color: #cdd6f4;
+  color: #d4d4d4;
   border: none;
   background: none;
   padding: 0;
 }
 
-pre.nova-block .tok-kw      { color: #c678dd; font-weight: 600; }
-pre.nova-block .tok-type    { color: #e5c07b; }
-pre.nova-block .tok-str     { color: #98c379; }
-pre.nova-block .tok-comment { color: #5c6370; font-style: italic; }
-pre.nova-block .tok-num     { color: #d19a66; }
-pre.nova-block .tok-fn      { color: #61afef; }
-pre.nova-block .tok-effect  { color: #e5c07b; font-weight: 600; }
-pre.nova-block .tok-punct   { color: #9399b2; }
+pre.nova-block .tok-kw-ctrl { color: #c586c0; }                    /* purple — if/match/throw/for */
+pre.nova-block .tok-kw-decl { color: #569cd6; }                    /* blue   — fn/let/type/export */
+pre.nova-block .tok-type    { color: #4ec9b0; }                    /* teal   — types, effects, primitives */
+pre.nova-block .tok-str     { color: #ce9178; }                    /* orange — strings */
+pre.nova-block .tok-comment { color: #6a9955; font-style: italic; }/* green  — comments */
+pre.nova-block .tok-num     { color: #b5cea8; }                    /* light green — numbers */
+pre.nova-block .tok-fn      { color: #dcdcaa; }                    /* yellow — function names/calls */
+pre.nova-block .tok-op      { color: #569cd6; }                    /* blue   — operators (->, =>) */
 
 /* Code window chrome */
 .code-window {

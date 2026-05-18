@@ -1,20 +1,41 @@
 /**
  * Nova language syntax highlighter.
+ * Colors match VS Code "Dark Modern" theme via the Nova tmLanguage scopes.
  * Processes <code class="language-nova"> blocks automatically.
  * No external dependencies.
  */
 (function () {
   'use strict';
 
-  const KEYWORDS = new Set([
-    'fn','let','mut','type','if','else','match','for','while','return',
-    'spawn','supervised','parallel','in','requires','ensures','module',
-    'import','export','test','contract','alias','protocol','defer',
-    'realtime','nogc','as','use','pub','and','or','not','is',
+  // keyword.control.flow.nova  → tok-kw-ctrl  (#c586c0 purple)
+  const CTRL_KEYWORDS = new Set([
+    'if','else','match','for','while','loop','break','continue','return',
+    'throw','spawn','detach','parallel','supervised','race','select',
+    'with_timeout','cancel_scope','in','forbid','realtime','with',
+    'region','interrupt','defer','requires','ensures','invariant',
   ]);
 
+  // keyword.declaration.nova + storage.modifier.nova  → tok-kw-decl  (#569cd6 blue)
+  const DECL_KEYWORDS = new Set([
+    'fn','type','alias','effect','handler','protocol','let','const',
+    'module','import','export','as','use','test','external',
+    'mut','readonly','is','old',
+  ]);
+
+  // support.type.primitive.nova  → tok-type  (#4ec9b0 teal)
+  const PRIMITIVES = new Set([
+    'int','i8','i16','i32','i64','u8','u16','u32','u64','f32','f64',
+    'str','bool','char','any',
+  ]);
+
+  // entity.name.type.prelude.nova + constant.language  → tok-type  (#4ec9b0 teal)
   const BUILTINS = new Set([
     'Some','None','Ok','Err','true','false','Self',
+    'Option','Result','Error','RuntimeError','Never','Ordering',
+    'Less','Equal','Greater','Iter','Range','RangeIter','Channel',
+    'CancelToken','Handler','From','Into','TryFrom','TryInto',
+    'Hashable','Eq','Ord','StringBuilder','WriteBuffer','ReadBuffer',
+    'ReadBufferError',
   ]);
 
   // ── Tokenizer ────────────────────────────────────────────────────────────
@@ -42,9 +63,7 @@
           if (code[j] === '"') { j++; break; }
           j++;
         }
-        const raw = code.slice(i, j);
-        // Split on ${...} so we can colour the interpolated parts too
-        tokens.push(...tokenizeString(raw));
+        tokens.push(...tokenizeString(code.slice(i, j)));
         i = j;
         continue;
       }
@@ -58,24 +77,25 @@
         continue;
       }
 
-      // Identifier / keyword / builtin / type / effect (determined later)
+      // Identifier / keyword / builtin / type
       if (/[a-zA-Z_@]/.test(code[i])) {
         let j = i;
-        // @ prefix for operator methods
-        if (code[j] === '@') j++;
+        if (code[j] === '@') j++;   // @ prefix for operator methods / self-fields
         while (j < code.length && /\w/.test(code[j])) j++;
         const word = code.slice(i, j);
         let type;
-        if (KEYWORDS.has(word))        type = 'keyword';
-        else if (BUILTINS.has(word))   type = 'builtin';
-        else if (/^[A-Z]/.test(word))  type = 'type';  // may become 'effect'
-        else                            type = 'ident';
+        if (CTRL_KEYWORDS.has(word))        type = 'kw-ctrl';
+        else if (DECL_KEYWORDS.has(word))   type = 'kw-decl';
+        else if (PRIMITIVES.has(word))      type = 'primitive';
+        else if (BUILTINS.has(word))        type = 'builtin';
+        else if (/^[A-Z]/.test(word))       type = 'type';
+        else                                 type = 'ident';
         tokens.push({ type, text: word });
         i = j;
         continue;
       }
 
-      // Multi-char operators (order matters — longest first)
+      // Multi-char operators (longest first)
       const ops3 = ['==>'];
       const ops2 = ['->', '=>', '==', '!=', '<=', '>=', '&&', '||', '..'];
       let matched = false;
@@ -99,7 +119,7 @@
         i++; continue;
       }
 
-      // Whitespace / other (newlines, spaces — pass through)
+      // Whitespace / other
       tokens.push({ type: 'text', text: code[i] });
       i++;
     }
@@ -107,10 +127,9 @@
     return tokens;
   }
 
-  // Splits a raw string token on ${...} boundaries so inner expressions get
-  // the normal identifier/number colouring while the string delimiters stay red.
+  // Splits a raw string token on ${...} so inner expressions get
+  // normal colouring while string delimiters stay orange.
   function tokenizeString(raw) {
-    // raw starts and ends with "
     const result = [];
     let i = 0;
     let chunk = '';
@@ -121,15 +140,13 @@
       if (raw[i] === '$' && raw[i + 1] === '{') {
         chunk += raw[i]; // include the $
         flush();
-        // find matching }
         let depth = 0, j = i + 1;
         while (j < raw.length) {
           if (raw[j] === '{') depth++;
           else if (raw[j] === '}') { if (--depth === 0) { j++; break; } }
           j++;
         }
-        const inner = raw.slice(i + 1, j); // "{...}"
-        result.push({ type: 'interp', text: inner });
+        result.push({ type: 'interp', text: raw.slice(i + 1, j) }); // "{...}"
         i = j;
         continue;
       }
@@ -141,24 +158,22 @@
 
   // ── Effect detection pass ─────────────────────────────────────────────────
   // Marks uppercase `type` tokens as `effect` when they appear in the
-  // effect position of a function signature: fn name(...) EFFECT1 EFFECT2 -> Ret
+  // effect position: fn name(...) EFFECT1 EFFECT2 -> Ret
 
   function markEffects(tokens) {
-    // 'normal' → 'fn_name' → 'fn_params' → 'fn_effects' → 'normal'
     let state = 'normal';
     let depth = 0;
 
     for (let i = 0; i < tokens.length; i++) {
       const tok = tokens[i];
-      if (tok.type === 'text') continue; // skip whitespace
+      if (tok.type === 'text') continue;
 
       switch (state) {
         case 'normal':
-          if (tok.type === 'keyword' && tok.text === 'fn') state = 'fn_name';
+          if (tok.type === 'kw-decl' && tok.text === 'fn') state = 'fn_name';
           break;
         case 'fn_name':
           if (tok.type === 'punct' && tok.text === '(') { state = 'fn_params'; depth = 1; }
-          // Allow 'fn TypeName method(...)' — method receiver
           break;
         case 'fn_params':
           if (tok.type === 'punct' && tok.text === '(') depth++;
@@ -170,19 +185,17 @@
         case 'fn_effects':
           if (tok.type === 'op' && tok.text === '->') { state = 'normal'; }
           else if (tok.type === 'punct' && (tok.text === '{' || tok.text === '=')) { state = 'normal'; }
-          else if (tok.type === 'keyword' && (tok.text === 'requires' || tok.text === 'ensures')) { state = 'normal'; }
+          else if (tok.type === 'kw-ctrl' && (tok.text === 'requires' || tok.text === 'ensures')) { state = 'normal'; }
           else if (tok.type === 'type') { tok.type = 'effect'; }
           break;
       }
     }
   }
 
-  // Mark lowercase identifiers that are immediately followed (ignoring spaces)
-  // by '(' as function names.
+  // Marks lowercase identifiers immediately followed by '(' as function names.
   function markFunctions(tokens) {
     for (let i = 0; i < tokens.length; i++) {
       if (tokens[i].type !== 'ident') continue;
-      // find next non-whitespace token
       let j = i + 1;
       while (j < tokens.length && tokens[j].type === 'text') j++;
       if (j < tokens.length && tokens[j].type === 'punct' && tokens[j].text === '(') {
@@ -194,19 +207,21 @@
   // ── Renderer ─────────────────────────────────────────────────────────────
 
   const CLASS = {
-    'comment':  'tok-comment',
-    'string':   'tok-str',
-    'interp':   'tok-str',   // interpolation braces stay string-coloured
-    'keyword':  'tok-kw',
-    'builtin':  'tok-type',
-    'number':   'tok-num',
-    'type':     'tok-type',
-    'effect':   'tok-effect',
-    'fn-name':  'tok-fn',
-    'ident':    null,
-    'op':       'tok-punct',
-    'punct':    'tok-punct',
-    'text':     null,
+    'comment':   'tok-comment',
+    'string':    'tok-str',
+    'interp':    'tok-str',
+    'kw-ctrl':   'tok-kw-ctrl',
+    'kw-decl':   'tok-kw-decl',
+    'primitive': 'tok-type',
+    'builtin':   'tok-type',
+    'number':    'tok-num',
+    'type':      'tok-type',
+    'effect':    'tok-type',
+    'fn-name':   'tok-fn',
+    'ident':     null,
+    'op':        'tok-op',
+    'punct':     null,
+    'text':      null,
   };
 
   function esc(s) {
@@ -233,7 +248,6 @@
   function highlightAll() {
     document.querySelectorAll('code.language-nova').forEach(el => {
       el.innerHTML = highlight(el.textContent);
-      // Add class to parent <pre> for CSS scoping (avoids :has() browser compat issues)
       if (el.parentElement && el.parentElement.tagName === 'PRE') {
         el.parentElement.classList.add('nova-block');
       }
