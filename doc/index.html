@@ -209,18 +209,17 @@
       <h1 id="concurrency">Concurrency</h1>
       <p>Nova's runtime multiplexes <em>fibers</em> (lightweight green threads) across OS threads using a work-stealing scheduler. You spawn a fiber with <code>spawn</code> and communicate over channels:</p>
 
-      <pre><code><span class="tok-kw">fn</span> <span class="tok-fn">process_batch</span>(items <span class="tok-type">[]Item</span>) <span class="tok-effect">Db</span> -&gt; <span class="tok-type">[]Result</span>[<span class="tok-type">Output</span>, <span class="tok-type">Err</span>]
-{
-    <span class="tok-kw">let</span> (tx, rx) = <span class="tok-type">Channel</span>[<span class="tok-type">Result</span>[<span class="tok-type">Output</span>, <span class="tok-type">Err</span>]].<span class="tok-fn">new</span>(items.len())
+      <pre><code><span class="tok-kw">fn</span> <span class="tok-fn">sum_parallel</span>(nums <span class="tok-type">[]int</span>) -&gt; <span class="tok-type">int</span> {
+    <span class="tok-kw">let</span> (tx, rx) = <span class="tok-type">Channel</span>[<span class="tok-type">int</span>].<span class="tok-fn">new</span>(nums.len())
     <span class="tok-kw">supervised</span> {
-        <span class="tok-kw">for</span> item <span class="tok-kw">in</span> items {
+        <span class="tok-kw">for</span> n <span class="tok-kw">in</span> nums {
             <span class="tok-kw">let</span> tx = tx.<span class="tok-fn">clone</span>()
-            <span class="tok-kw">spawn</span> { tx.<span class="tok-fn">send</span>(<span class="tok-fn">process_one</span>(item)) }
+            <span class="tok-kw">spawn</span> { tx.<span class="tok-fn">send</span>(n * n) }
         }
     }
-    <span class="tok-kw">let</span> <span class="tok-kw">mut</span> out <span class="tok-type">[]Result</span>[<span class="tok-type">Output</span>, <span class="tok-type">Err</span>] = []
-    <span class="tok-kw">while</span> <span class="tok-kw">let</span> <span class="tok-type">Some</span>(v) = rx.<span class="tok-fn">recv</span>() { out.<span class="tok-fn">push</span>(v) }
-    out
+    <span class="tok-kw">let</span> <span class="tok-kw">mut</span> total = 0
+    <span class="tok-kw">while</span> <span class="tok-kw">let</span> <span class="tok-type">Some</span>(v) = rx.<span class="tok-fn">recv</span>() { total = total + v }
+    total
 }</code></pre>
 
       <hr class="divider">
