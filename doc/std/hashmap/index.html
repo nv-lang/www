@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>collections.hashmap — Standard Library — Nova</title>
+<meta name="description" content="Nova standard library: collections.hashmap — hash map with open addressing, linear probing, and map-literal syntax.">
+<link rel="canonical" href="https://nv-lang.org/doc/std/hashmap/">
+<link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-logo" href="/">Nova</a>
+    <button class="nav-toggle" aria-label="Toggle navigation" onclick="this.closest('header').querySelector('.site-nav').classList.toggle('open')">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/>
+      </svg>
+    </button>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/">Home</a>
+      <a href="/install/">Install</a>
+      <a href="/doc/" class="active">Doc</a>
+      <a href="/spec/">Spec</a>
+      <a href="/blog/">Blog</a>
+    </nav>
+    <div class="site-header__right">
+      <div class="lang-switch">
+        <a href="/ru/doc/std/">RU</a>
+        <a href="/doc/std/hashmap/" class="active">EN</a>
+      </div>
+      <a href="https://github.com/nv-lang/nova" class="btn btn-outline" style="padding:.3rem .75rem;font-size:.83rem;" aria-label="GitHub">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</header>
+
+<div class="page-header">
+  <div class="container--narrow">
+    <p style="font-size:.85rem;color:var(--fg-muted);margin-bottom:.4rem;"><a href="/doc/std/">Standard Library</a></p>
+    <h1>collections.hashmap</h1>
+    <p>Hash map with open addressing and linear probing. Requires <code>K: Hashable</code>. Supports map-literal syntax <code>["key": value, ...]</code>.</p>
+  </div>
+</div>
+
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Types</div>
+      <ul>
+        <li><a href="#hashmap-type">HashMap</a></li>
+        <li><a href="#hashable">Hashable</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Constructors</div>
+      <ul>
+        <li><a href="#new">new</a></li>
+        <li><a href="#with_capacity">with_capacity</a></li>
+        <li><a href="#from">from</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Access</div>
+      <ul>
+        <li><a href="#get">get</a></li>
+        <li><a href="#contains">contains</a></li>
+        <li><a href="#get_or_insert">get_or_insert</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Mutation</div>
+      <ul>
+        <li><a href="#insert">insert</a></li>
+        <li><a href="#remove">remove</a></li>
+        <li><a href="#clear">clear</a></li>
+        <li><a href="#merge_from">merge_from</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Inspection</div>
+      <ul>
+        <li><a href="#len">len</a></li>
+        <li><a href="#is_empty">is_empty</a></li>
+        <li><a href="#capacity">capacity</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Iteration</div>
+      <ul>
+        <li><a href="#iter">iter</a></li>
+        <li><a href="#keys">keys</a></li>
+        <li><a href="#values">values</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Transformation</div>
+      <ul>
+        <li><a href="#filter">filter</a></li>
+        <li><a href="#clone">clone</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">More</div>
+      <ul>
+        <li><a href="/doc/std/">&#8592; Std Library</a></li>
+        <li><a href="https://github.com/nv-lang/nova/blob/main/std/collections/hashmap.nv">Source &#8599;</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <article class="prose">
+
+      <p><code>HashMap[K, V]</code> is Nova's hash map: open addressing with linear probing, automatic resize at <code>load_factor</code> (default 0.75). The key type must satisfy <code>Hashable</code> — a structural protocol requiring <code>hash() -> u64</code>. Built-in types (<code>str</code>, <code>int</code>, …) are Hashable by default.</p>
+
+      <p>The map-literal syntax <code>["key": value, ...]</code> (D108) desugars to <code>HashMap</code>, and a record literal <code>{field: val}</code> coerces to <code>HashMap[str, V]</code> (D55).</p>
+
+      <pre><code class="language-nova">let mut m = HashMap[str, int].new()
+m.insert("alice", 1)
+m.insert("bob", 2)
+assert(m.get("alice") == Some(1))
+assert(m.len() == 2)
+
+for (k, v) in m.iter() {
+    assert(v > 0)
+}</code></pre>
+
+      <hr class="divider">
+
+      <h2 id="hashmap-type" style="margin-bottom:.3rem;">HashMap</h2>
+      <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+      <pre><code class="language-nova">type HashMap[K Hashable, V] { ... }</code></pre>
+      <p>Hash map with open addressing and linear probing. The <code>K</code> type parameter must satisfy <code>Hashable</code>. Grows automatically when the number of entries exceeds <code>capacity * load_factor</code>.</p>
+
+      <hr class="divider">
+
+      <h2 id="hashable" style="margin-bottom:.3rem;">Hashable</h2>
+      <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+      <pre><code class="language-nova">type Hashable protocol {
+    fn hash() -> u64
+}</code></pre>
+      <p>Structural protocol: any type that has a <code>hash() -> u64</code> method satisfies <code>Hashable</code>. Used as the bound on <code>K</code> in <code>HashMap[K Hashable, V]</code>. Built-in types (<code>str</code>, <code>int</code>, <code>bool</code>, …) implement it via the prelude.</p>
+
+      <hr class="divider">
+
+      <!-- Constructors -->
+
+      <div id="new" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">new</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn HashMap.new() -> HashMap[K, V]</code></pre>
+        <p>Create an empty <code>HashMap</code> with an initial capacity of 16.</p>
+        <h4>Examples</h4>
+        <pre><code class="language-nova">let mut m = HashMap[str, int].new()
+assert(m.is_empty())</code></pre>
+      </div>
+
+      <hr class="divider">
+
+      <div id="with_capacity" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">with_capacity</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn HashMap.with_capacity(min_capacity int) -> HashMap[K, V]</code></pre>
+        <p>Create an empty <code>HashMap</code> sized to hold at least <code>min_capacity</code> entries without a rehash. The argument is an entry count, not a bucket count. Use this when the final size is known in advance.</p>
+        <h4>Examples</h4>
+        <pre><code class="language-nova">let mut m = HashMap[str, int].with_capacity(100)
+for i in 0..100 { m.insert("k" + str.from(i), i) }
+assert(m.len() == 100)</code></pre>
+      </div>
+
+      <hr class="divider">
+
+      <div id="from" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">from</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn HashMap.from(pairs [](K, V)) -> Self</code></pre>
+        <p>Build a <code>HashMap</code> from an array of <code>(key, value)</code> pairs. Duplicate keys: last write wins.</p>
+        <h4>Examples</h4>
+        <pre><code class="language-nova">let m = HashMap[str, int].from([("a", 1), ("b", 2)])
+assert(m.get("a") == Some(1))
+assert(m.len() == 2)</code></pre>
+      </div>
+
+      <hr class="divider">
+
+      <!-- Access -->
+
+      <div id="get" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">get</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn HashMap @get(key K) -> Option[V]</code></pre>
+        <p>Look up <code>key</code>. Returns <code>Some(value)</code> if found, <code>None</code> otherwise.</p>
+        <h4>Examples</h4>
+        <pre><code class="language-nova">let mut m = HashMap[str, int].new()
+m.insert("x", 10)
+assert(m.get("x") == Some(10))
+assert(m.get("y") == None)</code></pre>
+      </div>
+
+      <hr class="divider">
+
+      <div id="contains" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">contains</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn HashMap @contains(key K) -> bool</code></pre>
+        <p>Check whether <code>key</code> exists without retrieving the value. Equivalent to <code>m.get(key) != None</code> but avoids constructing the <code>Option</code>.</p>
+      </div>
+
+      <hr class="divider">
+
+      <div id="get_or_insert" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">get_or_insert</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn HashMap mut @get_or_insert(key K, fallback fn() -> V) -> V</code></pre>
+        <p>Return the value for <code>key</code> if it exists. Otherwise call <code>fallback()</code>, insert the result, and return it. The fallback is lazy — it is only called on a cache miss.</p>
+        <h4>Examples</h4>
+        <pre><code class="language-nova">let mut counts = HashMap[str, int].new()
+let prev = counts.get_or_insert("foo", || 0)
+counts.insert("foo", prev + 1)
+assert(counts.get("foo") == Some(1))</code></pre>
+      </div>
+
+      <hr class="divider">
+
+      <!-- Mutation -->
+
+      <div id="insert" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">insert</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn HashMap mut @insert(key K, value V) -> Option[V]</code></pre>
+        <p>Insert <code>(key, value)</code>. If the key already exists, overwrites it and returns <code>Some(old_value)</code>. Otherwise inserts and returns <code>None</code>. May trigger a rehash.</p>
+        <h4>Examples</h4>
+        <pre><code class="language-nova">let mut m = HashMap[str, int].new()
+assert(m.insert("a", 1) == None)
+assert(m.insert("a", 2) == Some(1))
+assert(m.get("a") == Some(2))</code></pre>
+      </div>
+
+      <hr class="divider">
+
+      <div id="remove" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">remove</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn HashMap mut @remove(key K) -> Option[V]</code></pre>
+        <p>Delete the entry for <code>key</code>. Returns <code>Some(old_value)</code> if the key existed, <code>None</code> otherwise. Leaves a tombstone slot — the internal array does not shrink.</p>
+        <h4>Examples</h4>
+        <pre><code class="language-nova">let mut m = HashMap[str, int].from([("a", 1)])
+assert(m.remove("a") == Some(1))
+assert(m.remove("a") == None)</code></pre>
+      </div>
+
+      <hr class="divider">
+
+      <div id="clear" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">clear</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn HashMap mut @clear() -> ()</code></pre>
+        <p>Remove all entries. The internal bucket array is retained (capacity is preserved), so re-inserting elements does not require immediate reallocation.</p>
+      </div>
+
+      <hr class="divider">
+
+      <div id="merge_from" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">merge_from</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn HashMap mut @merge_from(other HashMap[K, V]) -> ()</code></pre>
+        <p>Merge all entries from <code>other</code> into <code>self</code>. Override semantics: existing keys are overwritten.</p>
+        <h4>Examples</h4>
+        <pre><code class="language-nova">let mut a = HashMap[str, int].from([("x", 1)])
+let b = HashMap[str, int].from([("x", 99), ("y", 2)])
+a.merge_from(b)
+assert(a.get("x") == Some(99))
+assert(a.get("y") == Some(2))</code></pre>
+      </div>
+
+      <hr class="divider">
+
+      <!-- Inspection -->
+
+      <div id="len" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">len</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn HashMap @len() -> int</code></pre>
+        <p>Number of live entries (does not count tombstone slots left by <code>remove</code>).</p>
+      </div>
+
+      <hr class="divider">
+
+      <div id="is_empty" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">is_empty</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn HashMap @is_empty() -> bool</code></pre>
+        <p>Returns <code>true</code> when <code>len() == 0</code>.</p>
+      </div>
+
+      <hr class="divider">
+
+      <div id="capacity" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">capacity</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn HashMap @capacity() -> int</code></pre>
+        <p>Total size of the internal bucket array. Always ≥ <code>len()</code>. Use <code>with_capacity</code> to control this at construction time.</p>
+      </div>
+
+      <hr class="divider">
+
+      <!-- Iteration -->
+
+      <div id="iter" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">iter</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn HashMap @iter() -> HashMapIter[K, V]</code></pre>
+        <p>Iterator over <code>(key, value)</code> pairs in unspecified order.</p>
+        <h4>Examples</h4>
+        <pre><code class="language-nova">let m = HashMap[str, int].from([("a", 1), ("b", 2)])
+for (k, v) in m.iter() {
+    assert(v > 0)
+}</code></pre>
+      </div>
+
+      <hr class="divider">
+
+      <div id="keys" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">keys</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn HashMap @keys() -> KeysIter[K, V]</code></pre>
+        <p>Iterator over keys only, in unspecified order.</p>
+      </div>
+
+      <hr class="divider">
+
+      <div id="values" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">values</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn HashMap @values() -> ValuesIter[K, V]</code></pre>
+        <p>Iterator over values only, in unspecified order.</p>
+      </div>
+
+      <hr class="divider">
+
+      <!-- Transformation -->
+
+      <div id="filter" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">filter</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn HashMap @filter(pred fn(K, V) -> bool) -> HashMap[K, V]</code></pre>
+        <p>Return a new <code>HashMap</code> containing only the pairs for which <code>pred(k, v)</code> is <code>true</code>. Does not mutate the original.</p>
+        <h4>Examples</h4>
+        <pre><code class="language-nova">let m = HashMap[str, int].from([("a", 1), ("b", 2), ("c", 3)])
+let big = m.filter(|_, v| v > 1)
+assert(big.len() == 2)</code></pre>
+      </div>
+
+      <hr class="divider">
+
+      <div id="clone" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">clone</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn HashMap @clone() -> HashMap[K, V]</code></pre>
+        <p>Create an independent deep copy of the map. Mutations to the clone do not affect the original.</p>
+        <h4>Examples</h4>
+        <pre><code class="language-nova">let m = HashMap[str, int].from([("a", 1)])
+let m2 = m.clone()
+assert(m2.get("a") == Some(1))</code></pre>
+      </div>
+
+    </article>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div>
+      <div class="footer-brand">Nova</div>
+      <p style="font-size:.85rem;color:var(--fg-muted);margin-top:.5rem;max-width:220px;">A systems language built for clarity and correctness.</p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col__title">Language</div>
+      <ul>
+        <li><a href="/doc/">Documentation</a></li>
+        <li><a href="/spec/">Specification</a></li>
+        <li><a href="/blog/">Blog</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col__title">Project</div>
+      <ul>
+        <li><a href="https://github.com/nv-lang/nova">GitHub</a></li>
+        <li><a href="https://github.com/nv-lang/nova/releases">Releases</a></li>
+        <li><a href="https://github.com/nv-lang/nova/tree/main/docs/plans">Roadmap</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col__title">Contact</div>
+      <ul>
+        <li><a href="mailto:hello@nv-lang.org">hello@nv-lang.org</a></li>
+        <li><a href="mailto:security@nv-lang.org">security@nv-lang.org</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>Nova &copy; 2026. Code: MIT OR Apache-2.0. Docs: <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</span>
+    <span><a href="https://github.com/nv-lang/www">Site source</a></span>
+  </div>
+</footer>
+
+<script src="../../../js/nova-highlight.js"></script>
+</body>
+</html>
