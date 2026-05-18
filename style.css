@@ -446,13 +446,13 @@ pre.nova-block code {
   padding: 0;
 }
 
-pre.nova-block .tok-kw      { color: #ff79c6; font-weight: 600; }
-pre.nova-block .tok-type    { color: #a6e3a1; }
-pre.nova-block .tok-str     { color: #f9e2af; }
-pre.nova-block .tok-comment { color: #4ecdc4; font-style: italic; }
-pre.nova-block .tok-num     { color: #fab387; }
-pre.nova-block .tok-fn      { color: #89b4fa; font-weight: 600; }
-pre.nova-block .tok-effect  { color: #89dceb; font-weight: 600; }
+pre.nova-block .tok-kw      { color: #98c379; font-weight: 600; }
+pre.nova-block .tok-type    { color: #e5c07b; }
+pre.nova-block .tok-str     { color: #e06c75; }
+pre.nova-block .tok-comment { color: #5c6370; font-style: italic; }
+pre.nova-block .tok-num     { color: #d19a66; }
+pre.nova-block .tok-fn      { color: #61afef; }
+pre.nova-block .tok-effect  { color: #e5c07b; font-weight: 600; }
 pre.nova-block .tok-punct   { color: #9399b2; }
 
 /* Code window chrome */
