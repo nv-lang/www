@@ -385,6 +385,8 @@ code, pre, kbd {
 }
 
 /* ── Code block ──────────────────────────────────────────────────────────── */
+
+/* Shell / plain code blocks — follow theme */
 pre {
   background: var(--bg-code);
   border: 1px solid var(--border);
@@ -408,7 +410,18 @@ code {
   border: 1px solid var(--border-soft);
 }
 
-/* Syntax highlight classes */
+/* Nova code blocks — always dark, VS Code-style */
+pre:has(code.language-nova) {
+  background: #1e1e2e;
+  border-color: #313244;
+  color: #cdd6f4;
+}
+
+pre:has(code.language-nova) code {
+  color: #cdd6f4;
+}
+
+/* Syntax highlight classes — light theme defaults */
 .tok-kw      { color: var(--tok-kw);      font-weight: 600; }
 .tok-type    { color: var(--tok-type); }
 .tok-str     { color: var(--tok-str); }
@@ -417,6 +430,16 @@ code {
 .tok-fn      { color: var(--tok-fn);       font-weight: 600; }
 .tok-effect  { color: var(--tok-effect);   font-weight: 600; }
 .tok-punct   { color: var(--fg-muted); }
+
+/* Nova code token colors — always dark (override light/dark theme vars) */
+pre:has(code.language-nova) .tok-kw      { color: #ff79c6; font-weight: 600; }
+pre:has(code.language-nova) .tok-type    { color: #a6e3a1; }
+pre:has(code.language-nova) .tok-str     { color: #f9e2af; }
+pre:has(code.language-nova) .tok-comment { color: #4ecdc4; font-style: italic; }
+pre:has(code.language-nova) .tok-num     { color: #fab387; }
+pre:has(code.language-nova) .tok-fn      { color: #89b4fa; font-weight: 600; }
+pre:has(code.language-nova) .tok-effect  { color: #89dceb; font-weight: 600; }
+pre:has(code.language-nova) .tok-punct   { color: #6c7086; }
 
 /* Code window chrome */
 .code-window {
