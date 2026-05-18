@@ -153,17 +153,19 @@
 
       <pre><code><span class="tok-kw">type</span> <span class="tok-type">Cache</span> <span class="tok-kw">effect</span> {
     <span class="tok-fn">get</span>(key <span class="tok-type">str</span>) -&gt; <span class="tok-type">Option</span>[<span class="tok-type">bytes</span>]
-    <span class="tok-fn">set</span>(key <span class="tok-type">str</span>, val <span class="tok-type">bytes</span>, ttl <span class="tok-type">Duration</span>) -&gt; ()
+    <span class="tok-fn">set</span>(key <span class="tok-type">str</span>, val <span class="tok-type">bytes</span>) -&gt; ()
 }
 
+<span class="tok-comment">// Cache and Db effects are looked up from the active with-scope.</span>
 <span class="tok-kw">fn</span> <span class="tok-fn">get_profile</span>(user_id <span class="tok-type">u64</span>) <span class="tok-effect">Cache</span> <span class="tok-effect">Db</span> -&gt; <span class="tok-type">Profile</span>
 {
-    <span class="tok-kw">let</span> key = <span class="tok-fn">format</span>(<span class="tok-str">"profile:{}"</span>, user_id)
-    <span class="tok-kw">if</span> <span class="tok-kw">let</span> <span class="tok-type">Some</span>(raw) = cache.<span class="tok-fn">get</span>(key) {
+    <span class="tok-kw">let</span> key = <span class="tok-str">"profile:${user_id}"</span>
+    <span class="tok-kw">if</span> <span class="tok-kw">let</span> <span class="tok-type">Some</span>(raw) = <span class="tok-type">Cache</span>.<span class="tok-fn">get</span>(key) {
         <span class="tok-kw">return</span> <span class="tok-type">Profile</span>.<span class="tok-fn">decode</span>(raw)
     }
-    <span class="tok-kw">let</span> p = db.<span class="tok-fn">load_profile</span>(user_id)
-    cache.<span class="tok-fn">set</span>(key, p.<span class="tok-fn">encode</span>(), <span class="tok-type">Duration</span>.<span class="tok-fn">minutes</span>(<span class="tok-num">5</span>))
+    <span class="tok-kw">let</span> rows = <span class="tok-type">Db</span>.<span class="tok-fn">query</span>(sql`SELECT * FROM profiles WHERE id = ${user_id}`)
+    <span class="tok-kw">let</span> p = <span class="tok-type">Profile</span>.<span class="tok-fn">from_row</span>(rows.<span class="tok-fn">first</span>())
+    <span class="tok-type">Cache</span>.<span class="tok-fn">set</span>(key, p.<span class="tok-fn">encode</span>())
     p
 }</code></pre>
 

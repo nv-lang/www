@@ -84,8 +84,8 @@
 {
     <span class="tok-fn">log</span>(<span class="tok-str">"fetching"</span>, {id: id.<span class="tok-fn">to_str</span>()})
     <span class="tok-kw">match</span> db.<span class="tok-fn">find_user</span>(id) {
-        <span class="tok-type">Some</span>(u) -&gt; <span class="tok-type">Ok</span>(u)
-        <span class="tok-type">None</span>    -&gt; <span class="tok-type">Err</span>(<span class="tok-type">NotFound</span>)
+        <span class="tok-type">Some</span>(u) =&gt; <span class="tok-type">Ok</span>(u)
+        <span class="tok-type">None</span>    =&gt; <span class="tok-type">Err</span>(<span class="tok-type">NotFound</span>)
     }
 }</code></pre>
     </div>
@@ -151,8 +151,8 @@
     card   <span class="tok-type">CardToken</span>,
 ) <span class="tok-effect">Db</span> <span class="tok-effect">Net</span> <span class="tok-effect">Log</span> -&gt; <span class="tok-type">Result</span>[<span class="tok-type">ChargeId</span>, <span class="tok-type">PaymentError</span>]
     <span class="tok-kw">requires</span> ctx.<span class="tok-fn">is_authenticated</span>()
-    <span class="tok-kw">requires</span> amount &gt; <span class="tok-type">Money</span>::ZERO
-    <span class="tok-kw">requires</span> amount &lt;= <span class="tok-type">Money</span>::MAX_SINGLE_CHARGE
+    <span class="tok-kw">requires</span> amount &gt; <span class="tok-type">Money</span>.ZERO
+    <span class="tok-kw">requires</span> amount &lt;= <span class="tok-type">Money</span>.MAX_SINGLE_CHARGE
 {
     <span class="tok-fn">log</span>(<span class="tok-str">"charging"</span>, {user: ctx.user_id.<span class="tok-fn">to_str</span>(), amount: amount.<span class="tok-fn">to_str</span>()})
     <span class="tok-kw">let</span> result = payment_gateway.<span class="tok-fn">charge</span>(card, amount)?

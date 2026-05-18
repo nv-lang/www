@@ -71,8 +71,8 @@
 {
     <span class="tok-fn">log</span>(<span class="tok-str">"fetching"</span>, {id: id.<span class="tok-fn">to_str</span>()})
     <span class="tok-kw">match</span> db.<span class="tok-fn">find_user</span>(id) {
-        <span class="tok-type">Some</span>(u) -&gt; <span class="tok-type">Ok</span>(u)
-        <span class="tok-type">None</span>    -&gt; <span class="tok-type">Err</span>(<span class="tok-type">NotFound</span>)
+        <span class="tok-type">Some</span>(u) =&gt; <span class="tok-type">Ok</span>(u)
+        <span class="tok-type">None</span>    =&gt; <span class="tok-type">Err</span>(<span class="tok-type">NotFound</span>)
     }
 }</code></pre>
       </div>
