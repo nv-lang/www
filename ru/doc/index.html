@@ -205,14 +205,14 @@ fn get_profile(user_id u64) Cache Db -> Profile
       <hr class="divider">
 
       <h1 id="types">Типы</h1>
-      <p>Nova имеет статическую систему типов с выводом типов, алгебраическими типами данных, дженериками и трейтами.</p>
+      <p>Nova имеет статическую систему типов с выводом типов, алгебраическими типами данных, дженериками и протоколами.</p>
 
       <ul>
         <li><strong>Примитивы:</strong> <code>int</code>, <code>i8</code> <code>i16</code> <code>i32</code> <code>i64</code>, <code>u8</code> <code>u16</code> <code>u32</code> <code>u64</code>, <code>f32</code> <code>f64</code>, <code>bool</code>, <code>char</code>, <code>str</code></li>
         <li><strong>Алгебраические типы:</strong> <code>struct</code> для произведений, <code>enum</code> для помеченных объединений</li>
         <li><strong>Option и Result:</strong> <code>Option[T]</code> и <code>Result[T, E]</code> — встроенные перечисления, никакого null</li>
-        <li><strong>Дженерики:</strong> параметрический полиморфизм с ограничениями трейтов</li>
-        <li><strong>Трейты:</strong> структурные интерфейсы с реализациями по умолчанию</li>
+        <li><strong>Дженерики:</strong> параметрический полиморфизм с ограничениями протоколов</li>
+        <li><strong>Протоколы:</strong> структурные интерфейсы с реализациями по умолчанию</li>
       </ul>
 
       <hr class="divider">
@@ -251,7 +251,7 @@ supervised {
       <h1 id="stdlib-core">Стандартная библиотека</h1>
 
       <h2 id="stdlib-core">core</h2>
-      <p>Модуль <code>core</code> всегда в области видимости. Он предоставляет базовые типы (<code>Option</code>, <code>Result</code>, <code>Vec</code>, <code>Map</code>, <code>Set</code>, <code>str</code>, <code>[]u8</code>), базовые трейты (<code>Eq</code>, <code>Ord</code>, <code>Hash</code>, <code>Display</code>, <code>Debug</code>) и систему макросов.</p>
+      <p>Модуль <code>core</code> всегда в области видимости. Он предоставляет базовые типы (<code>Option</code>, <code>Result</code>, <code>Vec</code>, <code>Map</code>, <code>Set</code>, <code>str</code>, <code>[]u8</code>), базовые протоколы (<code>Eq</code>, <code>Ord</code>, <code>Hash</code>, <code>Display</code>, <code>Debug</code>) и систему макросов.</p>
 
       <h2 id="stdlib-io">io</h2>
       <p>Стандартный ввод, вывод и файловый ввод-вывод. Требует эффект <code>Io</code>. Включает <code>stdin()</code>, <code>stdout()</code>, <code>stderr()</code>, <code>File.open()</code>, <code>File.create()</code> и буферизованные ридеры/райтеры.</p>

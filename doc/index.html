@@ -206,14 +206,14 @@ fn get_profile(user_id u64) Cache Db -> Profile
       <hr class="divider">
 
       <h1 id="types">Types</h1>
-      <p>Nova has a static, inferred type system with algebraic data types, generics, and traits.</p>
+      <p>Nova has a static, inferred type system with algebraic data types, generics, and protocols.</p>
 
       <ul>
         <li><strong>Primitives:</strong> <code>int</code>, <code>i8</code> <code>i16</code> <code>i32</code> <code>i64</code>, <code>u8</code> <code>u16</code> <code>u32</code> <code>u64</code>, <code>f32</code> <code>f64</code>, <code>bool</code>, <code>char</code>, <code>str</code></li>
         <li><strong>Algebraic types:</strong> <code>struct</code> for products, <code>enum</code> for tagged unions</li>
         <li><strong>Option and Result:</strong> <code>Option[T]</code> and <code>Result[T, E]</code> are built-in enums, no null</li>
-        <li><strong>Generics:</strong> parametric polymorphism with trait bounds</li>
-        <li><strong>Traits:</strong> structural interfaces with default implementations</li>
+        <li><strong>Generics:</strong> parametric polymorphism with protocol bounds</li>
+        <li><strong>Protocols:</strong> structural interfaces with default implementations</li>
       </ul>
 
       <hr class="divider">
@@ -252,7 +252,7 @@ supervised {
       <h1 id="stdlib-core">Standard Library</h1>
 
       <h2 id="stdlib-core">core</h2>
-      <p>The <code>core</code> module is always in scope. It provides the fundamental types (<code>Option</code>, <code>Result</code>, <code>Vec</code>, <code>Map</code>, <code>Set</code>, <code>str</code>, <code>[]u8</code>), basic traits (<code>Eq</code>, <code>Ord</code>, <code>Hash</code>, <code>Display</code>, <code>Debug</code>), and the macro system.</p>
+      <p>The <code>core</code> module is always in scope. It provides the fundamental types (<code>Option</code>, <code>Result</code>, <code>Vec</code>, <code>Map</code>, <code>Set</code>, <code>str</code>, <code>[]u8</code>), basic protocols (<code>Eq</code>, <code>Ord</code>, <code>Hash</code>, <code>Display</code>, <code>Debug</code>), and the macro system.</p>
 
       <h2 id="stdlib-io">io</h2>
       <p>Standard input, output, and file I/O. Requires the <code>Io</code> effect. Includes <code>stdin()</code>, <code>stdout()</code>, <code>stderr()</code>, <code>File.open()</code>, <code>File.create()</code>, and buffered readers/writers.</p>
