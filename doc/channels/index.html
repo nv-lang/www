@@ -119,7 +119,7 @@
 
     <h2 id="quickstart">Quickstart</h2>
 
-<pre><code>test "channel: send + recv FIFO" {
+<pre><code class="language-nova">test "channel: send + recv FIFO" {
     let { tx, rx } = Channel.new(4)
     tx.send(10)
     tx.send(20)
@@ -133,7 +133,7 @@
     tx.close()
 }</code></pre>
 
-<pre><code>test "select: data wins over timeout" {
+<pre><code class="language-nova">test "select: data wins over timeout" {
     let ch = Channel.new(1)
     let tx = ch.tx
     let rx = ch.rx
@@ -154,11 +154,11 @@
 
     <h2 id="channel-new"><code>Channel.new</code></h2>
 
-<pre><code>fn Channel[T].new(capacity int) -&gt; { tx ChanWriter[T], rx ChanReader[T] }</code></pre>
+<pre><code class="language-nova">fn Channel[T].new(capacity int) -&gt; { tx ChanWriter[T], rx ChanReader[T] }</code></pre>
 
     <p>Returns a <strong>pair</strong> — a record with fields <code>tx</code> (writer capability) and <code>rx</code> (reader capability). Four extraction forms are supported:</p>
 
-<pre><code>// 1. Record destructure (Plan 53, most idiomatic)
+<pre><code class="language-nova">// 1. Record destructure (Plan 53, most idiomatic)
 let { tx, rx } = Channel.new(4)
 
 // 2. Record destructure with renaming
@@ -176,7 +176,7 @@ let rx = ch.rx</code></pre>
 
     <p>The element type (<code>T</code>) is inferred from the first <code>send</code>/<code>recv</code>:</p>
 
-<pre><code>let { tx, rx } = Channel.new(8)
+<pre><code class="language-nova">let { tx, rx } = Channel.new(8)
 tx.send(42)         // T = int
 let v = rx.recv()   // Option[int]</code></pre>
 
@@ -199,7 +199,7 @@ let v = rx.recv()   // Option[int]</code></pre>
 
     <h3 id="send-bool"><code>send</code> returns <code>bool</code></h3>
 
-<pre><code>test "channel: send after close returns false, does not panic" {
+<pre><code class="language-nova">test "channel: send after close returns false, does not panic" {
     let { tx, rx: _rx } = Channel.new(2)
     assert(tx.send(1))
     tx.close()
@@ -208,7 +208,7 @@ let v = rx.recv()   // Option[int]</code></pre>
 
     <p>Useful for graceful shutdown without try/catch wrapping:</p>
 
-<pre><code>fn produce(tx ChanWriter[Job], jobs []Job) {
+<pre><code class="language-nova">fn produce(tx ChanWriter[Job], jobs []Job) {
     let mut i = 0
     while i &lt; jobs.len() {
         if !tx.send(jobs[i]) {
@@ -220,7 +220,7 @@ let v = rx.recv()   // Option[int]</code></pre>
 
     <h3 id="try-send"><code>try_send</code> — non-blocking</h3>
 
-<pre><code>test "channel: try_send full buffer" {
+<pre><code class="language-nova">test "channel: try_send full buffer" {
     let { tx, rx } = Channel.new(2)
     assert(tx.try_send(10))
     assert(tx.try_send(20))
@@ -232,7 +232,7 @@ let v = rx.recv()   // Option[int]</code></pre>
 
     <h3 id="clone-multi-writer"><code>clone</code> — multi-writer</h3>
 
-<pre><code>test "channel: fan-in — two writers, one reader" {
+<pre><code class="language-nova">test "channel: fan-in — two writers, one reader" {
     let { tx, rx } = Channel.new(8)
     let tx2 = tx.clone()                // writer_count = 2
     let mut sum = 0
@@ -267,7 +267,7 @@ let v = rx.recv()   // Option[int]</code></pre>
 
     <p>A closed channel is <strong>not an error</strong>; it is a valid "source exhausted" outcome. <code>Option[T]</code> composes with <code>match</code>, <code>?</code>, <code>??</code>, and the idiomatic <code>while let</code> loop.</p>
 
-<pre><code>test "channel: close + recv drain" {
+<pre><code class="language-nova">test "channel: close + recv drain" {
     let { tx, rx } = Channel.new(4)
     tx.send(1)
     tx.send(2)
@@ -280,7 +280,7 @@ let v = rx.recv()   // Option[int]</code></pre>
 
     <h3 id="try-recv"><code>try_recv</code> distinguishes empty-open from empty-closed</h3>
 
-<pre><code>test "channel: try_recv distinguishes empty-open from empty-closed via is_closed" {
+<pre><code class="language-nova">test "channel: try_recv distinguishes empty-open from empty-closed via is_closed" {
     let { tx, rx } = Channel.new(4)
     assert(rx.try_recv().is_none())     // empty, open
     assert(!rx.is_closed())
@@ -291,7 +291,7 @@ let v = rx.recv()   // Option[int]</code></pre>
 
     <h3 id="len-capacity"><code>len</code> / <code>capacity</code></h3>
 
-<pre><code>test "channel: len and capacity" {
+<pre><code class="language-nova">test "channel: len and capacity" {
     let { tx, rx } = Channel.new(8)
     assert(rx.capacity() == 8)
     assert(rx.len() == 0)
@@ -309,7 +309,7 @@ let v = rx.recv()   // Option[int]</code></pre>
 
     <h3 id="drain-while-let">Drain via <code>while let</code></h3>
 
-<pre><code>test "channel: while-let drain pattern" {
+<pre><code class="language-nova">test "channel: while-let drain pattern" {
     let { tx, rx } = Channel.new(4)
     tx.send(10)
     tx.send(20)
@@ -326,7 +326,7 @@ let v = rx.recv()   // Option[int]</code></pre>
 
     <h3 id="producer-consumer">Producer/consumer</h3>
 
-<pre><code>test "channel: producer-consumer pipeline" {
+<pre><code class="language-nova">test "channel: producer-consumer pipeline" {
     let { tx, rx } = Channel.new(4)
     let mut sum = 0
     supervised {
@@ -349,7 +349,7 @@ let v = rx.recv()   // Option[int]</code></pre>
 
     <h3 id="ping-pong">Ping-pong</h3>
 
-<pre><code>test "channel: ping-pong" {
+<pre><code class="language-nova">test "channel: ping-pong" {
     let { tx: tx1, rx: rx1 } = Channel.new(1)
     let { tx: tx2, rx: rx2 } = Channel.new(1)
     let mut result = 0
@@ -373,7 +373,7 @@ let v = rx.recv()   // Option[int]</code></pre>
 
     <p>Several spawns produce, one consumes.</p>
 
-<pre><code>let { tx, rx } = Channel.new(8)
+<pre><code class="language-nova">let { tx, rx } = Channel.new(8)
 supervised {
     for item in work_items {
         let worker_tx = tx.clone()      // each spawn gets its own capability
@@ -394,7 +394,7 @@ supervised {
 
     <h3 id="relay">Relay (cross-channel pipeline)</h3>
 
-<pre><code>fn relay(rx ChanReader[int], tx ChanWriter[int]) {
+<pre><code class="language-nova">fn relay(rx ChanReader[int], tx ChanWriter[int]) {
     while let Some(v) = rx.recv() {
         tx.send(v * 2)
     }
@@ -418,7 +418,7 @@ test "channel: relay — Receiver → Sender pipeline through a function" {
 
     <p>Capability types in signatures make APIs explicit.</p>
 
-<pre><code>fn fill_channel(tx ChanWriter[int], values []int) {
+<pre><code class="language-nova">fn fill_channel(tx ChanWriter[int], values []int) {
     let mut i = 0
     while i &lt; values.len() {
         tx.send(values[i])
@@ -450,7 +450,7 @@ test "channel: Sender and Receiver passed independently" {
 
     <h3 id="select-syntax">Syntax and semantics</h3>
 
-<pre><code>select-expr  = 'select' '{' NL* select-arm+ '}'
+<pre><code class="language-nova">select-expr  = 'select' '{' NL* select-arm+ '}'
 select-arm   = channel-arm | default-arm
 channel-arm  = pattern '=' (recv-target | send-op) guard? '=&gt;' arm-body NL*
 recv-target  = expr                                 // bare rx
@@ -477,7 +477,7 @@ arm-body     = block | stmt</code></pre>
 
     <h3 id="recv-arm">Recv arm</h3>
 
-<pre><code>test "select single recv: value from channel" {
+<pre><code class="language-nova">test "select single recv: value from channel" {
     let ch = Channel.new(1)
     let tx = ch.tx
     let rx = ch.rx
@@ -495,7 +495,7 @@ arm-body     = block | stmt</code></pre>
 
     <h3 id="send-arm">Send arm</h3>
 
-<pre><code>test "select send arm: sends to channel with space" {
+<pre><code class="language-nova">test "select send arm: sends to channel with space" {
     let ch = Channel.new(1)
     let tx = ch.tx
     let rx = ch.rx
@@ -516,7 +516,7 @@ arm-body     = block | stmt</code></pre>
 
     <h3 id="guard-arms">Guard arms</h3>
 
-<pre><code>test "select guard: disabled arm falls through to default" {
+<pre><code class="language-nova">test "select guard: disabled arm falls through to default" {
     let ch = Channel.new(1)
     ch.tx.send(10)
     let rx = ch.rx
@@ -535,7 +535,7 @@ arm-body     = block | stmt</code></pre>
 
     <p><code>_ =&gt; { ... }</code> runs when no channel arm is ready <em>right now</em>. Turns <code>select</code> into a non-blocking probe.</p>
 
-<pre><code>test "select recv with default: default when channel empty" {
+<pre><code class="language-nova">test "select recv with default: default when channel empty" {
     let ch = Channel.new(1)
     let rx = ch.rx
     let mut branch = 0
@@ -550,7 +550,7 @@ arm-body     = block | stmt</code></pre>
 
     <p>A wildcard in the recv-target fires on <strong>both</strong> states: <code>Some(v)</code> and <code>None</code> (closed). <code>Some(v) = rx</code> fires only on a real value.</p>
 
-<pre><code>test "Some arm skips closed+empty, picks open channel with data" {
+<pre><code class="language-nova">test "Some arm skips closed+empty, picks open channel with data" {
     let ch1 = Channel.new(1)
     let ch2 = Channel.new(1)
     let tx1 = ch1.tx
@@ -594,7 +594,7 @@ test "wildcard fires immediately on closed+empty channel" {
 
     <p>There is no dedicated <code>timeout =&gt;</code> arm — a timeout is just a regular recv channel produced by <code>ChanReader.close_after(Duration)</code>.</p>
 
-<pre><code>import std.time.duration
+<pre><code class="language-nova">import std.time.duration
 
 test "select timeout: fires when channel stays empty" {
     let ch = Channel.new(1)
@@ -643,7 +643,7 @@ test "select timeout: data wins over timeout" {
 
     <h3 id="fairness">Multi-arm fairness</h3>
 
-<pre><code>test "select multi-arm: fairness — both channels get served" {
+<pre><code class="language-nova">test "select multi-arm: fairness — both channels get served" {
     let n = 50
     let ch1 = Channel.new(n)
     let ch2 = Channel.new(n)
@@ -686,7 +686,7 @@ test "select timeout: data wins over timeout" {
 
     <h2 id="supervised-cancel"><code>supervised(cancel:)</code> + <code>select</code></h2>
 
-<pre><code>test "select: data wins supervised(cancel:) race" {
+<pre><code class="language-nova">test "select: data wins supervised(cancel:) race" {
     let ch = Channel.new(1)
     let tx = ch.tx
     let rx = ch.rx
@@ -730,7 +730,7 @@ test "select timeout: data wins over timeout" {
 
     <p>Spec preference — <code>defer</code> guarantees <code>close</code> on scope exit:</p>
 
-<pre><code>fn run_pipeline() Net -&gt; () {
+<pre><code class="language-nova">fn run_pipeline() Net -&gt; () {
     let { tx, rx } = Channel[Job].new(10)
     defer tx.close()
 
@@ -745,7 +745,7 @@ test "select timeout: data wins over timeout" {
     <blockquote>
       <p>⚠️ <strong>Known issue:</strong> <code>defer tx.close()</code> does <strong>not</strong> work alongside <code>let (tx, rx) = Channel.new(N)</code> or <code>let { tx, rx } = Channel.new(N)</code> — <code>defer</code> emits the setjmp frame <em>before</em> the variable declarations, which breaks scope (Plan 25 G8 — will be fixed once open-coded defer lands).</p>
       <p><strong>Workaround:</strong> explicit <code>tx.close()</code> at the end of the function, or split the destructure:</p>
-<pre><code>let ch = Channel.new(N)
+<pre><code class="language-nova">let ch = Channel.new(N)
 let tx = ch.tx
 let rx = ch.rx
 defer tx.close()    // OK — tx is declared directly
@@ -758,7 +758,7 @@ defer tx.close()    // OK — tx is declared directly
 
     <h3>Idempotent</h3>
 
-<pre><code>test "channel: close idempotent" {
+<pre><code class="language-nova">test "channel: close idempotent" {
     let { tx, rx } = Channel.new(2)
     tx.close()
     tx.close()                  // not an error
@@ -831,5 +831,6 @@ defer tx.close()    // OK — tx is declared directly
   </div>
 </footer>
 
+<script src="../../js/nova-highlight.js"></script>
 </body>
 </html>
