@@ -193,7 +193,7 @@ fn get_profile(user_id u64) Cache Db -> Profile
         <li><code>invariant &lt;expr&gt;</code> — type invariant; must hold for every value of a type</li>
       </ul>
 
-      <p>Contracts are checked in three modes: <strong>static</strong> (SMT solver, compile-time, no cost), <strong>dynamic</strong> (runtime assertion in debug builds), and <strong>erased</strong> (zero overhead in release builds). The mode is selected per-clause with an optional <code>@static</code>, <code>@runtime</code>, or <code>@erased</code> attribute; the default is <code>@static</code> with automatic fallback to dynamic if the solver cannot decide.</p>
+      <p>The compiler checks contracts via an SMT solver at compile time — proven contracts are erased in release builds at zero runtime cost. If the solver cannot decide, the contract automatically falls back to a runtime assertion in debug builds. The <code>#must_verify</code> attribute on a function requires static proof — compilation fails if the solver cannot prove it.</p>
 
       <pre><code class="language-nova">fn sqrt(x f64) -> f64
     requires x >= 0.0
