@@ -693,12 +693,10 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
 /* ── Doc content headings ────────────────────────────────────────────────── */
 .doc-content h2 {
   font-size: 1.35rem;
-  margin-top: 2.75rem;
+  margin-top: 1.25rem;
   margin-bottom: 0.75rem;
-  padding-top: 0.5rem;
-  border-top: 1px solid var(--border-soft);
 }
-.doc-content h2:first-child { margin-top: 0; border-top: none; padding-top: 0; }
+.doc-content h2:first-child { margin-top: 0; }
 .doc-content h3 {
   font-size: 1.1rem;
   margin-top: 2rem;
