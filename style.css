@@ -688,6 +688,8 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
 .doc-sidebar {
   position: sticky;
   top: 72px;
+  max-height: calc(100vh - 72px);
+  overflow-y: auto;
 }
 
 /* ── Doc content headings ────────────────────────────────────────────────── */
