@@ -690,6 +690,36 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
   top: 72px;
 }
 
+/* ── Doc content headings ────────────────────────────────────────────────── */
+.doc-content h2 {
+  font-size: 1.35rem;
+  margin-top: 2.75rem;
+  margin-bottom: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-soft);
+}
+.doc-content h2:first-child { margin-top: 0; border-top: none; padding-top: 0; }
+.doc-content h3 {
+  font-size: 1.1rem;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+.doc-content h4 { font-size: 1rem; margin-top: 1.5rem; margin-bottom: 0.4rem; }
+.doc-content p  { margin-bottom: 1rem; }
+.doc-content ul, .doc-content ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+.doc-content li { margin-bottom: 0.4rem; }
+.doc-content pre { margin: 1.25rem 0; }
+.doc-content table { margin: 1.25rem 0; }
+.doc-content hr { margin: 2.5rem 0; border: none; border-top: 1px solid var(--border-soft); }
+.doc-content blockquote {
+  border-left: 3px solid var(--border);
+  margin: 1.25rem 0;
+  padding: 0.75rem 1rem;
+  background: var(--bg-alt);
+  border-radius: 0 4px 4px 0;
+}
+.doc-content blockquote p:last-child { margin-bottom: 0; }
+
 .sidebar-section {
   margin-bottom: 1.75rem;
 }
