@@ -344,49 +344,14 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] { scroll-margin-top: 72px; }
   gap: 0.6rem;
 }
 
-/* ── Hero ────────────────────────────────────────────────────────────────── */
-.hero {
-  background: var(--hero-bg);
-  border-bottom: 1px solid var(--border);
-  padding: 5rem 1.5rem 4.5rem;
-  text-align: center;
+/* ── Skip link (a11y) ────────────────────────────────────────────────────── */
+.skip-link {
+  position: absolute; top: -40px; left: 0; z-index: 999;
+  background: var(--accent); color: #fff;
+  padding: 0.5rem 1rem; border-radius: 0 0 4px 0;
+  text-decoration: none; font-size: .9rem;
 }
-
-.hero__badge {
-  display: inline-block;
-  background: var(--accent-light);
-  color: var(--accent);
-  font-size: 0.8rem;
-  font-weight: 700;
-  padding: 0.2rem 0.7rem;
-  border-radius: 100px;
-  margin-bottom: 1.25rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.hero h1 {
-  font-size: clamp(2.5rem, 6vw, 4rem);
-  font-weight: 900;
-  margin-bottom: 1rem;
-  color: var(--fg);
-}
-
-.hero__tagline {
-  font-size: clamp(1.1rem, 2.5vw, 1.35rem);
-  color: var(--fg-muted);
-  max-width: 640px;
-  margin-inline: auto;
-  margin-bottom: 2rem;
-}
-
-.hero__actions {
-  display: flex;
-  gap: 0.9rem;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-bottom: 0.5rem;
-}
+.skip-link:focus { top: 0; }
 
 /* ── Code block ──────────────────────────────────────────────────────────── */
 
@@ -930,4 +895,14 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
 .github-icon svg {
   width: 16px; height: 16px;
   fill: currentColor;
+}
+
+/* ── Print ───────────────────────────────────────────────────────────────── */
+@media print {
+  .site-header, .site-footer, .doc-sidebar, .nav-toggle { display: none; }
+  .doc-layout { display: block; }
+  .doc-content { max-width: 100%; }
+  body { background: white; color: black; }
+  a { color: black; text-decoration: underline; }
+  pre, code { background: #f5f5f5; border: 1px solid #ddd; }
 }

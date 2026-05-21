@@ -7,9 +7,25 @@
 <title>collections.hashmap — Standard Library — Nova</title>
 <meta name="description" content="Nova standard library: collections.hashmap — hash map with open addressing, linear probing, and map-literal syntax.">
 <link rel="canonical" href="https://nv-lang.org/doc/std/hashmap/">
+<link rel="alternate" hreflang="en" href="https://nv-lang.org/doc/std/hashmap/">
+<link rel="alternate" hreflang="ru" href="https://nv-lang.org/ru/doc/std/hashmap/">
+<link rel="alternate" hreflang="x-default" href="https://nv-lang.org/doc/std/hashmap/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nv-lang.org/doc/std/hashmap/">
+<meta property="og:title" content="collections.hashmap — Standard Library — Nova">
+<meta property="og:description" content="Nova standard library: collections.hashmap — hash map with open addressing, linear probing, and map-literal syntax.">
+<meta property="og:site_name" content="Nova">
+<meta property="og:image" content="https://nv-lang.org/og-image.svg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="collections.hashmap — Standard Library — Nova">
+<meta name="twitter:description" content="Nova standard library: collections.hashmap — hash map with open addressing, linear probing, and map-literal syntax.">
+<meta name="twitter:image" content="https://nv-lang.org/og-image.svg">
 <link rel="stylesheet" href="../../../style.css">
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
 
 <header class="site-header">
   <div class="site-header__inner">
@@ -113,7 +129,7 @@
     </div>
   </aside>
 
-  <main>
+  <main id="main-content">
     <article class="prose">
 
       <p><code>HashMap[K, V]</code> is Nova's hash map: open addressing with linear probing, automatic resize at <code>load_factor</code> (default 0.75). The key type must satisfy <code>Hashable</code> — a structural protocol requiring <code>hash() -> u64</code>. Built-in types (<code>str</code>, <code>int</code>, …) are Hashable by default.</p>

@@ -7,9 +7,25 @@
 <title>Channels and select — Nova</title>
 <meta name="description" content="Nova channels and select reference: Channel[T], ChanWriter, ChanReader, select arms, timeout, supervised cancel, idioms.">
 <link rel="canonical" href="https://nv-lang.org/doc/channels/">
+<link rel="alternate" hreflang="en" href="https://nv-lang.org/doc/channels/">
+<link rel="alternate" hreflang="ru" href="https://nv-lang.org/ru/doc/channels/">
+<link rel="alternate" hreflang="x-default" href="https://nv-lang.org/doc/channels/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nv-lang.org/doc/channels/">
+<meta property="og:title" content="Channels and select — Nova">
+<meta property="og:description" content="Nova channels and select reference: Channel[T], ChanWriter, ChanReader, select arms, timeout, supervised cancel, idioms.">
+<meta property="og:site_name" content="Nova">
+<meta property="og:image" content="https://nv-lang.org/og-image.svg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Channels and select — Nova">
+<meta name="twitter:description" content="Nova channels and select reference: Channel[T], ChanWriter, ChanReader, select arms, timeout, supervised cancel, idioms.">
+<meta name="twitter:image" content="https://nv-lang.org/og-image.svg">
 <link rel="stylesheet" href="../../style.css">
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
 
 <header class="site-header">
   <div class="site-header__inner">
@@ -110,7 +126,7 @@
     </div>
   </aside>
 
-  <main class="doc-content">
+  <main id="main-content" class="doc-content">
 
     <p><code>Channel[T]</code> is the primary inter-fiber communication primitive. The model is <strong>capability-split</strong> (Rust mpsc-style): <code>Channel.new(cap)</code> returns a <strong>pair</strong> of objects with split capabilities — <code>ChanWriter[T]</code> ("send only") and <code>ChanReader[T]</code> ("receive only").</p>
 
