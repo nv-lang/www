@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Language Specification вЂ” Nova</title>
+<title>Language Specification — Nova</title>
 <meta name="description" content="The Nova language specification: effects, contracts, type system, runtime semantics, and grammar.">
 <link rel="canonical" href="https://nv-lang.org/spec/">
 <link rel="stylesheet" href="../style.css">
@@ -61,7 +61,7 @@
   <ul class="spec-list">
 
     <li class="spec-list__item">
-      <span class="spec-list__num">В§1</span>
+      <span class="spec-list__num">§1</span>
       <div class="spec-list__body">
         <h3>Introduction &amp; Design Goals</h3>
         <p>Motivation for Nova, comparison with related languages, and the core design philosophy: explicit effects, machine-checkable contracts, no hidden control flow.</p>
@@ -72,7 +72,7 @@
     </li>
 
     <li class="spec-list__item">
-      <span class="spec-list__num">В§2</span>
+      <span class="spec-list__num">§2</span>
       <div class="spec-list__body">
         <h3>Lexical Structure</h3>
         <p>Source encoding (UTF-8), tokens, keywords, operators, string literals (raw, interpolated, byte), numeric literals, and comments.</p>
@@ -83,7 +83,7 @@
     </li>
 
     <li class="spec-list__item">
-      <span class="spec-list__num">В§3</span>
+      <span class="spec-list__num">§3</span>
       <div class="spec-list__body">
         <h3>Types</h3>
         <p>Primitive types, structs, enums (sum types), tuples, arrays, slices, function types, generic parameters, trait bounds, and the <code>Option[T]</code> and <code>Result[T, E]</code> built-ins. Nominal vs. structural typing rules.</p>
@@ -94,7 +94,7 @@
     </li>
 
     <li class="spec-list__item">
-      <span class="spec-list__num">В§4</span>
+      <span class="spec-list__num">§4</span>
       <div class="spec-list__body">
         <h3>Effects</h3>
         <p>The algebraic effect system: built-in effects, user-defined effect interfaces, effect handlers, effect polymorphism, and the <code>uses</code> clause in function signatures. Effect inference and checking rules.</p>
@@ -105,7 +105,7 @@
     </li>
 
     <li class="spec-list__item">
-      <span class="spec-list__num">В§5</span>
+      <span class="spec-list__num">§5</span>
       <div class="spec-list__body">
         <h3>Contracts</h3>
         <p><code>requires</code>, <code>ensures</code>, and <code>invariant</code> clauses: syntax, semantics, and the three checking modes (static via SMT, dynamic runtime assertion, erased). Contract inheritance, specialization, and the interaction with generics.</p>
@@ -116,7 +116,7 @@
     </li>
 
     <li class="spec-list__item">
-      <span class="spec-list__num">В§6</span>
+      <span class="spec-list__num">§6</span>
       <div class="spec-list__body">
         <h3>Expressions &amp; Statements</h3>
         <p>Operator precedence, pattern matching, <code>if</code>/<code>else</code>/<code>when</code>, loops, <code>let</code> bindings, closures, try operator <code>?</code>, and expression-based control flow.</p>
@@ -127,7 +127,7 @@
     </li>
 
     <li class="spec-list__item">
-      <span class="spec-list__num">В§7</span>
+      <span class="spec-list__num">§7</span>
       <div class="spec-list__body">
         <h3>Functions &amp; Methods</h3>
         <p>Function declarations, associated functions (methods), trait implementations, overloading rules, variadic functions, and inline/extern annotations.</p>
@@ -138,7 +138,7 @@
     </li>
 
     <li class="spec-list__item">
-      <span class="spec-list__num">В§8</span>
+      <span class="spec-list__num">§8</span>
       <div class="spec-list__body">
         <h3>Modules &amp; Packages</h3>
         <p>Module system, visibility (<code>pub</code>, <code>pub(pkg)</code>, private), the <code>use</code> import declaration, package layout conventions, and the <code>nv</code> package manager manifest format.</p>
@@ -149,7 +149,7 @@
     </li>
 
     <li class="spec-list__item">
-      <span class="spec-list__num">В§9</span>
+      <span class="spec-list__num">§9</span>
       <div class="spec-list__body">
         <h3>Concurrency &amp; Runtime</h3>
         <p>The M:N fiber model, the work-stealing scheduler, <code>spawn</code>, channels, structured concurrency scopes, and the <code>realtime nogc</code> annotation. Fiber lifecycle and cancellation.</p>
@@ -160,7 +160,7 @@
     </li>
 
     <li class="spec-list__item">
-      <span class="spec-list__num">В§10</span>
+      <span class="spec-list__num">§10</span>
       <div class="spec-list__body">
         <h3>Memory Model</h3>
         <p>Managed memory, GC interface, <code>realtime nogc</code> regions, stack-only types, and the rules for sharing data across fibers. Eventual path to ownership-based memory management.</p>
@@ -171,7 +171,7 @@
     </li>
 
     <li class="spec-list__item">
-      <span class="spec-list__num">В§11</span>
+      <span class="spec-list__num">§11</span>
       <div class="spec-list__body">
         <h3>Error Handling</h3>
         <p><code>Result[T, E]</code> as the primary error mechanism, the <code>?</code> propagation operator, error coercion via the <code>From</code> trait, panic semantics, and the distinction between recoverable and unrecoverable errors.</p>
@@ -182,7 +182,7 @@
     </li>
 
     <li class="spec-list__item">
-      <span class="spec-list__num">В§12</span>
+      <span class="spec-list__num">§12</span>
       <div class="spec-list__body">
         <h3>FFI &amp; Interoperability</h3>
         <p>Calling C from Nova (<code>extern "C"</code>), calling Nova from C, ABI stability, unsafe blocks, and the <code>@repr</code> layout annotations.</p>
@@ -193,7 +193,7 @@
     </li>
 
     <li class="spec-list__item">
-      <span class="spec-list__num">В§13</span>
+      <span class="spec-list__num">§13</span>
       <div class="spec-list__body">
         <h3>Grammar</h3>
         <p>Complete EBNF grammar for the Nova language, machine-readable and used to generate the parser. Updated automatically on each language change.</p>
@@ -213,13 +213,13 @@
   <p>Current D-block range: <strong>D1вЂ“D120</strong>. Selected highlights:</p>
 
   <ul>
-    <li><strong>D1</strong> вЂ” Why algebraic effects instead of monads or async/await</li>
-    <li><strong>D7</strong> вЂ” Contract checking modes and SMT solver integration</li>
-    <li><strong>D15</strong> вЂ” M:N runtime vs. async executor vs. OS threads</li>
-    <li><strong>D33</strong> вЂ” Contract inheritance and trait specialization rules</li>
-    <li><strong>D45</strong> вЂ” Documentation tooling and <code>nv doc</code> format</li>
-    <li><strong>D52</strong> вЂ” Redundant field specification in struct literals</li>
-    <li><strong>D63</strong> вЂ” Package manager manifest schema</li>
+    <li><strong>D1</strong> — Why algebraic effects instead of monads or async/await</li>
+    <li><strong>D7</strong> — Contract checking modes and SMT solver integration</li>
+    <li><strong>D15</strong> — M:N runtime vs. async executor vs. OS threads</li>
+    <li><strong>D33</strong> — Contract inheritance and trait specialization rules</li>
+    <li><strong>D45</strong> — Documentation tooling and <code>nv doc</code> format</li>
+    <li><strong>D52</strong> — Redundant field specification in struct literals</li>
+    <li><strong>D63</strong> — Package manager manifest schema</li>
   </ul>
 
   <p><a href="https://github.com/nv-lang/nova/tree/main/spec" class="btn btn-outline" style="display:inline-flex;margin-top:.75rem;">Browse all D-blocks on GitHub &rarr;</a></p>
