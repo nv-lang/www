@@ -138,6 +138,8 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] { scroll-margin-top: 72px; }
 }
 
 .site-logo {
+  display: flex;
+  align-items: center;
   font-size: 1.25rem;
   font-weight: 800;
   color: var(--fg);
@@ -145,7 +147,9 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] { scroll-margin-top: 72px; }
   text-decoration: none;
   flex-shrink: 0;
 }
+.site-logo img { height: 24px; width: auto; display: block; }
 .site-logo:hover { color: var(--accent); text-decoration: none; }
+.site-logo:hover img { opacity: 0.82; }
 
 .site-nav {
   display: flex;
@@ -255,6 +259,7 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] { scroll-margin-top: 72px; }
   color: var(--fg);
   letter-spacing: -0.02em;
 }
+.footer-brand img { height: 26px; width: auto; display: block; }
 
 .footer-col__title {
   font-size: 0.78rem;
