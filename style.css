@@ -3,6 +3,7 @@
 
 /* ── Custom properties ─────────────────────────────────────────────────── */
 :root {
+  color-scheme: light dark;
   --fg:           #1a1a1a;
   --fg-muted:     #5a5a6a;
   --fg-subtle:    #888899;
@@ -255,7 +256,7 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] { scroll-margin-top: 72px; }
   letter-spacing: -0.02em;
 }
 
-.footer-col h4 {
+.footer-col__title {
   font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -905,4 +906,14 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
   body { background: white; color: black; }
   a { color: black; text-decoration: underline; }
   pre, code { background: #f5f5f5; border: 1px solid #ddd; }
+}
+
+/* ── Reduced motion (a11y) ───────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
