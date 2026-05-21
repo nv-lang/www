@@ -3,20 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <link rel="icon" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f0f14" media="(prefers-color-scheme: dark)">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'self'; upgrade-insecure-requests">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nova — язык с эффектами, контрактами и M:N рантаймом</title>
 <meta name="description" content="Nova — язык системного уровня на основе алгебраических эффектов, статических контрактов и M:N рантайма. Каждый побочный эффект объявлен. Каждый инвариант проверяется.">
 <link rel="canonical" href="https://nv-lang.org/">
-<link rel="alternate" hreflang="en" href="https://nv-lang.org/">
-<link rel="alternate" hreflang="ru" href="https://nv-lang.org/ru/">
-<link rel="alternate" hreflang="x-default" href="https://nv-lang.org/">
-<meta property="og:image" content="https://nv-lang.org/og-image.svg">
+<link rel="alternate" hreflang="ru" href="https://nv-lang.org/">
+<link rel="alternate" hreflang="en" href="https://nv-lang.org/en/">
+<link rel="alternate" hreflang="x-default" href="https://nv-lang.org/en/">
+<meta property="og:image" content="https://nv-lang.org/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Nova — язык с эффектами, контрактами и M:N рантаймом">
 <meta name="twitter:description" content="Nova — язык системного уровня на основе алгебраических эффектов, статических контрактов и M:N рантайма. Каждый побочный эффект объявлен. Каждый инвариант проверяется.">
-<meta name="twitter:image" content="https://nv-lang.org/og-image.svg">
+<meta name="twitter:image" content="https://nv-lang.org/og-image.png">
 <link rel="stylesheet" href="style.css">
 <!-- OpenGraph -->
 <meta property="og:type" content="website">
@@ -71,6 +75,8 @@
     </div>
   </div>
 </header>
+
+<main id="main-content">
 
 <!-- ── Hero split ───────────────────────────────────────────────────────── -->
 <section style="background:var(--hero-bg);border-bottom:1px solid var(--border);">
@@ -183,7 +189,7 @@ fn serve_api() Net Http Log -> ()
 <!-- ── Install ────────────────────────────────────────────────────────────── -->
 <section class="install">
   <h2>Попробовать Nova</h2>
-  <p>Установить компилятор одной командой. Работает на Linux и macOS.</p>
+  <p>Установить компилятор одной командой — или выберите способ для своей ОС на <a href="/ru/install/">странице установки</a>.</p>
   <div class="install-cmd">
     <span class="install-cmd__prefix">$</span>
     <code>curl -sSf https://nv-lang.org/install.sh | sh</code>
@@ -207,6 +213,8 @@ fn serve_api() Net Http Log -> ()
 </section>
 
 <!-- ── Footer ─────────────────────────────────────────────────────────────── -->
+</main>
+
 <footer class="site-footer">
   <div class="site-footer__inner">
     <div>

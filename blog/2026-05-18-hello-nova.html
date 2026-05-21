@@ -1,8 +1,12 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <link rel="icon" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f0f14" media="(prefers-color-scheme: dark)">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'self'; upgrade-insecure-requests">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hello, Nova — Nova Blog</title>
 <meta name="description" content="Introducing Nova: what it is, why we're building it, and what already works today — algebraic effects, static contracts, M:N runtime, and documentation tooling.">
@@ -15,13 +19,13 @@
 <meta property="og:title" content="Hello, Nova — Nova Blog">
 <meta property="og:description" content="Introducing Nova: what it is, why we're building it, and what already works today — algebraic effects, static contracts, M:N runtime, and documentation tooling.">
 <meta property="og:site_name" content="Nova">
-<meta property="og:image" content="https://nv-lang.org/og-image.svg">
+<meta property="og:image" content="https://nv-lang.org/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Hello, Nova — Nova Blog">
 <meta name="twitter:description" content="Introducing Nova: what it is, why we're building it, and what already works today — algebraic effects, static contracts, M:N runtime, and documentation tooling.">
-<meta name="twitter:image" content="https://nv-lang.org/og-image.svg">
+<meta name="twitter:image" content="https://nv-lang.org/og-image.png">
 <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -192,7 +196,7 @@ fn serve_api() Net Http Log -> ()
 
     <h2>What comes next</h2>
 
-    <p>The near-term roadmap (Plans 60вЂ“64 in the repository) covers:</p>
+    <p>The near-term roadmap (Plans 60–64 in the repository) covers:</p>
     <ul>
       <li>The <code>nv</code> package manager: manifest format, dependency resolution, and a public registry</li>
       <li>Language server (<code>nova-lsp</code>): completions, go-to-definition, inline contract diagnostics</li>

@@ -3,14 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <link rel="icon" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f0f14" media="(prefers-color-scheme: dark)">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'self'; upgrade-insecure-requests">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nova — a systems language with effects, contracts, and M:N runtime</title>
 <meta name="description" content="Nova is a general-purpose systems language built around algebraic effects, static contracts, and an M:N concurrency runtime. Designed for correctness and clarity.">
 <link rel="canonical" href="https://nv-lang.org/en/">
-<link rel="alternate" hreflang="en" href="https://nv-lang.org/">
-<link rel="alternate" hreflang="ru" href="https://nv-lang.org/ru/">
-<link rel="alternate" hreflang="x-default" href="https://nv-lang.org/">
-<meta property="og:image" content="https://nv-lang.org/og-image.svg">
+<link rel="alternate" hreflang="ru" href="https://nv-lang.org/">
+<link rel="alternate" hreflang="en" href="https://nv-lang.org/en/">
+<link rel="alternate" hreflang="x-default" href="https://nv-lang.org/en/">
+<meta property="og:image" content="https://nv-lang.org/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <link rel="stylesheet" href="../style.css">
@@ -20,9 +24,25 @@
 <meta property="og:title" content="Nova — systems language with effects and contracts">
 <meta property="og:description" content="A general-purpose systems language built around algebraic effects, static contracts, and an M:N concurrency runtime.">
 <meta property="og:site_name" content="Nova">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Nova — systems language with effects and contracts">
 <meta name="twitter:description" content="A general-purpose systems language built around algebraic effects, static contracts, and an M:N concurrency runtime.">
+<meta name="twitter:image" content="https://nv-lang.org/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Nova",
+  "description": "General-purpose systems language with algebraic effects, static contracts, and lightweight M:N runtime.",
+  "url": "https://nv-lang.org",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Linux, macOS, Windows",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "license": "https://opensource.org/licenses/MIT",
+  "codeRepository": "https://github.com/nv-lang/nova",
+  "programmingLanguage": "Nova"
+}
+</script>
 </head>
 <body>
 <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -55,6 +75,8 @@
     </div>
   </div>
 </header>
+
+<main id="main-content">
 
 <!-- ── Hero split ───────────────────────────────────────────────────────── -->
 <section style="background:var(--hero-bg);border-bottom:1px solid var(--border);">
@@ -169,7 +191,7 @@ fn serve_api() Net Http Log -> ()
 <!-- ── Install ────────────────────────────────────────────────────────────── -->
 <section class="install">
   <h2>Try Nova</h2>
-  <p>Install the compiler with a single command. Runs on Linux and macOS.</p>
+  <p>Install the compiler with a single command — or pick your platform on the <a href="/install/">install page</a>.</p>
   <div class="install-cmd">
     <span class="install-cmd__prefix">$</span>
     <code>curl -sSf https://nv-lang.org/install.sh | sh</code>
@@ -193,6 +215,8 @@ fn serve_api() Net Http Log -> ()
 </section>
 
 <!-- ── Footer ─────────────────────────────────────────────────────────────── -->
+</main>
+
 <footer class="site-footer">
   <div class="site-footer__inner">
     <div>
