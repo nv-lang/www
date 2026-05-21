@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
 # Plan www-01: Production hardening сайта nv-lang.org
 
-> **Статус:** 🔄 В работе.
+> **Статус:** ✅ Выполнен (2026-05-21).
 > **Создан:** 2026-05-21. **Приоритет:** P1 (блокеры прода) → P2 (SEO/инфра) → P3 (minor).
 > **Трудоёмкость:** ~1 dev-day суммарно.
 > **Репо:** `d:\Sources\nv-lang\www\`
