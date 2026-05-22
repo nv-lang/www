@@ -9,6 +9,7 @@
     "dev": "astro dev",
     "prebuild": "node scripts/sync-decisions.mjs",
     "build": "astro build",
+    "postbuild": "node scripts/check-links.mjs",
     "preview": "astro preview",
     "precheck": "node scripts/sync-decisions.mjs",
     "check": "astro check"
