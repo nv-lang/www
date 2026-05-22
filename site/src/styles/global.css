@@ -233,6 +233,9 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] { scroll-margin-top: 72px; }
   }
   .site-nav.open { display: flex; }
   .site-nav a { font-size: 1rem; padding: 0.5rem 0.75rem; }
+  /* узкая шапка: меньше зазор/поля, кнопка GitHub — только иконка */
+  .site-header__inner { gap: 0.6rem; padding-inline: 1rem; }
+  .gh-label { display: none; }
 }
 
 /* ── Footer ─────────────────────────────────────────────────────────────── */
