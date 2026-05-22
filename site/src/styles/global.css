@@ -381,6 +381,13 @@ pre code {
   font-size: 0.875rem;
 }
 
+/* На узких экранах код мельче и с меньшими полями — больше помещается
+   без горизонтального скролла. */
+@media (max-width: 600px) {
+  pre { padding: 1rem 1.1rem; }
+  pre code { font-size: 0.78rem; }
+}
+
 code {
   background: var(--bg-code);
   padding: 0.12em 0.38em;
@@ -609,6 +616,11 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
   .hero-split__text { order: 1; }
 }
 
+/* min-width:0 — грид-колонка может сжиматься: код внутри скроллится
+   по горизонтали, а не распирает страницу на узком экране. */
+.hero-split__code,
+.hero-split__text { min-width: 0; }
+
 .hero-split__text .badge {
   display: inline-block;
   background: var(--accent-light);
@@ -655,6 +667,10 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
   .doc-layout { grid-template-columns: 1fr; }
   .doc-sidebar { position: static !important; }
 }
+
+/* min-width:0 — колонка контента может сжиматься: широкий код
+   скроллится внутри блока, а не распирает страницу. */
+.doc-content { min-width: 0; }
 
 .doc-sidebar {
   position: sticky;
