@@ -13,13 +13,13 @@ const showLangSwitch = Boolean(langRuUrl && langEnUrl);
 const t = lang === 'ru'
   ? {
       labels: { home: 'Главная', install: 'Установка', doc: 'Doc', spec: 'Spec', blog: 'Blog' },
-      urls: { home: '/', install: '/ru/install/', doc: '/ru/doc/', spec: '/ru/spec/', blog: '/ru/blog/' },
-      logo: '/', nav: 'Основная', toggle: 'Навигация', langLabel: 'Язык',
+      urls: { home: '/ru/', install: '/ru/install/', doc: '/ru/doc/', spec: '/ru/spec/', blog: '/ru/blog/' },
+      logo: '/ru/', nav: 'Основная', toggle: 'Навигация', langLabel: 'Язык',
     }
   : {
       labels: { home: 'Home', install: 'Install', doc: 'Doc', spec: 'Spec', blog: 'Blog' },
-      urls: { home: '/en/', install: '/install/', doc: '/doc/', spec: '/spec/', blog: '/blog/' },
-      logo: '/en/', nav: 'Main', toggle: 'Toggle navigation', langLabel: 'Language',
+      urls: { home: '/', install: '/install/', doc: '/doc/', spec: '/spec/', blog: '/blog/' },
+      logo: '/', nav: 'Main', toggle: 'Toggle navigation', langLabel: 'Language',
     };
 const items = ['home', 'install', 'doc', 'spec', 'blog'] as const;
 ---

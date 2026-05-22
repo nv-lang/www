@@ -8,18 +8,18 @@
     <lastmod>2026-05-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://nv-lang.org/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nv-lang.org/en/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://nv-lang.org/en/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nv-lang.org/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://nv-lang.org/ru/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nv-lang.org/"/>
   </url>
   <url>
-    <loc>https://nv-lang.org/en/</loc>
+    <loc>https://nv-lang.org/ru/</loc>
     <lastmod>2026-05-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://nv-lang.org/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nv-lang.org/en/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://nv-lang.org/en/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nv-lang.org/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://nv-lang.org/ru/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nv-lang.org/"/>
   </url>
 
   <!-- ── English pages ──────────────────────────────────────────────────── -->
