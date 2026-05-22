@@ -393,6 +393,9 @@ code {
   padding: 0.12em 0.38em;
   border-radius: 4px;
   border: 1px solid var(--border-soft);
+  /* длинный инлайн-код переносится, а не распирает страницу на мобильном
+     (<pre> защищён white-space:pre — блочный код не переносится) */
+  overflow-wrap: anywhere;
 }
 
 /* Extra safety: nova code blocks strip all inline-code decoration */
@@ -684,9 +687,11 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
   .doc-sidebar { position: static !important; }
 }
 
-/* min-width:0 — колонка контента может сжиматься: широкий код
-   скроллится внутри блока, а не распирает страницу. */
-.doc-content { min-width: 0; }
+/* Грид-колонки doc-layout (сайдбар + main) могут сжиматься: широкий
+   код/таблицы скроллятся внутри, а не распирают страницу на мобильном.
+   Грид-элемент — это <main>, а не .doc-content/.prose внутри него. */
+.doc-layout > * { min-width: 0; }
+.doc-layout table { display: block; overflow-x: auto; max-width: 100%; }
 
 .doc-sidebar {
   position: sticky;
