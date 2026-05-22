@@ -1,24 +1,45 @@
 ---
-// BaseLayout — базовый каркас страницы.
-// Ф.1: минимальный скелет. В Ф.2 сюда подключаются Head/Header/Footer
-// и переносится укреплённый <head> из плана www-01 (CSP, og, hreflang, JSON-LD).
+// BaseLayout — единый каркас страницы: <html>, <head>, шапка, подвал,
+// скрипт подсветки. Контент страницы приходит в default-слот.
+import '../styles/global.css';
+import Head from '../components/Head.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
 interface Props {
   title: string;
-  description?: string;
-  lang?: string;
+  description: string;
+  canonical: string;
+  lang: 'ru' | 'en';
+  hreflangRu: string;
+  hreflangEn: string;
+  hreflangXDefault?: string;
+  ogType?: string;
+  ogUrl?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  twitterTitle?: string;
+  twitterDescription?: string;
+  jsonLd?: boolean;
+  noindex?: boolean;
+  active?: 'home' | 'install' | 'doc' | 'spec' | 'blog';
+  customFooter?: boolean;
 }
-const { title, description = '', lang = 'ru' } = Astro.props;
+const p = Astro.props;
+const { lang, active, customFooter = false } = p;
 ---
 
 <!DOCTYPE html>
 <html lang={lang}>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title}</title>
-    {description && <meta name="description" content={description} />}
+    <Head {...p} />
+    <slot name="head-extra" />
   </head>
   <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <Header lang={lang} active={active} ruUrl={p.hreflangRu} enUrl={p.hreflangEn} />
     <slot />
+    {!customFooter && <Footer lang={lang} />}
+    <script src="/js/nova-highlight.js" is:inline></script>
   </body>
 </html>

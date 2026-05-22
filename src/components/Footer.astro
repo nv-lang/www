@@ -1,0 +1,54 @@
+---
+// Footer — стандартный подвал (RU/EN). Страница install использует свой
+// расширенный подвал — там BaseLayout вызывается с customFooter.
+interface Props {
+  lang: 'ru' | 'en';
+}
+const { lang } = Astro.props;
+const ru = lang === 'ru';
+---
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div>
+      <div class="footer-brand"><img src="/logo.svg" alt="Nova" /></div>
+      <p style="font-size:.85rem;color:var(--fg-muted);margin-top:.5rem;max-width:220px;">
+        {ru
+          ? 'Язык системного уровня для ясности и корректности.'
+          : 'A systems language built for clarity and correctness.'}
+      </p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col__title">{ru ? 'Язык' : 'Language'}</div>
+      <ul>
+        <li><a href={ru ? '/ru/doc/' : '/doc/'}>{ru ? 'Документация' : 'Documentation'}</a></li>
+        <li><a href={ru ? '/ru/spec/' : '/spec/'}>{ru ? 'Спецификация' : 'Specification'}</a></li>
+        <li><a href={ru ? '/ru/blog/' : '/blog/'}>{ru ? 'Блог' : 'Blog'}</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col__title">{ru ? 'Проект' : 'Project'}</div>
+      <ul>
+        <li><a href="https://github.com/nv-lang/nova">GitHub</a></li>
+        <li><a href="https://github.com/nv-lang/nova/releases">{ru ? 'Релизы' : 'Releases'}</a></li>
+        <li><a href="https://github.com/nv-lang/nova/tree/main/docs/plans">Roadmap</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col__title">{ru ? 'Контакты' : 'Contact'}</div>
+      <ul>
+        <li><a href="mailto:hello@nv-lang.org">hello@nv-lang.org</a></li>
+        <li><a href="mailto:security@nv-lang.org">security@nv-lang.org</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>
+      {ru
+        ? 'Nova © 2026. Код: MIT OR Apache-2.0. Документация: '
+        : 'Nova © 2026. Code: MIT OR Apache-2.0. Docs: '}
+      <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+    </span>
+    <span><a href="https://github.com/nv-lang/www">{ru ? 'Исходники сайта' : 'Site source'}</a></span>
+  </div>
+</footer>

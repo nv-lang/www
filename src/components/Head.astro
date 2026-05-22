@@ -1,0 +1,75 @@
+---
+// Head — содержимое <head>. Воспроизводит укреплённый набор мета-тегов
+// из плана www-01 (CSP, theme-color, og/twitter, hreflang, JSON-LD).
+interface Props {
+  title: string;
+  description: string;
+  canonical: string;
+  hreflangRu: string;
+  hreflangEn: string;
+  hreflangXDefault?: string;
+  ogType?: string;
+  ogUrl?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  twitterTitle?: string;
+  twitterDescription?: string;
+  jsonLd?: boolean;
+  noindex?: boolean;
+}
+const {
+  title, description, canonical,
+  hreflangRu, hreflangEn, hreflangXDefault,
+  ogType = 'website', ogUrl, ogTitle, ogDescription,
+  twitterTitle, twitterDescription, jsonLd = false, noindex = false,
+} = Astro.props;
+
+const OG_IMAGE = 'https://nv-lang.org/og-image.png';
+const CSP =
+  "default-src 'self'; script-src 'self' 'unsafe-inline'; " +
+  "style-src 'self' 'unsafe-inline'; img-src 'self' data:; " +
+  "object-src 'none'; base-uri 'self'; upgrade-insecure-requests";
+
+const jsonLdData = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Nova',
+  description:
+    'General-purpose systems language with algebraic effects, static contracts, and lightweight M:N runtime.',
+  url: 'https://nv-lang.org',
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Linux, macOS, Windows',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  license: 'https://opensource.org/licenses/MIT',
+  codeRepository: 'https://github.com/nv-lang/nova',
+  programmingLanguage: 'Nova',
+};
+---
+
+<meta charset="UTF-8" />
+<link rel="icon" href="/favicon.svg" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0f0f14" media="(prefers-color-scheme: dark)" />
+<meta http-equiv="Content-Security-Policy" content={CSP} />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{title}</title>
+<meta name="description" content={description} />
+{noindex && <meta name="robots" content="noindex" />}
+<link rel="canonical" href={canonical} />
+<link rel="alternate" hreflang="ru" href={hreflangRu} />
+<link rel="alternate" hreflang="en" href={hreflangEn} />
+<link rel="alternate" hreflang="x-default" href={hreflangXDefault ?? hreflangEn} />
+<meta property="og:type" content={ogType} />
+<meta property="og:url" content={ogUrl ?? canonical} />
+<meta property="og:title" content={ogTitle ?? title} />
+<meta property="og:description" content={ogDescription ?? description} />
+<meta property="og:site_name" content="Nova" />
+<meta property="og:image" content={OG_IMAGE} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={twitterTitle ?? title} />
+<meta name="twitter:description" content={twitterDescription ?? description} />
+<meta name="twitter:image" content={OG_IMAGE} />
+{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLdData)} />}

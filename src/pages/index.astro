@@ -1,13 +1,21 @@
 ---
+// Временная заглушка (Ф.2) — проверяет компиляцию компонентов и layout.
+// Заменяется реальной главной в Ф.3–Ф.4.
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Nova — каркас Astro (Ф.1)" description="Скелет Astro-проекта.">
-  <main>
-    <h1>Каркас Astro готов</h1>
-    <p>
-      Временная страница-заглушка фазы Ф.1 плана www-02. Реальный контент
-      переносится в Ф.3–Ф.4, layout с шапкой/подвалом — в Ф.2.
-    </p>
+<BaseLayout
+  title="Nova — каркас Astro (Ф.2)"
+  description="Скелет Astro-проекта: проверка компонентов Head/Header/Footer."
+  canonical="https://nv-lang.org/"
+  lang="ru"
+  hreflangRu="https://nv-lang.org/"
+  hreflangEn="https://nv-lang.org/en/"
+  active="home"
+>
+  <main id="main-content" class="container" style="padding-block:3rem;">
+    <h1>Каркас Astro — Ф.2 готова</h1>
+    <p>Компоненты Head / Header / Footer и BaseLayout скомпилированы.
+       Реальный контент переносится в Ф.3–Ф.4.</p>
   </main>
 </BaseLayout>
