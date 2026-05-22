@@ -11,7 +11,7 @@
     <div class="sidebar-section">
       <div class="sidebar-section__title">Обзор</div>
       <ul>
-        <li><a href="#quickstart">Quickstart</a></li>
+        <li><a href="#quickstart">Быстрый старт</a></li>
         <li><a href="#channel-new">Channel.new</a></li>
       </ul>
     </div>
@@ -21,7 +21,7 @@
         <li><a href="#chanwriter-api">Таблица API</a></li>
         <li><a href="#send-bool">send возвращает bool</a></li>
         <li><a href="#try-send">try_send</a></li>
-        <li><a href="#clone-multi-writer">clone (multi-writer)</a></li>
+        <li><a href="#clone-multi-writer">clone (несколько отправителей)</a></li>
       </ul>
     </div>
     <div class="sidebar-section">
@@ -36,11 +36,11 @@
     <div class="sidebar-section">
       <div class="sidebar-section__title">Идиомы</div>
       <ul>
-        <li><a href="#drain-while-let">Drain через while let</a></li>
-        <li><a href="#producer-consumer">Producer/consumer</a></li>
+        <li><a href="#drain-while-let">Опустошение через while let</a></li>
+        <li><a href="#producer-consumer">Производитель / потребитель</a></li>
         <li><a href="#ping-pong">Ping-pong</a></li>
-        <li><a href="#fan-in">Fan-in (multi-writer)</a></li>
-        <li><a href="#relay">Relay (pipeline)</a></li>
+        <li><a href="#fan-in">Сбор из нескольких источников</a></li>
+        <li><a href="#relay">Перекачка между каналами</a></li>
         <li><a href="#passing-to-functions">Передача в функции</a></li>
       </ul>
     </div>
@@ -48,13 +48,13 @@
       <div class="sidebar-section__title">select { ... }</div>
       <ul>
         <li><a href="#select-syntax">Синтаксис и семантика</a></li>
-        <li><a href="#recv-arm">Recv arm</a></li>
-        <li><a href="#send-arm">Send arm</a></li>
-        <li><a href="#guard-arms">Guard arms</a></li>
-        <li><a href="#default-arm">Default arm</a></li>
-        <li><a href="#wildcard">Wildcard _ = rx</a></li>
-        <li><a href="#timeout">Timeout</a></li>
-        <li><a href="#fairness">Multi-arm fairness</a></li>
+        <li><a href="#recv-arm">Ветка приёма</a></li>
+        <li><a href="#send-arm">Ветка отправки</a></li>
+        <li><a href="#guard-arms">Ветки с условием</a></li>
+        <li><a href="#default-arm">Ветка по умолчанию</a></li>
+        <li><a href="#wildcard">Шаблон _ = rx</a></li>
+        <li><a href="#timeout">Таймаут</a></li>
+        <li><a href="#fairness">Справедливость между ветками</a></li>
       </ul>
     </div>
     <div class="sidebar-section">
@@ -62,8 +62,8 @@
       <ul>
         <li><a href="#supervised-cancel">supervised(cancel:) + select</a></li>
         <li><a href="#closing">Закрытие каналов</a></li>
-        <li><a href="#panic-scenarios">Panic-сценарии</a></li>
-        <li><a href="#bootstrap-limitations">Bootstrap-ограничения</a></li>
+        <li><a href="#panic-scenarios">Сценарии паники</a></li>
+        <li><a href="#bootstrap-limitations">Ограничения bootstrap</a></li>
         <li><a href="#related">Связанные документы</a></li>
       </ul>
     </div>
@@ -77,7 +77,7 @@
 
     <hr>
 
-    <h2 id="quickstart">Quickstart</h2>
+    <h2 id="quickstart">Быстрый старт</h2>
 
 <pre><code class="language-nova">test "channel: send + recv FIFO" {
     let { tx, rx } = Channel.new(4)
@@ -178,7 +178,7 @@ let v = rx.recv()   // Option[int]</code></pre>
     }
 }</code></pre>
 
-    <h3 id="try-send"><code>try_send</code> — non-blocking</h3>
+    <h3 id="try-send"><code>try_send</code> — неблокирующая отправка</h3>
 
 <pre><code class="language-nova">test "channel: try_send full buffer" {
     let { tx, rx } = Channel.new(2)
@@ -190,7 +190,7 @@ let v = rx.recv()   // Option[int]</code></pre>
     tx.close()
 }</code></pre>
 
-    <h3 id="clone-multi-writer"><code>clone</code> — multi-writer</h3>
+    <h3 id="clone-multi-writer"><code>clone</code> — несколько отправителей</h3>
 
 <pre><code class="language-nova">test "channel: fan-in — два writer'а, один reader" {
     let { tx, rx } = Channel.new(8)
@@ -238,7 +238,7 @@ let v = rx.recv()   // Option[int]</code></pre>
     assert(rx.recv().is_none())             // повторно — тоже None
 }</code></pre>
 
-    <h3 id="try-recv"><code>try_recv</code> различает empty-open vs empty-closed</h3>
+    <h3 id="try-recv"><code>try_recv</code> различает «пусто и открыт» и «пусто и закрыт»</h3>
 
 <pre><code class="language-nova">test "channel: try_recv различает empty-open от empty-closed через is_closed" {
     let { tx, rx } = Channel.new(4)
@@ -267,7 +267,7 @@ let v = rx.recv()   // Option[int]</code></pre>
 
     <h2 id="idioms">Идиомы</h2>
 
-    <h3 id="drain-while-let">Drain через <code>while let</code></h3>
+    <h3 id="drain-while-let">Опустошение через <code>while let</code></h3>
 
 <pre><code class="language-nova">test "channel: while-let drain pattern" {
     let { tx, rx } = Channel.new(4)
@@ -284,7 +284,7 @@ let v = rx.recv()   // Option[int]</code></pre>
 
     <p>Это <strong>самый идиоматичный</strong> receiver-pattern. Цикл завершается автоматически, когда канал закрылся и буфер пуст — <code>recv()</code> вернёт <code>None</code>.</p>
 
-    <h3 id="producer-consumer">Producer/consumer</h3>
+    <h3 id="producer-consumer">Производитель / потребитель</h3>
 
 <pre><code class="language-nova">test "channel: producer-consumer pipeline" {
     let { tx, rx } = Channel.new(4)
@@ -329,9 +329,9 @@ let v = rx.recv()   // Option[int]</code></pre>
     assert(result == 20)
 }</code></pre>
 
-    <h3 id="fan-in">Fan-in (multi-writer)</h3>
+    <h3 id="fan-in">Сбор из нескольких источников (fan-in)</h3>
 
-    <p>Несколько spawn'ов производят, один потребляет.</p>
+    <p>Несколько фиберов производят, один потребляет.</p>
 
 <pre><code class="language-nova">let { tx, rx } = Channel.new(8)
 supervised {
@@ -352,7 +352,7 @@ supervised {
 
     <p><strong>Почему <code>clone()</code> обязателен:</strong> без него все spawn'ы захватили бы один <code>tx</code> через managed reference; <code>close()</code> первого закрыл бы канал для всех. С <code>clone()</code> каждый spawn держит свою capability и закрывает её независимо — канал закрывается только когда все <code>worker_count + 1</code> writers вызвали <code>close()</code>.</p>
 
-    <h3 id="relay">Relay (cross-channel pipeline)</h3>
+    <h3 id="relay">Перекачка между каналами (relay)</h3>
 
 <pre><code class="language-nova">fn relay(rx ChanReader[int], tx ChanWriter[int]) {
     while let Some(v) = rx.recv() {
@@ -425,17 +425,17 @@ arm-body     = block | stmt</code></pre>
 
     <p><strong>Семантика</strong> (<a href="/spec/decisions/concurrency/#d94">D94</a>):</p>
     <ol>
-      <li><strong>Guard evaluation</strong> — <code>if &lt;expr&gt;</code> перед стрелкой делает arm disabled когда false.</li>
-      <li><strong>Immediate check</strong> — все enabled arms проверяются в псевдослучайном порядке (Fisher-Yates). Если ≥1 готов — выполняется без park'а.</li>
-      <li><strong>Park</strong> — если ни один не готов и нет default: регистрирует waiter на каждый arm, паркует fiber.</li>
-      <li><strong>Wake</strong> — первый готовый arm будит fiber; остальные waiters unlinked. <code>done</code>-флаг предотвращает double-wake.</li>
-      <li><strong>Fairness</strong> — Fisher-Yates shuffle на каждой итерации (нет starvation).</li>
-      <li><strong><code>_ =&gt; ...</code> (default)</strong> — если присутствует: шаг 2 всегда succeeds, fiber не паркуется.</li>
-      <li><strong>Все каналы закрыты + нет default</strong> → panic <code>"select: all channels closed"</code>.</li>
-      <li><strong>Cancel</strong> (<code>tok.cancel()</code> от <code>supervised(cancel:)</code>) — отменяет все pending waiters; fiber просыпается, проверяет <code>cancel_requested</code>.</li>
+      <li><strong>Проверка условия</strong> — <code>if &lt;expr&gt;</code> перед стрелкой выключает ветку, если выражение ложно.</li>
+      <li><strong>Немедленная проверка</strong> — все включённые ветки проверяются в псевдослучайном порядке (Fisher-Yates). Если готова хотя бы одна — она выполняется без парковки.</li>
+      <li><strong>Парковка</strong> — если ни одна не готова и нет ветки по умолчанию: на каждую ветку регистрируется ожидание, фибер паркуется.</li>
+      <li><strong>Пробуждение</strong> — первая готовая ветка будит фибер; остальные ожидания снимаются. Флаг <code>done</code> предотвращает двойное пробуждение.</li>
+      <li><strong>Справедливость</strong> — перетасовка Fisher-Yates на каждой итерации (нет голодания веток).</li>
+      <li><strong><code>_ =&gt; ...</code> (ветка по умолчанию)</strong> — если присутствует: шаг 2 всегда успешен, фибер не паркуется.</li>
+      <li><strong>Все каналы закрыты и нет ветки по умолчанию</strong> → паника <code>"select: all channels closed"</code>.</li>
+      <li><strong>Отмена</strong> (<code>tok.cancel()</code> от <code>supervised(cancel:)</code>) — снимает все ожидания; фибер просыпается и проверяет <code>cancel_requested</code>.</li>
     </ol>
 
-    <h3 id="recv-arm">Recv arm</h3>
+    <h3 id="recv-arm">Ветка приёма</h3>
 
 <pre><code class="language-nova">test "select single recv: value from channel" {
     let ch = Channel.new(1)
@@ -453,7 +453,7 @@ arm-body     = block | stmt</code></pre>
     }
 }</code></pre>
 
-    <h3 id="send-arm">Send arm</h3>
+    <h3 id="send-arm">Ветка отправки</h3>
 
 <pre><code class="language-nova">test "select send arm: sends to channel with space" {
     let ch = Channel.new(1)
@@ -474,7 +474,7 @@ arm-body     = block | stmt</code></pre>
     assert(got == 77)
 }</code></pre>
 
-    <h3 id="guard-arms">Guard arms</h3>
+    <h3 id="guard-arms">Ветки с условием</h3>
 
 <pre><code class="language-nova">test "select guard: disabled arm skips to default" {
     let ch = Channel.new(1)
@@ -491,7 +491,7 @@ arm-body     = block | stmt</code></pre>
 
     <p>Guard — pre-condition. Если <code>false</code>, arm выключен ещё до проверки ready-state канала. Аналог <code>if</code> в Tokio <code>select!</code>. Go guard'ы не поддерживает.</p>
 
-    <h3 id="default-arm">Default arm</h3>
+    <h3 id="default-arm">Ветка по умолчанию</h3>
 
     <p><code>_ =&gt; { ... }</code> — выполняется если ни один channel-arm не готов <em>сейчас</em>. Превращает <code>select</code> в non-blocking.</p>
 
@@ -506,7 +506,7 @@ arm-body     = block | stmt</code></pre>
     assert(branch == 2)
 }</code></pre>
 
-    <h3 id="wildcard">Wildcard <code>_ = rx</code></h3>
+    <h3 id="wildcard">Шаблон <code>_ = rx</code></h3>
 
     <p>Wildcard в recv-target срабатывает на <strong>оба</strong> состояния: <code>Some(v)</code> и <code>None</code> (closed). <code>Some(v) = rx</code> срабатывает только на реальное значение.</p>
 
@@ -550,7 +550,7 @@ test "wildcard fires immediately on closed+empty channel" {
 
     <p><code>None = rx</code> отдельным arm пока не реализован (Plan 31 §«Отличия от spec»); для дифференциации используйте <code>_ = rx</code> + <code>match</code> внутри тела arm'а или <code>rx.is_closed()</code> после <code>recv</code>-а.</p>
 
-    <h3 id="timeout">Timeout через <code>ChanReader.close_after</code></h3>
+    <h3 id="timeout">Таймаут через <code>ChanReader.close_after</code></h3>
 
     <p>Специального <code>timeout =&gt;</code> arm'а нет — timeout это обычный recv-канал, создаваемый <code>ChanReader.close_after(Duration)</code>.</p>
 
@@ -590,18 +590,18 @@ test "select timeout: data wins over timeout" {
 
     <p><code>ChanReader.close_after(d Duration) -&gt; ChanReader[()]</code> — реализован в <code>std/concurrency/timer.nv</code> как compiler-builtin (под капотом <code>nova_chan_reader_close_after_ns(d.nanos)</code>). Канал закрывается через <code>d</code>; первый <code>recv()</code> возвращает <code>Some(())</code> после firing'а, потом <code>None</code>.</p>
 
-    <p><strong>Type safety</strong> (Plan 65 revision 2026-05-18): ранее API назывался <code>Time.after(int ms)</code> — bare int (мс/мкс/сек?). Теперь — типизированный <code>Duration</code>. Migration: <code>cargo run --bin migrate_plan65 -- --apply</code> — переписывает literal-аргументы автоматически (см. <a href="/ru/doc/nova-cli/#migrate_plan65">nova-cli</a>).</p>
+    <p><strong>Типобезопасность</strong> (Plan 65, ревизия 2026-05-18): раньше API назывался <code>Time.after(int ms)</code> — голый <code>int</code> (мс/мкс/сек?). Теперь — типизированный <code>Duration</code>. Миграция: <code>cargo run --bin migrate_plan65 -- --apply</code> переписывает литеральные аргументы автоматически (см. <a href="/ru/doc/nova-cli/#migrate_plan65">nova-cli</a>).</p>
 
-    <p><strong>Edge-cases:</strong></p>
+    <p><strong>Крайние случаи:</strong></p>
     <ul>
       <li><code>Duration.ZERO</code> или <code>Duration.from_*(0)</code> — канал создаётся <em>уже</em> закрытым; первый <code>recv()</code> вернёт <code>None</code> без yield (fast path, без libuv timer)</li>
       <li>Sub-millisecond <code>Duration</code> (<code>from_nanos(500_000)</code>) — округляется <strong>вверх</strong> до 1 ms (libuv granularity)</li>
       <li>Негативный <code>Duration</code> — runtime panic с nanosecond-значением</li>
     </ul>
 
-    <p><strong>Performance:</strong> сейчас каждый вызов аллоцирует свежий <code>uv_timer_t</code> (~120 байт + syscall). Адекватно для idiomatic 10–100 concurrent timers. Custom timer-wheel для high-throughput (10k+ HTTP timeouts) — Plan 66.</p>
+    <p><strong>Производительность:</strong> сейчас каждый вызов выделяет свежий <code>uv_timer_t</code> (~120 байт + системный вызов). Достаточно для типичных 10–100 одновременных таймеров. Своё «колесо таймеров» для высокой нагрузки (10k+ HTTP-таймаутов) — Plan 66.</p>
 
-    <h3 id="fairness">Multi-arm fairness</h3>
+    <h3 id="fairness">Справедливость между ветками</h3>
 
 <pre><code class="language-nova">test "select multi-arm: fairness — both channels get served" {
     let n = 50
@@ -700,7 +700,7 @@ test "select timeout: data wins over timeout" {
     }
 }   // &lt;-- tx.close() сработает гарантированно; rx.recv() в spawn'е получит None и завершится</code></pre>
 
-    <h3>Bootstrap-ограничение: <code>defer</code> + tuple-destructure</h3>
+    <h3>Ограничение bootstrap: <code>defer</code> + деструктуризация пары</h3>
 
     <blockquote>
       <p>⚠️ <strong>Известная проблема:</strong> <code>defer tx.close()</code> <strong>не</strong> работает в сочетании с <code>let (tx, rx) = Channel.new(N)</code> или <code>let { tx, rx } = Channel.new(N)</code> — <code>defer</code> эмитит setjmp-frame <em>до</em> объявления переменных, что ломает scope (Plan 25 G8, будет устранено когда внедрят open-coded defer).</p>
@@ -712,11 +712,11 @@ defer tx.close()    // OK — tx объявлен напрямую
 // ...</code></pre>
     </blockquote>
 
-    <h3>Auto-close на drop — нет</h3>
+    <h3>Авто-закрытие при сборке мусора — нет</h3>
 
     <p>В отличие от Rust mpsc, Nova не имеет deterministic destructor'ов (managed heap, <a href="/spec/decisions/memory/#d6">D6</a>). GC соберёт sender «когда-нибудь» — это <strong>недетерминированно</strong> и сделало бы тесты flaky. Поэтому <code>close()</code> всегда explicit.</p>
 
-    <h3>Idempotent</h3>
+    <h3>Идемпотентность</h3>
 
 <pre><code class="language-nova">test "channel: close idempotent" {
     let { tx, rx } = Channel.new(2)
@@ -729,7 +729,7 @@ defer tx.close()    // OK — tx объявлен напрямую
 
     <hr>
 
-    <h2 id="panic-scenarios">Panic-сценарии</h2>
+    <h2 id="panic-scenarios">Сценарии паники</h2>
 
     <table>
       <thead><tr><th>Условие</th><th>Сообщение</th></tr></thead>
@@ -745,7 +745,7 @@ defer tx.close()    // OK — tx объявлен напрямую
 
     <hr>
 
-    <h2 id="bootstrap-limitations">Bootstrap-ограничения</h2>
+    <h2 id="bootstrap-limitations">Ограничения bootstrap-версии</h2>
 
     <table>
       <thead><tr><th>Что не работает / отложено</th><th>План</th></tr></thead>
