@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
 # Plan www-03: Полировка дизайна nv-lang.org
 
-> **Статус:** 🔻 В РАБОТЕ — 2026-05-22.
+> **Статус:** ✅ ВЫПОЛНЕН — 2026-05-22. Все фазы Ф.1–Ф.6 реализованы
+> и задеплоены; проверено CDP (свет/тьма, 360–1280px), `astro check` 0/0/0.
 > **Создан:** 2026-05-22. **Приоритет:** P2 (качество, не блокер).
 > **Репо:** `d:\Sources\nv-lang\www\` · правки — `site/src/styles/global.css`.
 > **Предшественники:** [www-01](www-01-prod-hardening.md), [www-02](www-02-astro-migration.md).
