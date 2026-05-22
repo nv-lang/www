@@ -780,6 +780,62 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
 .search-page h1 { font-size: 2rem; margin-bottom: 0.35rem; }
 .search-page > p { color: var(--fg-muted); margin-bottom: 1.75rem; }
 
+/* Pagefind UI — результаты под дизайн сайта (вместо дефолтного вида) */
+.search-page .pagefind-ui__message {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--fg-muted);
+  margin-bottom: 1.25rem;
+}
+/* мягкая акцентная подсветка совпадений вместо кричащего жёлтого */
+.search-page .pagefind-ui__result-excerpt mark {
+  background: var(--accent-light);
+  color: var(--accent);
+  border-radius: 3px;
+  padding: 0.04em 0.22em;
+  font-weight: 600;
+}
+/* каждый результат — карточка с тенью и подъёмом по hover */
+.search-page .pagefind-ui__result {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.1rem 1.3rem;
+  margin-bottom: 0.85rem;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+.search-page .pagefind-ui__result:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.search-page .pagefind-ui__result-title { margin: 0; }
+.search-page .pagefind-ui__result-link {
+  font-size: 1.03rem;
+  font-weight: 700;
+  color: var(--fg);
+}
+.search-page .pagefind-ui__result-link:hover { color: var(--accent); }
+.search-page .pagefind-ui__result-excerpt {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--fg-muted);
+  margin: 0.35rem 0 0;
+}
+/* вложенные совпадения — подзаголовки страницы */
+.search-page .pagefind-ui__result-nested {
+  margin-top: 0.65rem;
+  padding-left: 0.4rem;
+}
+.search-page .pagefind-ui__result-nested .pagefind-ui__result-link {
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+.search-page .pagefind-ui__result-nested .pagefind-ui__result-excerpt {
+  margin-top: 0.15rem;
+}
+
 /* ── Doc layout ──────────────────────────────────────────────────────────── */
 .doc-layout {
   max-width: 1100px;
