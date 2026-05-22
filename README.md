@@ -2,33 +2,33 @@
 
 Source for [nv-lang.org](https://nv-lang.org) — the Nova programming language website.
 
-## Stage
+Built with **[Astro](https://astro.build)** — a static site generator. The build
+produces plain HTML/CSS with zero JavaScript framework runtime; GitHub Actions
+deploys `dist/` to GitHub Pages.
 
-Phase 0 (bootstrap): plain static HTML on GitHub Pages.
+## Develop
 
-Future phases will replace this with a generator written in Nova itself, then
-with an HTTP server written in Nova (dogfooding initiative, see `nv-lang/nova`
-plan 60 when published).
+```sh
+npm install
+npm run dev        # http://localhost:4321
+npm run build      # → dist/
+npm run preview    # preview the built dist/
+```
+
+Requires Node 18.20.8+ / 20.3+ / 22+.
 
 ## Structure
 
 ```
-index.html       English entry
-ru/index.html    Russian translation
-style.css        Shared minimal style
-CNAME            Custom domain for GitHub Pages
+src/pages/         pages — file path maps to URL
+src/layouts/       BaseLayout — shared page shell
+src/components/    Head, Header, Footer
+src/partials/      page content (verbatim HTML)
+src/styles/        global stylesheet
+public/            static assets served as-is
 ```
 
-No build step. Edit, commit, push — GitHub Pages serves it.
-
-## Local preview
-
-Open `index.html` in a browser, or run a simple server:
-
-```sh
-python3 -m http.server 8000
-# then visit http://localhost:8000/
-```
+See [CLAUDE.md](CLAUDE.md) for the full guide.
 
 ## License
 
