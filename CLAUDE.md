@@ -21,27 +21,31 @@ www/
 ```sh
 npm install        # один раз — зависимости
 npm run dev        # dev-сервер (http://localhost:4321)
-npm run build      # сборка в site/dist/
+npm run build      # сборка в site/dist/ (с prebuild и postbuild — см. ниже)
 npm run preview    # просмотр собранного
 npm run check      # проверка типов (.astro)
 ```
 
-Нужен Node 18.20.8+ / 20.3+ / 22+.
+Нужен Node 22.12+ (Astro 6; CI собирает на Node 24).
 
 ## Структура `site/`
 
 ```
 site/
-├── astro.config.mjs   site, build.format 'preserve', интеграции
+├── astro.config.mjs   site, build.format 'preserve', rehype-плагины D-ссылок
 ├── package.json  tsconfig.json
+├── scripts/
+│   ├── sync-decisions.mjs   prebuild: тянет D-блоки из репо nova
+│   └── check-links.mjs      postbuild: проверка битых ссылок и якорей
 ├── src/
 │   ├── pages/         страницы = маршруты. Путь файла = URL
 │   ├── layouts/
-│   │   └── BaseLayout.astro   каркас: <html>, <head>, шапка, подвал, скрипт
+│   │   └── BaseLayout.astro   каркас: <html>, <head>, шапка, подвал, скрипты
 │   ├── components/
 │   │   ├── Head.astro   мета-теги <head> (CSP, og/twitter, hreflang, JSON-LD)
 │   │   ├── Header.astro общая шапка (RU/EN, active, lang-switch)
 │   │   └── Footer.astro стандартный подвал (RU/EN)
+│   ├── content/decisions/   D-блоки спецификации (синхронизируются, в .gitignore)
 │   ├── partials/      тело каждой страницы — готовый HTML (.html), verbatim
 │   └── styles/global.css   единственный CSS (импортируется в BaseLayout)
 ├── public/            отдаётся как есть: favicon, logo, og-image,
@@ -82,18 +86,37 @@ const meta = { title: '…', description: '…', canonical: '…', lang: 'en' as
 
 | URL | Язык | Пара |
 |-----|------|------|
-| `/` | RU (по умолчанию) | `/en/` |
-| `/en/` | EN | `/` |
+| `/` | EN (по умолчанию) | `/ru/` |
 | `/doc/`, `/install/`, `/spec/`, `/blog/` | EN | `/ru/doc/` … |
-| `/ru/doc/` … | RU | `/doc/` … |
+| `/ru/`, `/ru/doc/` … | RU | `/`, `/doc/` … |
+| `/en/` | редирект → `/` | — |
 
-Языковая схема непоследовательна (главная RU без префикса, разделы EN без
-префикса) — сохранено намеренно при миграции; унификация — отдельная задача.
+Схема единая: без префикса — EN, префикс `/ru/` — RU. `/en/` оставлен
+редиректом ради старых внешних ссылок (раньше там была EN-главная).
 
-## Подсветка синтаксиса Nova
+## Сборка: prebuild и postbuild
 
-`public/js/nova-highlight.js` подключён в `BaseLayout`, запускается на
-`DOMContentLoaded`. Добавь `class="language-nova"` на `<code>` внутри `<pre>`.
+`npm run build` запускает npm-хуки:
+- **prebuild** — `scripts/sync-decisions.mjs` тянет `spec/decisions/*.md` из
+  репозитория nova в `src/content/decisions/` (D-блоки для `/spec/decisions/`).
+  В CI `GITHUB_TOKEN` поднимает лимит GitHub API;
+- **postbuild** — `pagefind --site dist` строит индекс поиска, затем
+  `scripts/check-links.mjs` проверяет битые внутренние ссылки и якоря.
+  Падение любого — валит сборку (красный CI = нет деплоя).
+
+## Поиск
+
+Pagefind: индекс строится в postbuild, страницы `/search/` и `/ru/search/`
+с Default UI. Контент для индексации помечен `data-pagefind-body` в
+`BaseLayout`; служебные страницы — `data-pagefind-ignore`.
+
+## Клиентские скрипты
+
+Все в `public/js/`, подключены в `BaseLayout` как `is:inline` (vanilla JS,
+без фреймворка — принцип «0 JS по умолчанию»):
+- `nova-highlight.js` — подсветка кода (`class="language-nova"` на `<code>`);
+- `copy-code.js` — кнопка копирования на каждом блоке кода;
+- `scroll-spy.js` — подсветка активного раздела в сайдбаре doc-страниц.
 
 ## Кодировка
 
@@ -102,9 +125,9 @@ const meta = { title: '…', description: '…', canonical: '…', lang: 'en' as
 
 ## Деплой
 
-`.github/workflows/deploy.yml` — сборка Astro (`path: ./site`) + публикация в
-GitHub Pages. До cutover (план www-02, Ф.8) триггер ручной (`workflow_dispatch`).
-На cutover: триггер → `push: branches: [main]`, Pages Source → GitHub Actions.
+`.github/workflows/deploy.yml` — сборка Astro (`path: ./site`, Node 24) +
+публикация в GitHub Pages. Триггер — `push` в `main` (cutover проведён,
+Pages Source = GitHub Actions): каждый push в `main` пересобирает и деплоит сайт.
 
 ## Git
 
