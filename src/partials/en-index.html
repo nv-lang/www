@@ -1,0 +1,140 @@
+<main id="main-content">
+
+<!-- ── Hero split ───────────────────────────────────────────────────────── -->
+<section style="background:var(--hero-bg);border-bottom:1px solid var(--border);">
+  <div class="hero-split">
+    <div class="hero-split__text">
+      <span class="badge">Bootstrap · pre-alpha</span>
+      <h1>A language that<br>says what it means</h1>
+      <p>Nova is a general-purpose systems language built around <strong>algebraic effects</strong>, <strong>static contracts</strong>, and an <strong>M:N concurrency runtime</strong>. Every side effect is declared. Every invariant is verified.</p>
+      <div class="hero-split__actions">
+        <a href="/install/" class="btn btn-primary">Get started</a>
+        <a href="https://github.com/nv-lang/nova" class="btn btn-outline github-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          View on GitHub
+        </a>
+      </div>
+    </div>
+    <div class="hero-split__code">
+      <div class="code-window">
+        <div class="code-window__bar">
+          <div class="code-window__dots">
+            <span></span><span></span><span></span>
+          </div>
+          <span class="code-window__title">fetch_user.nv</span>
+        </div>
+        <pre><code class="language-nova">// Algebraic effects in signatures
+fn fetch_user(id u64) Db Log -> Result[User, NotFound]
+    requires id > 0
+    ensures  result.is_ok() ==> result.unwrap().id == id
+{
+    Log.info("fetching ${id}")
+    match Db.find_user(id) {
+        Some(u) => Ok(u)
+        None    => Err(NotFound)
+    }
+}</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Status banner ─────────────────────────────────────────────────────── -->
+<div style="padding:1.25rem 1.5rem;background:var(--bg);">
+  <div style="max-width:1100px;margin-inline:auto;">
+    <div class="status-banner">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:.1rem"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span><strong>Bootstrap stage.</strong> Nova is in active early development — the compiler runs, the standard library is partial, and breaking changes happen regularly. Not ready for production use.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Feature cards ─────────────────────────────────────────────────────── -->
+<section class="features">
+  <p class="section-label" style="text-align:center;">Why Nova</p>
+  <h2 class="features__heading">Built for the next decade of software</h2>
+  <p class="features__sub">Three language-level primitives that change how you reason about programs.</p>
+  <div class="feature-grid">
+
+    <div class="feature-card">
+      <div class="feature-card__icon">
+        <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </div>
+      <h3>Algebraic Effects</h3>
+      <p>Network, I/O, randomness, time, and mutation appear directly in the function's type — between the parameters and the return arrow. No hidden control flow. No surprise <code>await</code>. The caller always knows what a function does.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-card__icon">
+        <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      </div>
+      <h3>Static Contracts</h3>
+      <p><code>requires</code>, <code>ensures</code>, and <code>invariant</code> clauses are checked by an SMT solver at compile time when possible, verified at runtime in debug mode, and erased at zero cost in release builds.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-card__icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <h3>M:N Runtime</h3>
+      <p>Go-style fibers multiplexed onto OS threads with a work-stealing scheduler. Managed memory by default (Boehm GC today, concurrent GC on the roadmap). Use <code>realtime nogc</code> for latency-sensitive paths.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Second code example ───────────────────────────────────────────────── -->
+<section style="background:var(--bg-alt);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:4rem 1.5rem;">
+  <div style="max-width:1100px;margin-inline:auto;display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:center;">
+    <div>
+      <p class="section-label">Effects in action</p>
+      <h2 style="font-size:clamp(1.4rem,3vw,1.9rem);margin-bottom:.75rem;">Every dependency visible at a glance</h2>
+      <p style="color:var(--fg-muted);">The HTTP server's signature tells you it binds to the network (<code>Net</code>), speaks HTTP (<code>Http</code>), and writes logs (<code>Log</code>) — effects appear between the parameter list and the return arrow. Nothing is implicit.</p>
+      <a href="/spec/" class="btn btn-outline" style="margin-top:.5rem;">Read the spec</a>
+    </div>
+    <div class="code-window">
+      <div class="code-window__bar">
+        <div class="code-window__dots"><span></span><span></span><span></span></div>
+        <span class="code-window__title">server.nv</span>
+      </div>
+      <pre><code class="language-nova">// HTTP server — effects track every dependency
+fn serve_api() Net Http Log -> ()
+{
+    let router = Router.new()
+        .route(Get,  "/users/:id", get_user)
+        .route(Post, "/users",    create_user)
+
+    Http.serve("0.0.0.0:8080", router.dispatch())
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ── Install ────────────────────────────────────────────────────────────── -->
+<section class="install">
+  <h2>Try Nova</h2>
+  <p>Install the compiler with a single command — or pick your platform on the <a href="/install/">install page</a>.</p>
+  <div class="install-cmd">
+    <span class="install-cmd__prefix">$</span>
+    <code>curl -sSf https://nv-lang.org/install.sh | sh</code>
+  </div>
+  <p style="margin-top:1.25rem;font-size:.88rem;color:var(--fg-subtle);">
+    Or <a href="https://github.com/nv-lang/nova/releases">download a release</a> &middot; <a href="https://github.com/nv-lang/nova">build from source</a>
+  </p>
+</section>
+
+<!-- ── Community ─────────────────────────────────────────────────────────── -->
+<section class="community">
+  <h2>Join the conversation</h2>
+  <p>Nova is open source and built in public. Follow the design process, file bugs, contribute code, or just watch the compiler grow.</p>
+  <div style="display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;">
+    <a href="https://github.com/nv-lang/nova" class="btn btn-primary github-icon">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+      nv-lang/nova on GitHub
+    </a>
+    <a href="mailto:hello@nv-lang.org" class="btn btn-outline">hello@nv-lang.org</a>
+  </div>
+</section>
+
+<!-- ── Footer ─────────────────────────────────────────────────────────────── -->
+</main>

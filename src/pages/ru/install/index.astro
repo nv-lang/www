@@ -1,0 +1,27 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import body from '@partials/ru-install-index.html?raw';
+import headExtra from '@partials/ru-install-index-head.html?raw';
+const meta = {
+  title: "Установка Nova",
+  description: "Установите Nova и напишите первую программу за несколько минут. Поддерживаются Linux, macOS и Windows.",
+  canonical: "https://nv-lang.org/ru/install/",
+  lang: "ru" as const,
+  hreflangRu: "https://nv-lang.org/ru/install/",
+  hreflangEn: "https://nv-lang.org/install/",
+  hreflangXDefault: "https://nv-lang.org/install/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/ru/install/",
+  ogTitle: "Установка Nova",
+  ogDescription: "Установите Nova и напишите первую программу за несколько минут. Поддерживаются Linux, macOS и Windows.",
+  twitterTitle: "Установка Nova",
+  twitterDescription: "Установите Nova и напишите первую программу за несколько минут. Поддерживаются Linux, macOS и Windows.",
+  langRuUrl: "/ru/install/",
+  langEnUrl: "/install/",
+};
+---
+
+<BaseLayout {...meta} active="install" customFooter={true}>
+  <Fragment slot="head-extra" set:html={headExtra} />
+  <Fragment set:html={body} />
+</BaseLayout>

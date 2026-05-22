@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import body from '@partials/en-index.html?raw';
+const meta = {
+  title: "Nova — a systems language with effects, contracts, and M:N runtime",
+  description: "Nova is a general-purpose systems language built around algebraic effects, static contracts, and an M:N concurrency runtime. Designed for correctness and clarity.",
+  canonical: "https://nv-lang.org/en/",
+  lang: "en" as const,
+  hreflangRu: "https://nv-lang.org/",
+  hreflangEn: "https://nv-lang.org/en/",
+  hreflangXDefault: "https://nv-lang.org/en/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/en/",
+  ogTitle: "Nova — systems language with effects and contracts",
+  ogDescription: "A general-purpose systems language built around algebraic effects, static contracts, and an M:N concurrency runtime.",
+  twitterTitle: "Nova — systems language with effects and contracts",
+  twitterDescription: "A general-purpose systems language built around algebraic effects, static contracts, and an M:N concurrency runtime.",
+  langRuUrl: "/",
+  langEnUrl: "/en/",
+};
+---
+
+<BaseLayout {...meta} active="home" jsonLd={true}>
+  <Fragment set:html={body} />
+</BaseLayout>

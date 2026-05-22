@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import body from '@partials/ru-doc-nova-codegen-index.html?raw';
+const meta = {
+  title: "nova-codegen — Nova",
+  description: "Справочник nova-codegen: команды, переменные окружения, Cargo features, Library API, архитектура и runtime.",
+  canonical: "https://nv-lang.org/ru/doc/nova-codegen/",
+  lang: "ru" as const,
+  hreflangRu: "https://nv-lang.org/ru/doc/nova-codegen/",
+  hreflangEn: "https://nv-lang.org/doc/nova-codegen/",
+  hreflangXDefault: "https://nv-lang.org/doc/nova-codegen/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/ru/doc/nova-codegen/",
+  ogTitle: "nova-codegen — Nova",
+  ogDescription: "Справочник nova-codegen: команды, переменные окружения, Cargo features, Library API, архитектура и runtime.",
+  twitterTitle: "nova-codegen — Nova",
+  twitterDescription: "Справочник nova-codegen: команды, переменные окружения, Cargo features, Library API, архитектура и runtime.",
+  langRuUrl: "/ru/doc/nova-codegen/",
+  langEnUrl: "/doc/nova-codegen/",
+};
+---
+
+<BaseLayout {...meta} active="doc">
+  <Fragment set:html={body} />
+</BaseLayout>

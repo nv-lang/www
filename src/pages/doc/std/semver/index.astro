@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import body from '@partials/doc-std-semver-index.html?raw';
+const meta = {
+  title: "data.semver — Standard Library — Nova",
+  description: "Nova standard library: data.semver — Semantic Versioning 2.0.0 parser, comparator, and serializer.",
+  canonical: "https://nv-lang.org/doc/std/semver/",
+  lang: "en" as const,
+  hreflangRu: "",
+  hreflangEn: "https://nv-lang.org/doc/std/semver/",
+  hreflangXDefault: "https://nv-lang.org/doc/std/semver/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/doc/std/semver/",
+  ogTitle: "data.semver — Standard Library — Nova",
+  ogDescription: "Nova standard library: data.semver — Semantic Versioning 2.0.0 parser, comparator, and serializer.",
+  twitterTitle: "data.semver — Standard Library — Nova",
+  twitterDescription: "Nova standard library: data.semver — Semantic Versioning 2.0.0 parser, comparator, and serializer.",
+  langRuUrl: "/ru/doc/std/",
+  langEnUrl: "/doc/std/semver/",
+};
+---
+
+<BaseLayout {...meta} active="doc">
+  <Fragment set:html={body} />
+</BaseLayout>

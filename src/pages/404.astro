@@ -1,0 +1,24 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import body from '@partials/404.html?raw';
+import headExtra from '@partials/404-head.html?raw';
+const meta = {
+  title: "Page Not Found — Nova",
+  description: "",
+  canonical: "",
+  lang: "en" as const,
+  hreflangRu: "",
+  hreflangEn: "",
+  ogType: "website",
+  ogUrl: "",
+  ogTitle: "Page Not Found — Nova",
+  ogDescription: "",
+  twitterTitle: "Page Not Found — Nova",
+  twitterDescription: "",
+};
+---
+
+<BaseLayout {...meta} noindex={true}>
+  <Fragment slot="head-extra" set:html={headExtra} />
+  <Fragment set:html={body} />
+</BaseLayout>

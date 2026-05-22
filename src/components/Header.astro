@@ -1,15 +1,14 @@
 ---
 // Header — общая шапка сайта. Заменяет 28 ручных копий.
+// lang-switch выводится только если переданы обе ссылки (на 404 его нет).
 interface Props {
   lang: 'ru' | 'en';
   active?: 'home' | 'install' | 'doc' | 'spec' | 'blog';
-  ruUrl: string; // ссылка lang-switch на RU-версию текущей страницы
-  enUrl: string; // ссылка lang-switch на EN-версию текущей страницы
+  langRuUrl?: string; // ссылка lang-switch на RU-версию
+  langEnUrl?: string; // ссылка lang-switch на EN-версию
 }
-const { lang, active, ruUrl, enUrl } = Astro.props;
-// lang-switch ссылки — относительными путями (абсолютные ломали бы превью-домены)
-const ruPath = ruUrl.replace('https://nv-lang.org', '');
-const enPath = enUrl.replace('https://nv-lang.org', '');
+const { lang, active, langRuUrl, langEnUrl } = Astro.props;
+const showLangSwitch = Boolean(langRuUrl && langEnUrl);
 
 const t = lang === 'ru'
   ? {
@@ -45,10 +44,12 @@ const items = ['home', 'install', 'doc', 'spec', 'blog'] as const;
       ))}
     </nav>
     <div class="site-header__right">
-      <div class="lang-switch" aria-label={t.langLabel}>
-        <a href={ruPath} class={lang === 'ru' ? 'active' : undefined}>RU</a>
-        <a href={enPath} class={lang === 'en' ? 'active' : undefined}>EN</a>
-      </div>
+      {showLangSwitch && (
+        <div class="lang-switch" aria-label={t.langLabel}>
+          <a href={langRuUrl} class={lang === 'ru' ? 'active' : undefined}>RU</a>
+          <a href={langEnUrl} class={lang === 'en' ? 'active' : undefined}>EN</a>
+        </div>
+      )}
       <a
         href="https://github.com/nv-lang/nova"
         class="btn btn-outline"

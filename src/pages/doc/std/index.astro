@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import body from '@partials/doc-std-index.html?raw';
+const meta = {
+  title: "Standard Library — Nova",
+  description: "Nova standard library reference: collections, encoding, time, concurrency, and more.",
+  canonical: "https://nv-lang.org/doc/std/",
+  lang: "en" as const,
+  hreflangRu: "https://nv-lang.org/ru/doc/std/",
+  hreflangEn: "https://nv-lang.org/doc/std/",
+  hreflangXDefault: "https://nv-lang.org/doc/std/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/doc/std/",
+  ogTitle: "Standard Library — Nova",
+  ogDescription: "Nova standard library reference: collections, encoding, time, concurrency, and more.",
+  twitterTitle: "Standard Library — Nova",
+  twitterDescription: "Nova standard library reference: collections, encoding, time, concurrency, and more.",
+  langRuUrl: "/ru/doc/std/",
+  langEnUrl: "/doc/std/",
+};
+---
+
+<BaseLayout {...meta} active="doc">
+  <Fragment set:html={body} />
+</BaseLayout>

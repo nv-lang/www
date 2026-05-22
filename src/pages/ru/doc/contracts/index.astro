@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import body from '@partials/ru-doc-contracts-index.html?raw';
+const meta = {
+  title: "Контракты и формальная верификация — Nova",
+  description: "Система контрактов Nova: requires, ensures, #verify, #pure, #opaque, reveal, calc-блоки, loop invariants, леммы, Z3 backend.",
+  canonical: "https://nv-lang.org/ru/doc/contracts/",
+  lang: "ru" as const,
+  hreflangRu: "https://nv-lang.org/ru/doc/contracts/",
+  hreflangEn: "https://nv-lang.org/doc/contracts/",
+  hreflangXDefault: "https://nv-lang.org/doc/contracts/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/ru/doc/contracts/",
+  ogTitle: "Контракты и формальная верификация — Nova",
+  ogDescription: "Система контрактов Nova: requires, ensures, #verify, #pure, #opaque, reveal, calc-блоки, loop invariants, леммы, Z3 backend.",
+  twitterTitle: "Контракты и формальная верификация — Nova",
+  twitterDescription: "Система контрактов Nova: requires, ensures, #verify, #pure, #opaque, reveal, calc-блоки, loop invariants, леммы, Z3 backend.",
+  langRuUrl: "/ru/doc/contracts/",
+  langEnUrl: "/doc/contracts/",
+};
+---
+
+<BaseLayout {...meta} active="doc">
+  <Fragment set:html={body} />
+</BaseLayout>

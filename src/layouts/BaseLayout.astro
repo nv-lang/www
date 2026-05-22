@@ -24,6 +24,8 @@ interface Props {
   noindex?: boolean;
   active?: 'home' | 'install' | 'doc' | 'spec' | 'blog';
   customFooter?: boolean;
+  langRuUrl?: string;
+  langEnUrl?: string;
 }
 const p = Astro.props;
 const { lang, active, customFooter = false } = p;
@@ -37,7 +39,7 @@ const { lang, active, customFooter = false } = p;
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
-    <Header lang={lang} active={active} ruUrl={p.hreflangRu} enUrl={p.hreflangEn} />
+    <Header lang={lang} active={active} langRuUrl={p.langRuUrl} langEnUrl={p.langEnUrl} />
     <slot />
     {!customFooter && <Footer lang={lang} />}
     <script src="/js/nova-highlight.js" is:inline></script>

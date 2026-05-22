@@ -1,0 +1,663 @@
+<div class="page-header">
+  <div class="container--narrow">
+    <p style="font-size:.85rem;color:var(--fg-muted);margin-bottom:.4rem;"><a href="/doc/">Documentation</a></p>
+    <h1>Contracts and formal verification</h1>
+    <p>State what a function <strong>requires</strong> and <strong>ensures</strong>; the compiler verifies at compile time via SMT. Proven contracts are erased in release — zero runtime cost.</p>
+  </div>
+</div>
+
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Overview</div>
+      <ul>
+        <li><a href="#quickstart">Quickstart</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Contract clauses</div>
+      <ul>
+        <li><a href="#requires">requires</a></li>
+        <li><a href="#ensures">ensures and result</a></li>
+        <li><a href="#old">old(...) in ensures</a></li>
+        <li><a href="#decreases">decreases</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Verification attributes</div>
+      <ul>
+        <li><a href="#verify">#verify</a></li>
+        <li><a href="#pure">#pure</a></li>
+        <li><a href="#unverified">#unverified</a></li>
+        <li><a href="#must_verify">#must_verify</a></li>
+        <li><a href="#trusted">#trusted</a></li>
+        <li><a href="#pure-composition">#pure composition</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Proof helpers</div>
+      <ul>
+        <li><a href="#assert_static">assert_static</a></li>
+        <li><a href="#assume">assume</a></li>
+        <li><a href="#calc">calc { ... }</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Advanced</div>
+      <ul>
+        <li><a href="#loop-invariants">Loop invariants</a></li>
+        <li><a href="#lemmas">Lemmas and apply</a></li>
+        <li><a href="#opaque">#opaque</a></li>
+        <li><a href="#reveal">reveal fn_name</a></li>
+        <li><a href="#fuel">#fuel(n)</a></li>
+        <li><a href="#quantifiers">Bounded quantifiers</a></li>
+        <li><a href="#trusted-external">Trusted external fns</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Reference</div>
+      <ul>
+        <li><a href="#smt-backend">SMT backend</a></li>
+        <li><a href="#grammar">Syntax grammar</a></li>
+        <li><a href="#errors">Error reference</a></li>
+        <li><a href="#bootstrap">Bootstrap limitations</a></li>
+        <li><a href="#related">Related documents</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main id="main-content" class="doc-content">
+
+    <p>Nova's contract system lets you state what a function <strong>requires</strong> and <strong>ensures</strong>, then verifies those claims at compile time via an SMT solver. Proven contracts are erased in release builds — zero runtime cost. Unproven ones fall back to runtime assertions in debug.</p>
+
+    <p>Spec: D24 (SMT strategy) · D111 (<code>assume</code> / <code>assert_static</code> / <code>#trusted</code>) · D112 (bounded quantifiers) · D116 (Z3 backend).</p>
+
+    <hr>
+
+    <h2 id="quickstart">Quickstart</h2>
+
+<pre><code class="language-nova">// Simple precondition + postcondition.
+#verify
+fn withdraw(balance int, amount int) -> int
+    requires amount > 0 && amount <= balance
+    ensures  result == balance - amount
+    ensures  result >= 0
+{
+    balance - amount
+}
+
+test "contracts quickstart: withdraw" {
+    assert(withdraw(100, 30) == 70)
+    assert(withdraw(50, 50)  == 0)
+}</code></pre>
+
+<pre><code class="language-nova">// REQUIRES_SMT_BACKEND z3
+
+// Opaque helper + reveal in caller — Z3 proves the stronger contract.
+#opaque #pure
+fn double(x int) -> int
+    requires x >= 0
+    ensures  result >= 0
+=> x * 2
+
+#verify
+fn caller_with_reveal(n int) -> int
+    requires n >= 0
+    ensures  result == n * 2
+{
+    reveal double
+    double(n)
+}
+
+test "contracts quickstart: opaque + reveal" {
+    assert(double(5) == 10)
+    assert(caller_with_reveal(7) == 14)
+}</code></pre>
+
+    <hr>
+
+    <h2 id="contract-clauses">Contract clauses</h2>
+
+    <p>Contract clauses appear between the parameter list and the <code>{</code> body (or <code>=&gt;</code> expression body). Multiple clauses of the same kind are allowed and are conjoined.</p>
+
+    <h3 id="requires"><code>requires</code></h3>
+
+    <p>A precondition. The SMT solver <strong>assumes</strong> it holds when verifying the body. Callers must satisfy it.</p>
+
+<pre><code class="language-nova">#verify
+fn safe_div(a int, b int) -> int
+    requires b != 0
+    ensures  result * b == a - (a % b)
+{
+    a / b
+}</code></pre>
+
+    <p>Multiple <code>requires</code> clauses are equivalent to a single conjunction:</p>
+
+<pre><code class="language-nova">#verify
+fn clamp(x int, lo int, hi int) -> int
+    requires lo <= hi
+    ensures  result >= lo && result <= hi
+{
+    if x < lo { lo } else if x > hi { hi } else { x }
+}</code></pre>
+
+    <h3 id="ensures"><code>ensures</code> and <code>result</code></h3>
+
+    <p>A postcondition. <code>result</code> refers to the return value of the function. Multiple <code>ensures</code> clauses are all independently checked.</p>
+
+<pre><code class="language-nova">#verify
+fn abs_val(x int) -> int
+    ensures result >= 0
+    ensures result == x || result == -x
+{
+    if x >= 0 { x } else { -x }
+}</code></pre>
+
+    <h3 id="old"><code>old(...)</code> in <code>ensures</code></h3>
+
+    <p><code>old(expr)</code> captures the value of an expression <strong>at the function entry point</strong>, before the body runs. Useful for mutation contracts.</p>
+
+<pre><code class="language-nova">#verify
+fn increment(mut n int) -> int
+    ensures result == old(n) + 1
+{
+    n = n + 1
+    n
+}</code></pre>
+
+    <h3 id="decreases"><code>decreases</code></h3>
+
+    <p>Proves termination of recursive functions. The expression must <strong>strictly decrease</strong> on every recursive call. The SMT solver checks this as a well-foundedness obligation.</p>
+
+<pre><code class="language-nova">fn factorial(n int) -> int
+    requires n >= 0
+    decreases n
+=> if n == 0 { 1 } else { n * factorial(n - 1) }
+
+fn fib(n int) -> int
+    requires n >= 0
+    decreases n
+=> if n < 2 { n } else { fib(n - 1) + fib(n - 2) }</code></pre>
+
+    <hr>
+
+    <h2 id="verification-attributes">Verification attributes</h2>
+
+    <h3 id="verify"><code>#verify</code></h3>
+
+    <p>Marks a function for SMT verification. The compiler encodes the function body and all contracts as an SMT query and asks the solver. If the solver proves the contracts, they are erased in release. If not — warning <code>W2402</code> + runtime fallback in debug.</p>
+
+<pre><code class="language-nova">#verify
+fn sum_nonneg(a int, b int) -> int
+    requires a >= 0
+    requires b >= 0
+    ensures  result >= 0
+{
+    a + b
+}</code></pre>
+
+    <h3 id="pure"><code>#pure</code></h3>
+
+    <p>Marks a function as <strong>pure</strong> — no side effects, no effects in its row. Pure functions can be called freely inside contract expressions (<code>requires</code>/<code>ensures</code>/<code>invariant</code>), where effectful calls are forbidden.</p>
+
+<pre><code class="language-nova">#pure
+fn is_positive(x int) -> bool => x > 0
+
+#verify
+fn safe_log(x int) -> int
+    requires is_positive(x)    // #pure call allowed in contract
+    ensures  result >= 0
+{
+    x - 1
+}</code></pre>
+
+    <h3 id="unverified"><code>#unverified</code></h3>
+
+    <p>Opts out of SMT verification. Contracts are kept as <strong>runtime assertions</strong> in debug; skipped in release. Use for contracts the solver cannot handle (non-linear arithmetic, string predicates, etc.).</p>
+
+<pre><code class="language-nova">#unverified
+fn safe_double(x int) -> int
+    requires x > 0
+    ensures  result == x * 2
+=> x * 2</code></pre>
+
+    <h3 id="must_verify"><code>#must_verify</code></h3>
+
+    <p>The inverse of <code>#unverified</code>. If the SMT solver cannot prove the contract within the timeout, compilation <strong>fails</strong> with an error (no runtime fallback). Use for safety-critical code.</p>
+
+<pre><code class="language-nova">#must_verify
+fn transfer_total(from_bal int, to_bal int, amount int) -> int
+    requires amount > 0 && amount <= from_bal
+    ensures  result == from_bal + to_bal
+{
+    (from_bal - amount) + (to_bal + amount)
+}</code></pre>
+
+    <h3 id="trusted"><code>#trusted</code></h3>
+
+    <p>Used in two contexts:</p>
+
+    <p><strong>1. <code>with #trusted</code></strong> on a handler binding — skips axiom verification for that handler, accepts contracts as axioms on faith:</p>
+
+<pre><code class="language-nova">with #trusted Log = handler Log {
+    Write(msg) { if msg > 0 { buf = msg } else { buf = 0 } }
+    last() => buf
+} { ... }</code></pre>
+
+    <p><strong>2. <code>#trusted</code> on a function</strong> containing <code>assume</code> — suppresses the <code>trust-introduced</code> warning:</p>
+
+<pre><code class="language-nova">#trusted
+fn call_ffi() -> int {
+    let result = extern_fn()
+    assume result >= 0    // documented FFI postcondition
+    result
+}</code></pre>
+
+    <hr>
+
+    <h2 id="pure-composition"><code>#pure</code> function composition</h2>
+
+    <p><code>#pure</code> functions compose freely in contract expressions. This lets you build reusable predicates:</p>
+
+<pre><code class="language-nova">#pure
+fn in_range(x int, lo int, hi int) -> bool => x >= lo && x <= hi
+
+#verify
+fn clamp_tight(x int) -> int
+    ensures in_range(result, 0, 100)
+{
+    if x < 0 { 0 } else if x > 100 { 100 } else { x }
+}</code></pre>
+
+    <p>Non-pure functions in contracts are a compile error:</p>
+
+<pre><code>error: effectful function call in contract expression
+  contracts require #pure or side-effect-free expressions</code></pre>
+
+    <hr>
+
+    <h2 id="proof-helpers">Proof helpers</h2>
+
+    <h3 id="assert_static"><code>assert_static</code></h3>
+
+    <p>Inserts an <strong>intermediate proof step</strong> visible to the SMT solver. Breaks a complex contract into smaller, independently verifiable facts. In debug — runtime check; in release — erased after being proven.</p>
+
+<pre><code class="language-nova">#verify
+fn transfer(from int, to int, amount int) -> int
+    requires amount > 0 && amount <= from
+    ensures  result == from + to
+{
+    assert_static from - amount >= 0    // intermediate fact
+    (from - amount) + (to + amount)
+}</code></pre>
+
+    <h3 id="assume"><code>assume</code></h3>
+
+    <p>Injects a fact into the SMT context <strong>without proof</strong>. Use for FFI postconditions or OS invariants the solver cannot see. Generates warning <code>trust-introduced</code> unless inside a <code>#trusted</code> function.</p>
+
+<pre><code class="language-nova">#trusted
+fn read_positive_from_device() -> int {
+    let v = device_read()
+    assume v >= 0    // documented hardware guarantee
+    v
+}</code></pre>
+
+    <h3 id="calc"><code>calc { ... }</code></h3>
+
+    <p>A structured <strong>chain of equalities</strong> (or inequalities) that guides the SMT solver step by step. Each step <code>== expr;</code> asserts equality with the previous line. The solver checks each step independently.</p>
+
+<pre><code class="language-nova">#verify
+fn double_is_double(x int) -> int
+    ensures result == x * 2
+{
+    calc {
+        x * 2;
+        == x * 2;
+    }
+    x * 2
+}</code></pre>
+
+    <p>More complex chains can include arithmetic identities:</p>
+
+<pre><code class="language-nova">#verify
+fn add_assoc_proof(a int, b int, c int) -> bool
+    ensures result == true
+{
+    calc {
+        (a + b) + c;
+        == a + (b + c);    // associativity — Z3 proves each step
+    }
+    true
+}</code></pre>
+
+    <hr>
+
+    <h2 id="loop-invariants">Loop invariants</h2>
+
+    <p>An <code>invariant</code> clause inside a loop body asserts a condition that holds at <strong>every iteration entry</strong>. The SMT solver checks:</p>
+    <ol>
+      <li>The invariant holds before the loop (initialization).</li>
+      <li>If the invariant holds at iteration start and the loop condition holds, then the invariant holds at the end of the body (inductive step).</li>
+    </ol>
+
+<pre><code class="language-nova">// REQUIRES_SMT_BACKEND z3
+
+#verify
+fn sum_nonneg_array(n int) -> int
+    requires n >= 0
+    ensures  result >= 0
+{
+    let mut sum = 0
+    let mut i = 0
+    while i < n {
+        invariant sum >= 0
+        invariant i >= 0
+        sum = sum + i
+        i = i + 1
+    }
+    sum
+}</code></pre>
+
+    <p>The <code>decreases</code> clause can also appear on a loop to prove termination:</p>
+
+<pre><code class="language-nova">#verify
+fn countdown(n int) -> int
+    requires n >= 0
+    ensures  result == 0
+{
+    let mut k = n
+    while k > 0 {
+        invariant k >= 0
+        decreases k
+        k = k - 1
+    }
+    k
+}</code></pre>
+
+    <hr>
+
+    <h2 id="lemmas">Lemmas and <code>apply</code></h2>
+
+    <p>A <strong>lemma</strong> is a <code>#verify</code> function whose purpose is to establish a mathematical fact — it exists for its proof, not its runtime value. Typically returns <code>bool</code> and has <code>ensures result == true</code>.</p>
+
+<pre><code class="language-nova">// REQUIRES_SMT_BACKEND z3
+
+#verify
+lemma add_comm(a int, b int) -> bool
+    ensures result == true
+{
+    a + b == b + a
+}</code></pre>
+
+    <p>The <code>apply</code> statement injects the postcondition of a lemma as a fact into the current SMT context. This lets you chain lemma results:</p>
+
+<pre><code class="language-nova">#verify
+fn use_commutativity(a int, b int) -> int
+    requires a >= 0 && b >= 0
+    ensures  result == b + a
+{
+    apply add_comm(a, b)    // injects: a + b == b + a
+    a + b
+}</code></pre>
+
+    <p><strong>Rules:</strong></p>
+    <ul>
+      <li><code>apply</code> only works inside <code>#verify</code> functions.</li>
+      <li>The lemma must already be proven (i.e., <code>#verify</code> and its contracts checked without error).</li>
+      <li>Duplicate <code>apply</code> of the same lemma in the same scope is a warning <code>W2402</code>.</li>
+    </ul>
+
+    <hr>
+
+    <h2 id="opaque-reveal">Opaque functions and <code>reveal</code></h2>
+
+    <h3 id="opaque"><code>#opaque</code></h3>
+
+    <p><code>#opaque</code> on a <code>#pure</code> function hides its body from the SMT solver. The solver treats it as an <strong>uninterpreted function</strong> (UF): it knows the <code>requires</code>/<code>ensures</code> contracts but not the implementation.</p>
+
+    <p>This prevents matching-loop divergence in recursive functions and gives control over which callers get access to the body-level proof:</p>
+
+<pre><code class="language-nova">// REQUIRES_SMT_BACKEND z3
+
+#opaque #pure
+fn double(x int) -> int
+    requires x >= 0
+    ensures  result >= 0
+=> x * 2</code></pre>
+
+    <p>Without <code>reveal</code>, a caller can only use the declared <code>ensures</code> (result ≥ 0), not that <code>result == x * 2</code>:</p>
+
+<pre><code class="language-nova">// EXPECT_COMPILE_ERROR contract violation
+
+#verify
+fn caller_no_reveal(n int) -> int
+    requires n >= 0
+    ensures  result == n * 2    // Z3 cannot prove — body is hidden
+{
+    double(n)
+}</code></pre>
+
+    <h3 id="reveal"><code>reveal fn_name</code></h3>
+
+    <p><code>reveal fn_name</code> injects the body axiom of an <code>#opaque</code> function into the current SMT scope. After <code>reveal</code>, the solver can use the full body for proofs in that function:</p>
+
+<pre><code class="language-nova">// REQUIRES_SMT_BACKEND z3
+
+#verify
+fn caller_with_reveal(n int) -> int
+    requires n >= 0
+    ensures  result == n * 2
+{
+    reveal double       // body axiom injected: double(x) == x * 2
+    double(n)
+}</code></pre>
+
+    <p><strong>Scope:</strong> <code>reveal</code> is function-local. It does not affect other callers.</p>
+
+    <p><strong>Warnings:</strong></p>
+    <ul>
+      <li><code>W2402</code> — <code>reveal</code> in a non-<code>#verify</code> function (no SMT context).</li>
+      <li><code>W2402</code> — duplicate <code>reveal</code> for the same name in the same scope.</li>
+      <li><code>W2403</code> — <code>reveal</code> for a function that is not <code>#opaque</code>.</li>
+    </ul>
+
+    <h3 id="fuel"><code>#fuel(n)</code></h3>
+
+    <p><code>#fuel(n)</code> on an <code>#opaque #pure</code> recursive function enables <strong>N levels of unrolling</strong> in the SMT scope after <code>reveal</code>. Without fuel, the opaque body axiom is non-recursive. With <code>#fuel(2)</code>, the solver gets two unrolling levels — enough to prove properties of small concrete inputs:</p>
+
+<pre><code class="language-nova">// REQUIRES_SMT_BACKEND z3
+
+#opaque #pure #fuel(2)
+fn count_down(n int) -> int
+    requires n >= 0
+    ensures  result >= 0
+=>
+    if n == 0 { 0 } else { 1 + count_down(n - 1) }
+
+#verify
+fn prove_base_case() -> int
+    ensures result == 0
+{
+    reveal count_down
+    count_down(0)      // fuel unrolls: count_down(0) == 0
+}
+
+#verify
+fn prove_one_step() -> int
+    ensures result == 1
+{
+    reveal count_down
+    count_down(1)      // fuel unrolls: 1 + count_down(0) == 1
+}</code></pre>
+
+    <p>The fuel chain works by creating N intermediate UFs and chaining them via axioms, following Dafny's approach.</p>
+
+    <hr>
+
+    <h2 id="quantifiers">Bounded quantifiers</h2>
+
+    <p>Nova supports <strong>bounded quantifiers</strong> — <code>forall</code>/<code>exists</code> over concrete collections or index ranges. Unbounded universal quantifiers are a compile error.</p>
+
+<pre><code class="language-nova">// REQUIRES_SMT_BACKEND z3
+
+#verify
+fn all_nonneg_sum(a int, b int, c int) -> bool
+    requires a >= 0 && b >= 0 && c >= 0
+    ensures  result == true
+{
+    a + b + c >= 0
+}</code></pre>
+
+    <p>Syntax for bounded quantifiers in contracts:</p>
+
+<pre><code class="language-nova">// forall — universal
+requires forall i in 0..xs.len() : xs[i] >= 0
+
+// exists — existential
+ensures  exists i in 0..result.len() : result[i] == target</code></pre>
+
+    <p>The collection after <code>in</code> must be an iterable (<code>[]T</code>, range, set, map). The body must be <code>bool</code> and <code>#pure</code>.</p>
+
+    <hr>
+
+    <h2 id="trusted-external">Trusted external functions</h2>
+
+    <p><code>external fn</code> with contracts requires <code>#trusted</code>. The contracts are registered as <strong>axioms</strong> — callers receive the <code>ensures</code> as assumptions without proof. The compiler does not verify the body (there is no Nova body to check).</p>
+
+<pre><code class="language-nova">#trusted
+external fn libc_strlen(s str) -> int
+    requires s.is_valid_cstring()
+    ensures  result >= 0
+
+#verify
+fn use_strlen(s str) -> int
+    requires s.is_valid_cstring()
+    ensures  result >= 0
+{
+    libc_strlen(s)    // ensures from #trusted axiom injected
+}</code></pre>
+
+    <hr>
+
+    <h2 id="smt-backend">SMT backend selection</h2>
+
+    <table>
+      <thead><tr><th>Backend</th><th>Activated by</th><th>Capabilities</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Trivial</strong></td><td>default</td><td>Constant-folding, linear bounds on single binary ops. Fast, no Z3 dependency.</td></tr>
+        <tr><td><strong>Z3</strong></td><td><code>--smt-backend=z3</code> or <code>NOVA_SMT_BACKEND=z3</code></td><td>Full LIA + EUF + bounded arrays. Required for opaque/reveal, complex arithmetic chains, loop invariants.</td></tr>
+      </tbody>
+    </table>
+
+    <p>Tests that require Z3 use the marker <code>// REQUIRES_SMT_BACKEND z3</code> — the test runner skips them when Z3 is unavailable.</p>
+
+    <p>Timeout per function: default 2 seconds. Override locally:</p>
+
+<pre><code class="language-nova">#verify_timeout(10000)
+#verify
+fn complex_proof(x int) -> int
+    ...</code></pre>
+
+    <hr>
+
+    <h2 id="grammar">Contract syntax grammar</h2>
+
+<pre><code>contract-clause  = requires-clause
+                 | ensures-clause
+                 | decreases-clause
+
+requires-clause  = 'requires' bool-expr
+ensures-clause   = 'ensures'  bool-expr
+decreases-clause = 'decreases' expr
+
+fn-contracts     = contract-clause*
+
+loop-invariant   = 'invariant' bool-expr
+loop-decreases   = 'decreases' expr
+
+calc-block       = 'calc' '{' calc-step+ '}'
+calc-step        = expr ';'
+               | ('==' | '&lt;=' | '&gt;=' | '&lt;' | '&gt;') expr ';'
+
+reveal-stmt      = 'reveal' ident
+apply-stmt       = 'apply' ident '(' expr-list ')'
+assert-static    = 'assert_static' bool-expr
+assume-stmt      = 'assume' bool-expr
+
+quantifier-expr  = 'forall' ident 'in' expr ':' bool-expr
+                 | 'exists' ident 'in' expr ':' bool-expr
+
+old-expr         = 'old' '(' expr ')'
+result-ref       = 'result'                  // only in ensures</code></pre>
+
+    <h4>Attribute summary</h4>
+
+    <table>
+      <thead><tr><th>Attribute</th><th>On</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>#verify</code></td><td>fn</td><td>Enable SMT verification</td></tr>
+        <tr><td><code>#pure</code></td><td>fn</td><td>Pure (no effects), usable in contracts</td></tr>
+        <tr><td><code>#unverified</code></td><td>fn</td><td>Skip SMT, keep as runtime check</td></tr>
+        <tr><td><code>#must_verify</code></td><td>fn</td><td>Require SMT proof — compile error if unprovable</td></tr>
+        <tr><td><code>#trusted</code></td><td>fn / <code>with</code> binding</td><td>Accept contracts as axioms without proof</td></tr>
+        <tr><td><code>#opaque</code></td><td><code>#pure</code> fn</td><td>Hide body from SMT; require <code>reveal</code> to expose</td></tr>
+        <tr><td><code>#fuel(n)</code></td><td><code>#opaque #pure</code> fn</td><td>N-level recursive unrolling after <code>reveal</code></td></tr>
+        <tr><td><code>#verify_timeout(ms)</code></td><td><code>#verify</code> fn</td><td>Override per-function SMT timeout</td></tr>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <h2 id="errors">Error reference</h2>
+
+    <table>
+      <thead><tr><th>Code</th><th>Message</th><th>Cause</th></tr></thead>
+      <tbody>
+        <tr><td><code>W2401</code></td><td><code>contract not verified statically</code></td><td>SMT returned Unknown or timed out; falls back to runtime check</td></tr>
+        <tr><td><code>W2402</code></td><td><code>unverified: ...</code></td><td>Various: dead lemma, duplicate apply/reveal, reveal in non-verify context</td></tr>
+        <tr><td><code>W2403</code></td><td><code>opaque: ...</code></td><td><code>reveal</code> for non-opaque fn, <code>#fuel(0)</code>, dead <code>#opaque</code> (never revealed)</td></tr>
+        <tr><td><code>E2401</code></td><td><code>unsupported expression in contract</code></td><td>Effectful call, match, lambda, or non-<code>#pure</code> in contract position</td></tr>
+        <tr><td><code>E2402</code></td><td><code>contract violation</code></td><td>SMT disproved the contract (found counterexample)</td></tr>
+        <tr><td><code>trust-introduced</code></td><td>warning</td><td><code>assume</code> outside <code>#trusted</code> context</td></tr>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <h2 id="bootstrap">Bootstrap limitations</h2>
+
+    <table>
+      <thead><tr><th>What does not work / is deferred</th><th>Plan</th></tr></thead>
+      <tbody>
+        <tr><td><code>#must_verify_module</code> — strict mode for an entire module</td><td>D113 (Plan 33.3 Ф.13, V2)</td></tr>
+        <tr><td>SMT cache + incremental verification</td><td>D114 (V2)</td></tr>
+        <tr><td>Parallel verification via <code>rayon</code></td><td>D114 (V2)</td></tr>
+        <tr><td>Loop invariants with Z3 — full inductive reasoning</td><td>Plan 33.x V2</td></tr>
+        <tr><td><code>forall</code>/<code>exists</code> in loop invariants</td><td>Plan 33.x V2</td></tr>
+        <tr><td>Effect-aware contracts (<code>ensures Db.balance(...) == ...</code>)</td><td>D24 / D120 (partial in V1)</td></tr>
+        <tr><td>Recursive <code>lemma</code> bodies (structural induction)</td><td>Research / V3</td></tr>
+        <tr><td>Non-linear arithmetic in contracts</td><td>Z3 can sometimes handle; no static guarantee</td></tr>
+        <tr><td>Floating-point reasoning</td><td>Not planned</td></tr>
+        <tr><td>String predicates beyond <code>len()</code> and equality</td><td>Not planned for V1</td></tr>
+        <tr><td><code>#fuel(0)</code> is a warning (<code>W2403</code>) — use omitting <code>#fuel</code> instead</td><td>By design</td></tr>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <h2 id="related">Related documents</h2>
+
+    <ul>
+      <li><code>spec/decisions/09-tooling.md</code> — D24 / D89 / D111 / D112 / D113 / D114 / D116 (contracts, SMT, test tooling)</li>
+      <li><code>spec/decisions/04-effects.md</code> — D120 (<code>#pure</code> views + axioms), D115 (axiom binders)</li>
+      <li><code>docs/plans/33.9-opaque-reveal-fuel.md</code> — <code>#opaque</code> / <code>reveal</code> / <code>#fuel(n)</code> implementation (Plan 33.9)</li>
+      <li><code>nova_tests/contracts/</code> — ~280 contract verification tests</li>
+      <li><code>nova_tests/doc/f23_contracts_positive.nv</code> — basic contracts doc-example</li>
+      <li><code>nova_tests/doc/f24_infer_contracts_positive.nv</code> — inferred contracts doc-example</li>
+      <li><code>nova_tests/doc/f25_mutation_contracts_positive.nv</code> — mutation contracts doc-example</li>
+      <li><code>nova_tests/expected_runtime/</code> — runtime contract violation tests (<code>contracts_*.nv</code>)</li>
+    </ul>
+
+  </main>
+</div>

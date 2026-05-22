@@ -1,0 +1,132 @@
+<div class="page-header">
+  <div class="container--narrow">
+    <p style="font-size:.85rem;color:var(--fg-muted);margin-bottom:.4rem;"><a href="/doc/std/">Standard Library</a></p>
+    <h1>collections.vec</h1>
+    <p>Functional combinators for <code>[]T</code> — the Nova built-in dynamic array.</p>
+  </div>
+</div>
+
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Functions</div>
+      <ul>
+        <li><a href="#map">map</a></li>
+        <li><a href="#filter">filter</a></li>
+        <li><a href="#fold">fold</a></li>
+        <li><a href="#any">any</a></li>
+        <li><a href="#all">all</a></li>
+        <li><a href="#first">first</a></li>
+        <li><a href="#last">last</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">More</div>
+      <ul>
+        <li><a href="/doc/std/">&#8592; Std Library</a></li>
+        <li><a href="https://github.com/nv-lang/nova/blob/main/std/collections/vec.nv">Source &#8599;</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main id="main-content">
+    <article class="prose">
+
+      <p><code>[]T</code> is Nova's built-in dynamic array (D27 syntax, D32 <code>(ptr, len, cap)</code> representation). The built-in API — <code>len</code>, <code>cap</code>, <code>push</code>, <code>pop</code>, <code>with_capacity</code>, <code>[i]</code> — is compiler-provided. This module adds functional combinators via D35 receiver-generics.</p>
+
+      <pre><code class="language-nova">let nums []int = [1, 2, 3, 4, 5]
+let squared = nums.map(|x| x * x)
+let evens   = nums.filter(|x| x % 2 == 0)
+let total   = nums.fold(0, |acc, x| acc + x)
+assert(total == 15)</code></pre>
+
+      <hr class="divider">
+
+      <div id="map" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">map</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn []T @map[U](f fn(T) -> U) -> []U</code></pre>
+        <p>Applies <code>f</code> to each element and returns a new array <code>[]U</code>. The method-level generic <code>[U]</code> (D42) lets a single <code>[]T</code> method produce any target type.</p>
+        <h4>Examples</h4>
+        <pre><code class="language-nova">let v []int = [1, 2, 3]
+assert(v.map(|x| x * 2) == [2, 4, 6])</code></pre>
+      </div>
+
+      <hr class="divider">
+
+      <div id="filter" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">filter</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn []T @filter(pred fn(T) -> bool) -> []T</code></pre>
+        <p>Returns a new array containing only elements where <code>pred(x)</code> is <code>true</code>. Preserves order. Original is not mutated.</p>
+        <h4>Examples</h4>
+        <pre><code class="language-nova">let v []int = [1, 2, 3, 4, 5]
+assert(v.filter(|x| x % 2 == 0) == [2, 4])</code></pre>
+      </div>
+
+      <hr class="divider">
+
+      <div id="fold" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">fold</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn []T @fold[Acc](init Acc, f fn(Acc, T) -> Acc) -> Acc</code></pre>
+        <p>Left fold (reduce). Starts with accumulator <code>init</code> and applies <code>f(acc, x)</code> for each element. The method-level generic <code>[Acc]</code> is independent of <code>T</code>, so you can fold an <code>[]int</code> into a <code>str</code>, etc.</p>
+        <h4>Examples</h4>
+        <pre><code class="language-nova">let v []int = [1, 2, 3, 4]
+assert(v.fold(0, |acc, x| acc + x) == 10)</code></pre>
+      </div>
+
+      <hr class="divider">
+
+      <div id="any" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">any</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn []T @any(pred fn(T) -> bool) -> bool</code></pre>
+        <p>Returns <code>true</code> if at least one element satisfies <code>pred</code>. Short-circuits on the first match. Returns <code>false</code> on an empty array.</p>
+        <h4>Examples</h4>
+        <pre><code class="language-nova">let v []int = [1, 2, 3]
+assert(v.any(|x| x > 2))
+assert(!v.any(|x| x > 10))</code></pre>
+      </div>
+
+      <hr class="divider">
+
+      <div id="all" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">all</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn []T @all(pred fn(T) -> bool) -> bool</code></pre>
+        <p>Returns <code>true</code> if every element satisfies <code>pred</code>. Short-circuits on the first mismatch. Vacuous truth: returns <code>true</code> on an empty array.</p>
+        <h4>Examples</h4>
+        <pre><code class="language-nova">let v []int = [2, 4, 6]
+assert(v.all(|x| x % 2 == 0))</code></pre>
+      </div>
+
+      <hr class="divider">
+
+      <div id="first" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">first</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn []T @first() -> Option[T]</code></pre>
+        <p>Returns the first element wrapped in <code>Some(T)</code>, or <code>None</code> if the array is empty.</p>
+        <h4>Examples</h4>
+        <pre><code class="language-nova">let v []int = [10, 20, 30]
+assert(v.first() == Some(10))
+assert([]int.new().first() == None)</code></pre>
+      </div>
+
+      <hr class="divider">
+
+      <div id="last" style="margin-bottom:2.5rem;">
+        <h2 style="margin-bottom:.3rem;">last</h2>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
+        <pre><code class="language-nova">fn []T @last() -> Option[T]</code></pre>
+        <p>Returns the last element wrapped in <code>Some(T)</code>, or <code>None</code> if the array is empty.</p>
+        <h4>Examples</h4>
+        <pre><code class="language-nova">let v []int = [10, 20, 30]
+assert(v.last() == Some(30))
+assert([]int.new().last() == None)</code></pre>
+      </div>
+
+    </article>
+  </main>
+</div>

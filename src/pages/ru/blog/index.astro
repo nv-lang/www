@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import body from '@partials/ru-blog-index.html?raw';
+const meta = {
+  title: "Блог — Nova",
+  description: "Блог языка Nova: объявления, заметки о дизайне и обновления о разработке.",
+  canonical: "https://nv-lang.org/ru/blog/",
+  lang: "ru" as const,
+  hreflangRu: "https://nv-lang.org/ru/blog/",
+  hreflangEn: "https://nv-lang.org/blog/",
+  hreflangXDefault: "https://nv-lang.org/blog/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/ru/blog/",
+  ogTitle: "Блог — Nova",
+  ogDescription: "Блог языка Nova: объявления, заметки о дизайне и обновления о разработке.",
+  twitterTitle: "Блог — Nova",
+  twitterDescription: "Блог языка Nova: объявления, заметки о дизайне и обновления о разработке.",
+  langRuUrl: "/ru/blog/",
+  langEnUrl: "/blog/",
+};
+---
+
+<BaseLayout {...meta} active="blog">
+  <Fragment set:html={body} />
+</BaseLayout>

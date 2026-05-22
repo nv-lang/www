@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import body from '@partials/doc-std-vec-index.html?raw';
+const meta = {
+  title: "collections.vec — Standard Library — Nova",
+  description: "Nova standard library: collections.vec — functional array combinators: map, filter, fold, any, all, first, last.",
+  canonical: "https://nv-lang.org/doc/std/vec/",
+  lang: "en" as const,
+  hreflangRu: "",
+  hreflangEn: "https://nv-lang.org/doc/std/vec/",
+  hreflangXDefault: "https://nv-lang.org/doc/std/vec/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/doc/std/vec/",
+  ogTitle: "collections.vec — Standard Library — Nova",
+  ogDescription: "Nova standard library: collections.vec — functional array combinators: map, filter, fold, any, all, first, last.",
+  twitterTitle: "collections.vec — Standard Library — Nova",
+  twitterDescription: "Nova standard library: collections.vec — functional array combinators: map, filter, fold, any, all, first, last.",
+  langRuUrl: "/ru/doc/std/",
+  langEnUrl: "/doc/std/vec/",
+};
+---
+
+<BaseLayout {...meta} active="doc">
+  <Fragment set:html={body} />
+</BaseLayout>

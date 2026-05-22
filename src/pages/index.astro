@@ -1,21 +1,25 @@
 ---
-// Временная заглушка (Ф.2) — проверяет компиляцию компонентов и layout.
-// Заменяется реальной главной в Ф.3–Ф.4.
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import body from '@partials/index.html?raw';
+const meta = {
+  title: "Nova — язык с эффектами, контрактами и M:N рантаймом",
+  description: "Nova — язык системного уровня на основе алгебраических эффектов, статических контрактов и M:N рантайма. Каждый побочный эффект объявлен. Каждый инвариант проверяется.",
+  canonical: "https://nv-lang.org/",
+  lang: "ru" as const,
+  hreflangRu: "https://nv-lang.org/",
+  hreflangEn: "https://nv-lang.org/en/",
+  hreflangXDefault: "https://nv-lang.org/en/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/",
+  ogTitle: "Nova — язык с эффектами и контрактами",
+  ogDescription: "Язык системного уровня на основе алгебраических эффектов, статических контрактов и M:N рантайма.",
+  twitterTitle: "Nova — язык с эффектами, контрактами и M:N рантаймом",
+  twitterDescription: "Nova — язык системного уровня на основе алгебраических эффектов, статических контрактов и M:N рантайма. Каждый побочный эффект объявлен. Каждый инвариант проверяется.",
+  langRuUrl: "/",
+  langEnUrl: "/en/",
+};
 ---
 
-<BaseLayout
-  title="Nova — каркас Astro (Ф.2)"
-  description="Скелет Astro-проекта: проверка компонентов Head/Header/Footer."
-  canonical="https://nv-lang.org/"
-  lang="ru"
-  hreflangRu="https://nv-lang.org/"
-  hreflangEn="https://nv-lang.org/en/"
-  active="home"
->
-  <main id="main-content" class="container" style="padding-block:3rem;">
-    <h1>Каркас Astro — Ф.2 готова</h1>
-    <p>Компоненты Head / Header / Footer и BaseLayout скомпилированы.
-       Реальный контент переносится в Ф.3–Ф.4.</p>
-  </main>
+<BaseLayout {...meta} active="home" jsonLd={true}>
+  <Fragment set:html={body} />
 </BaseLayout>

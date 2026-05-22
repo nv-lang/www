@@ -1,12 +1,14 @@
 ---
 // Head — содержимое <head>. Воспроизводит укреплённый набор мета-тегов
-// из плана www-01 (CSP, theme-color, og/twitter, hreflang, JSON-LD).
+// www-01 (CSP, theme-color, og/twitter, hreflang, JSON-LD).
+// Поля canonical/description/hreflang опциональны: страница 404 — минимальная
+// (noindex, без canonical/og), std-подстраницы — без hreflang ru.
 interface Props {
   title: string;
-  description: string;
-  canonical: string;
-  hreflangRu: string;
-  hreflangEn: string;
+  description?: string;
+  canonical?: string;
+  hreflangRu?: string;
+  hreflangEn?: string;
   hreflangXDefault?: string;
   ogType?: string;
   ogUrl?: string;
@@ -54,22 +56,30 @@ const jsonLdData = {
 <meta http-equiv="Content-Security-Policy" content={CSP} />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>{title}</title>
-<meta name="description" content={description} />
+{description && <meta name="description" content={description} />}
 {noindex && <meta name="robots" content="noindex" />}
-<link rel="canonical" href={canonical} />
-<link rel="alternate" hreflang="ru" href={hreflangRu} />
-<link rel="alternate" hreflang="en" href={hreflangEn} />
-<link rel="alternate" hreflang="x-default" href={hreflangXDefault ?? hreflangEn} />
-<meta property="og:type" content={ogType} />
-<meta property="og:url" content={ogUrl ?? canonical} />
-<meta property="og:title" content={ogTitle ?? title} />
-<meta property="og:description" content={ogDescription ?? description} />
-<meta property="og:site_name" content="Nova" />
-<meta property="og:image" content={OG_IMAGE} />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content={twitterTitle ?? title} />
-<meta name="twitter:description" content={twitterDescription ?? description} />
-<meta name="twitter:image" content={OG_IMAGE} />
+{canonical && (
+  <Fragment>
+    <link rel="canonical" href={canonical} />
+    {hreflangRu && <link rel="alternate" hreflang="ru" href={hreflangRu} />}
+    {hreflangEn && <link rel="alternate" hreflang="en" href={hreflangEn} />}
+    {hreflangXDefault && <link rel="alternate" hreflang="x-default" href={hreflangXDefault} />}
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={ogUrl ?? canonical} />
+    <meta property="og:title" content={ogTitle ?? title} />
+    {(ogDescription ?? description) && (
+      <meta property="og:description" content={ogDescription ?? description} />
+    )}
+    <meta property="og:site_name" content="Nova" />
+    <meta property="og:image" content={OG_IMAGE} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={twitterTitle ?? title} />
+    {(twitterDescription ?? description) && (
+      <meta name="twitter:description" content={twitterDescription ?? description} />
+    )}
+    <meta name="twitter:image" content={OG_IMAGE} />
+  </Fragment>
+)}
 {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLdData)} />}

@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import body from '@partials/ru-doc-index.html?raw';
+const meta = {
+  title: "Документация — Nova",
+  description: "Документация по языку Nova: руководство для начинающих, справочник языка, стандартная библиотека и спецификация.",
+  canonical: "https://nv-lang.org/ru/doc/",
+  lang: "ru" as const,
+  hreflangRu: "https://nv-lang.org/ru/doc/",
+  hreflangEn: "https://nv-lang.org/doc/",
+  hreflangXDefault: "https://nv-lang.org/doc/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/ru/doc/",
+  ogTitle: "Документация — Nova",
+  ogDescription: "Документация по языку Nova: руководство для начинающих, справочник языка, стандартная библиотека и спецификация.",
+  twitterTitle: "Документация — Nova",
+  twitterDescription: "Документация по языку Nova: руководство для начинающих, справочник языка, стандартная библиотека и спецификация.",
+  langRuUrl: "/ru/doc/",
+  langEnUrl: "/doc/",
+};
+---
+
+<BaseLayout {...meta} active="doc">
+  <Fragment set:html={body} />
+</BaseLayout>

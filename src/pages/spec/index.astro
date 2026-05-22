@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import body from '@partials/spec-index.html?raw';
+const meta = {
+  title: "Language Specification — Nova",
+  description: "The Nova language specification: effects, contracts, type system, runtime semantics, and grammar.",
+  canonical: "https://nv-lang.org/spec/",
+  lang: "en" as const,
+  hreflangRu: "https://nv-lang.org/ru/spec/",
+  hreflangEn: "https://nv-lang.org/spec/",
+  hreflangXDefault: "https://nv-lang.org/spec/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/spec/",
+  ogTitle: "Language Specification — Nova",
+  ogDescription: "The Nova language specification: effects, contracts, type system, runtime semantics, and grammar.",
+  twitterTitle: "Language Specification — Nova",
+  twitterDescription: "The Nova language specification: effects, contracts, type system, runtime semantics, and grammar.",
+  langRuUrl: "/ru/spec/",
+  langEnUrl: "/spec/",
+};
+---
+
+<BaseLayout {...meta} active="spec">
+  <Fragment set:html={body} />
+</BaseLayout>

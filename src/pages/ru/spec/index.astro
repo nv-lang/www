@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import body from '@partials/ru-spec-index.html?raw';
+const meta = {
+  title: "Спецификация языка — Nova",
+  description: "Спецификация языка Nova: эффекты, контракты, система типов, семантика рантайма и грамматика.",
+  canonical: "https://nv-lang.org/ru/spec/",
+  lang: "ru" as const,
+  hreflangRu: "https://nv-lang.org/ru/spec/",
+  hreflangEn: "https://nv-lang.org/spec/",
+  hreflangXDefault: "https://nv-lang.org/spec/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/ru/spec/",
+  ogTitle: "Спецификация языка — Nova",
+  ogDescription: "Спецификация языка Nova: эффекты, контракты, система типов, семантика рантайма и грамматика.",
+  twitterTitle: "Спецификация языка — Nova",
+  twitterDescription: "Спецификация языка Nova: эффекты, контракты, система типов, семантика рантайма и грамматика.",
+  langRuUrl: "/ru/spec/",
+  langEnUrl: "/spec/",
+};
+---
+
+<BaseLayout {...meta} active="spec">
+  <Fragment set:html={body} />
+</BaseLayout>

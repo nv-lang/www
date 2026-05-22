@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import body from '@partials/doc-channels-index.html?raw';
+const meta = {
+  title: "Channels and select — Nova",
+  description: "Nova channels and select reference: Channel[T], ChanWriter, ChanReader, select arms, timeout, supervised cancel, idioms.",
+  canonical: "https://nv-lang.org/doc/channels/",
+  lang: "en" as const,
+  hreflangRu: "https://nv-lang.org/ru/doc/channels/",
+  hreflangEn: "https://nv-lang.org/doc/channels/",
+  hreflangXDefault: "https://nv-lang.org/doc/channels/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/doc/channels/",
+  ogTitle: "Channels and select — Nova",
+  ogDescription: "Nova channels and select reference: Channel[T], ChanWriter, ChanReader, select arms, timeout, supervised cancel, idioms.",
+  twitterTitle: "Channels and select — Nova",
+  twitterDescription: "Nova channels and select reference: Channel[T], ChanWriter, ChanReader, select arms, timeout, supervised cancel, idioms.",
+  langRuUrl: "/ru/doc/channels/",
+  langEnUrl: "/doc/channels/",
+};
+---
+
+<BaseLayout {...meta} active="doc">
+  <Fragment set:html={body} />
+</BaseLayout>

@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import body from '@partials/doc-nova-cli-index.html?raw';
+const meta = {
+  title: "nova CLI — Nova",
+  description: "Nova CLI reference: nova check, run, build, test, doc, doc-query, doc-mcp, contracts, bench — all subcommands, flags, and environment variables.",
+  canonical: "https://nv-lang.org/doc/nova-cli/",
+  lang: "en" as const,
+  hreflangRu: "https://nv-lang.org/ru/doc/nova-cli/",
+  hreflangEn: "https://nv-lang.org/doc/nova-cli/",
+  hreflangXDefault: "https://nv-lang.org/doc/nova-cli/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/doc/nova-cli/",
+  ogTitle: "nova CLI — Nova",
+  ogDescription: "Nova CLI reference: nova check, run, build, test, doc, doc-query, doc-mcp, contracts, bench — all subcommands, flags, and environment variables.",
+  twitterTitle: "nova CLI — Nova",
+  twitterDescription: "Nova CLI reference: nova check, run, build, test, doc, doc-query, doc-mcp, contracts, bench — all subcommands, flags, and environment variables.",
+  langRuUrl: "/ru/doc/nova-cli/",
+  langEnUrl: "/doc/nova-cli/",
+};
+---
+
+<BaseLayout {...meta} active="doc">
+  <Fragment set:html={body} />
+</BaseLayout>

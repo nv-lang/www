@@ -1,0 +1,663 @@
+<div class="page-header">
+  <div class="container--narrow">
+    <p style="font-size:.85rem;color:var(--fg-muted);margin-bottom:.4rem;"><a href="/ru/doc/">Документация</a></p>
+    <h1>Контракты и формальная верификация</h1>
+    <p>Описываете, что функция <strong>требует</strong> и <strong>гарантирует</strong>; компилятор проверяет на этапе компиляции через SMT. Доказанные контракты стираются в release — нулевая цена в runtime.</p>
+  </div>
+</div>
+
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Обзор</div>
+      <ul>
+        <li><a href="#quickstart">Quickstart</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Клаузулы контракта</div>
+      <ul>
+        <li><a href="#requires">requires</a></li>
+        <li><a href="#ensures">ensures и result</a></li>
+        <li><a href="#old">old(...) в ensures</a></li>
+        <li><a href="#decreases">decreases</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Атрибуты верификации</div>
+      <ul>
+        <li><a href="#verify">#verify</a></li>
+        <li><a href="#pure">#pure</a></li>
+        <li><a href="#unverified">#unverified</a></li>
+        <li><a href="#must_verify">#must_verify</a></li>
+        <li><a href="#trusted">#trusted</a></li>
+        <li><a href="#pure-composition">Композиция #pure</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Вспомогательные шаги</div>
+      <ul>
+        <li><a href="#assert_static">assert_static</a></li>
+        <li><a href="#assume">assume</a></li>
+        <li><a href="#calc">calc { ... }</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Расширенное</div>
+      <ul>
+        <li><a href="#loop-invariants">Loop invariants</a></li>
+        <li><a href="#lemmas">Леммы и apply</a></li>
+        <li><a href="#opaque">#opaque</a></li>
+        <li><a href="#reveal">reveal fn_name</a></li>
+        <li><a href="#fuel">#fuel(n)</a></li>
+        <li><a href="#quantifiers">Bounded quantifiers</a></li>
+        <li><a href="#trusted-external">Доверенные внешние fn</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Справочник</div>
+      <ul>
+        <li><a href="#smt-backend">SMT backend</a></li>
+        <li><a href="#grammar">Грамматика</a></li>
+        <li><a href="#errors">Коды ошибок</a></li>
+        <li><a href="#bootstrap">Bootstrap-ограничения</a></li>
+        <li><a href="#related">Связанные документы</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main id="main-content" class="doc-content">
+
+    <p>Система контрактов Nova позволяет описать, что функция <strong>требует</strong> и <strong>гарантирует</strong>, и проверяет эти утверждения на этапе компиляции через SMT-солвер. Доказанные контракты стираются в release-сборке — нулевая цена в runtime. Недоказанные откатываются до runtime-assert'а в debug.</p>
+
+    <p>Spec: D24 (SMT-стратегия) · D111 (<code>assume</code> / <code>assert_static</code> / <code>#trusted</code>) · D112 (bounded quantifiers) · D116 (Z3 backend).</p>
+
+    <hr>
+
+    <h2 id="quickstart">Quickstart</h2>
+
+<pre><code class="language-nova">// Простое precondition + postcondition.
+#verify
+fn withdraw(balance int, amount int) -> int
+    requires amount > 0 && amount <= balance
+    ensures  result == balance - amount
+    ensures  result >= 0
+{
+    balance - amount
+}
+
+test "contracts quickstart: withdraw" {
+    assert(withdraw(100, 30) == 70)
+    assert(withdraw(50, 50)  == 0)
+}</code></pre>
+
+<pre><code class="language-nova">// REQUIRES_SMT_BACKEND z3
+
+// Opaque helper + reveal в caller'е — Z3 доказывает более сильный контракт.
+#opaque #pure
+fn double(x int) -> int
+    requires x >= 0
+    ensures  result >= 0
+=> x * 2
+
+#verify
+fn caller_with_reveal(n int) -> int
+    requires n >= 0
+    ensures  result == n * 2
+{
+    reveal double
+    double(n)
+}
+
+test "contracts quickstart: opaque + reveal" {
+    assert(double(5) == 10)
+    assert(caller_with_reveal(7) == 14)
+}</code></pre>
+
+    <hr>
+
+    <h2 id="contract-clauses">Клаузулы контракта</h2>
+
+    <p>Клаузулы контракта располагаются между списком параметров и <code>{</code> телом (или <code>=&gt;</code> expression-body). Несколько клаузул одного вида разрешены и соединяются конъюнкцией.</p>
+
+    <h3 id="requires"><code>requires</code></h3>
+
+    <p>Предусловие. SMT-солвер <strong>предполагает</strong> его выполнение при верификации тела. Caller обязан его соблюсти.</p>
+
+<pre><code class="language-nova">#verify
+fn safe_div(a int, b int) -> int
+    requires b != 0
+    ensures  result * b == a - (a % b)
+{
+    a / b
+}</code></pre>
+
+    <p>Несколько <code>requires</code>-клаузул эквивалентны одной конъюнкции:</p>
+
+<pre><code class="language-nova">#verify
+fn clamp(x int, lo int, hi int) -> int
+    requires lo <= hi
+    ensures  result >= lo && result <= hi
+{
+    if x < lo { lo } else if x > hi { hi } else { x }
+}</code></pre>
+
+    <h3 id="ensures"><code>ensures</code> и <code>result</code></h3>
+
+    <p>Постусловие. <code>result</code> ссылается на возвращаемое значение функции. Несколько <code>ensures</code>-клаузул проверяются независимо.</p>
+
+<pre><code class="language-nova">#verify
+fn abs_val(x int) -> int
+    ensures result >= 0
+    ensures result == x || result == -x
+{
+    if x >= 0 { x } else { -x }
+}</code></pre>
+
+    <h3 id="old"><code>old(...)</code> в <code>ensures</code></h3>
+
+    <p><code>old(expr)</code> захватывает значение выражения <strong>в точке входа</strong> в функцию, до выполнения тела. Полезно для контрактов с мутацией.</p>
+
+<pre><code class="language-nova">#verify
+fn increment(mut n int) -> int
+    ensures result == old(n) + 1
+{
+    n = n + 1
+    n
+}</code></pre>
+
+    <h3 id="decreases"><code>decreases</code></h3>
+
+    <p>Доказывает терминацию рекурсивных функций. Выражение должно <strong>строго убывать</strong> при каждом рекурсивном вызове. SMT-солвер проверяет это как well-foundedness obligation.</p>
+
+<pre><code class="language-nova">fn factorial(n int) -> int
+    requires n >= 0
+    decreases n
+=> if n == 0 { 1 } else { n * factorial(n - 1) }
+
+fn fib(n int) -> int
+    requires n >= 0
+    decreases n
+=> if n < 2 { n } else { fib(n - 1) + fib(n - 2) }</code></pre>
+
+    <hr>
+
+    <h2 id="verification-attributes">Атрибуты верификации</h2>
+
+    <h3 id="verify"><code>#verify</code></h3>
+
+    <p>Помечает функцию для SMT-верификации. Компилятор кодирует тело и все контракты как SMT-запрос и спрашивает солвер. Если солвер доказал контракты — они стираются в release. Если нет — warning <code>W2402</code> + runtime fallback в debug.</p>
+
+<pre><code class="language-nova">#verify
+fn sum_nonneg(a int, b int) -> int
+    requires a >= 0
+    requires b >= 0
+    ensures  result >= 0
+{
+    a + b
+}</code></pre>
+
+    <h3 id="pure"><code>#pure</code></h3>
+
+    <p>Помечает функцию как <strong>чистую</strong> — без side effects, без эффектов в effect-row. Чистые функции можно свободно вызывать внутри контрактных выражений (<code>requires</code>/<code>ensures</code>/<code>invariant</code>), где вызовы с эффектами запрещены.</p>
+
+<pre><code class="language-nova">#pure
+fn is_positive(x int) -> bool => x > 0
+
+#verify
+fn safe_log(x int) -> int
+    requires is_positive(x)    // вызов #pure в контракте разрешён
+    ensures  result >= 0
+{
+    x - 1
+}</code></pre>
+
+    <h3 id="unverified"><code>#unverified</code></h3>
+
+    <p>Отказ от SMT-верификации. Контракты остаются как <strong>runtime-assert'ы</strong> в debug; в release пропускаются. Используйте для контрактов, которые солвер не может обработать (нелинейная арифметика, строки и т.д.).</p>
+
+<pre><code class="language-nova">#unverified
+fn safe_double(x int) -> int
+    requires x > 0
+    ensures  result == x * 2
+=> x * 2</code></pre>
+
+    <h3 id="must_verify"><code>#must_verify</code></h3>
+
+    <p>Противоположность <code>#unverified</code>. Если SMT-солвер не может доказать контракт за отведённый таймаут — компиляция <strong>падает</strong> с ошибкой (без runtime fallback). Используйте для критичного кода.</p>
+
+<pre><code class="language-nova">#must_verify
+fn transfer_total(from_bal int, to_bal int, amount int) -> int
+    requires amount > 0 && amount <= from_bal
+    ensures  result == from_bal + to_bal
+{
+    (from_bal - amount) + (to_bal + amount)
+}</code></pre>
+
+    <h3 id="trusted"><code>#trusted</code></h3>
+
+    <p>Используется в двух контекстах:</p>
+
+    <p><strong>1. <code>with #trusted</code></strong> на binding handler'а — пропускает верификацию аксиом для этого handler'а, принимает контракты как аксиомы на доверии:</p>
+
+<pre><code class="language-nova">with #trusted Log = handler Log {
+    Write(msg) { if msg > 0 { buf = msg } else { buf = 0 } }
+    last() => buf
+} { ... }</code></pre>
+
+    <p><strong>2. <code>#trusted</code> на функции</strong> с <code>assume</code> — подавляет предупреждение <code>trust-introduced</code>:</p>
+
+<pre><code class="language-nova">#trusted
+fn call_ffi() -> int {
+    let result = extern_fn()
+    assume result >= 0    // задокументированное постусловие FFI
+    result
+}</code></pre>
+
+    <hr>
+
+    <h2 id="pure-composition">Композиция <code>#pure</code>-функций</h2>
+
+    <p><code>#pure</code>-функции свободно компонуются в контрактных выражениях. Позволяет создавать переиспользуемые предикаты:</p>
+
+<pre><code class="language-nova">#pure
+fn in_range(x int, lo int, hi int) -> bool => x >= lo && x <= hi
+
+#verify
+fn clamp_tight(x int) -> int
+    ensures in_range(result, 0, 100)
+{
+    if x < 0 { 0 } else if x > 100 { 100 } else { x }
+}</code></pre>
+
+    <p>Non-pure функция в контракте — ошибка компиляции:</p>
+
+<pre><code>error: effectful function call in contract expression
+  contracts require #pure or side-effect-free expressions</code></pre>
+
+    <hr>
+
+    <h2 id="proof-helpers">Вспомогательные шаги доказательства</h2>
+
+    <h3 id="assert_static"><code>assert_static</code></h3>
+
+    <p>Вставляет <strong>промежуточный шаг доказательства</strong>, видимый SMT-солверу. Разбивает сложный контракт на маленькие, независимо проверяемые факты. В debug — runtime check; в release — стирается после доказательства.</p>
+
+<pre><code class="language-nova">#verify
+fn transfer(from int, to int, amount int) -> int
+    requires amount > 0 && amount <= from
+    ensures  result == from + to
+{
+    assert_static from - amount >= 0    // промежуточный факт
+    (from - amount) + (to + amount)
+}</code></pre>
+
+    <h3 id="assume"><code>assume</code></h3>
+
+    <p>Инжектирует факт в SMT-контекст <strong>без доказательства</strong>. Используйте для постусловий FFI или OS-инвариантов, которые солвер не видит. Генерирует предупреждение <code>trust-introduced</code> вне <code>#trusted</code>-функции.</p>
+
+<pre><code class="language-nova">#trusted
+fn read_positive_from_device() -> int {
+    let v = device_read()
+    assume v >= 0    // задокументированная аппаратная гарантия
+    v
+}</code></pre>
+
+    <h3 id="calc"><code>calc { ... }</code></h3>
+
+    <p>Структурированная <strong>цепочка равенств</strong> (или неравенств), направляющая SMT-солвер по шагам. Каждый шаг <code>== expr;</code> утверждает равенство с предыдущей строкой. Солвер проверяет каждый шаг независимо.</p>
+
+<pre><code class="language-nova">#verify
+fn double_is_double(x int) -> int
+    ensures result == x * 2
+{
+    calc {
+        x * 2;
+        == x * 2;
+    }
+    x * 2
+}</code></pre>
+
+    <p>Более сложные цепочки могут включать алгебраические тождества:</p>
+
+<pre><code class="language-nova">#verify
+fn add_assoc_proof(a int, b int, c int) -> bool
+    ensures result == true
+{
+    calc {
+        (a + b) + c;
+        == a + (b + c);    // ассоциативность — Z3 доказывает каждый шаг
+    }
+    true
+}</code></pre>
+
+    <hr>
+
+    <h2 id="loop-invariants">Loop invariants</h2>
+
+    <p>Клаузула <code>invariant</code> внутри тела цикла утверждает условие, которое выполняется <strong>при каждом входе в итерацию</strong>. SMT-солвер проверяет:</p>
+    <ol>
+      <li>Инвариант выполняется перед циклом (инициализация).</li>
+      <li>Если инвариант выполняется в начале итерации и условие цикла выполняется, то инвариант выполняется в конце тела (индуктивный шаг).</li>
+    </ol>
+
+<pre><code class="language-nova">// REQUIRES_SMT_BACKEND z3
+
+#verify
+fn sum_nonneg_array(n int) -> int
+    requires n >= 0
+    ensures  result >= 0
+{
+    let mut sum = 0
+    let mut i = 0
+    while i < n {
+        invariant sum >= 0
+        invariant i >= 0
+        sum = sum + i
+        i = i + 1
+    }
+    sum
+}</code></pre>
+
+    <p>Клаузула <code>decreases</code> также может использоваться в цикле для доказательства терминации:</p>
+
+<pre><code class="language-nova">#verify
+fn countdown(n int) -> int
+    requires n >= 0
+    ensures  result == 0
+{
+    let mut k = n
+    while k > 0 {
+        invariant k >= 0
+        decreases k
+        k = k - 1
+    }
+    k
+}</code></pre>
+
+    <hr>
+
+    <h2 id="lemmas">Леммы и <code>apply</code></h2>
+
+    <p><strong>Лемма</strong> — <code>#verify</code>-функция, назначение которой — установить математический факт: она существует ради своего доказательства, а не runtime-значения. Обычно возвращает <code>bool</code> с <code>ensures result == true</code>.</p>
+
+<pre><code class="language-nova">// REQUIRES_SMT_BACKEND z3
+
+#verify
+lemma add_comm(a int, b int) -> bool
+    ensures result == true
+{
+    a + b == b + a
+}</code></pre>
+
+    <p>Оператор <code>apply</code> инжектирует постусловие леммы как факт в текущий SMT-контекст. Позволяет выстраивать цепочки результатов лемм:</p>
+
+<pre><code class="language-nova">#verify
+fn use_commutativity(a int, b int) -> int
+    requires a >= 0 && b >= 0
+    ensures  result == b + a
+{
+    apply add_comm(a, b)    // инжектирует: a + b == b + a
+    a + b
+}</code></pre>
+
+    <p><strong>Правила:</strong></p>
+    <ul>
+      <li><code>apply</code> работает только внутри <code>#verify</code>-функций.</li>
+      <li>Лемма должна быть уже доказана (т.е. <code>#verify</code> и её контракты проверены без ошибки).</li>
+      <li>Дублирующий <code>apply</code> одной и той же леммы в той же области — warning <code>W2402</code>.</li>
+    </ul>
+
+    <hr>
+
+    <h2 id="opaque-reveal">Opaque-функции и <code>reveal</code></h2>
+
+    <h3 id="opaque"><code>#opaque</code></h3>
+
+    <p><code>#opaque</code> на <code>#pure</code>-функции скрывает её тело от SMT-солвера. Солвер трактует её как <strong>неинтерпретированную функцию</strong> (UF): знает <code>requires</code>/<code>ensures</code>-контракты, но не реализацию.</p>
+
+    <p>Это предотвращает расходимость matching-loop'а в рекурсивных функциях и даёт контроль над тем, какие caller'ы получают доступ к body-level proof:</p>
+
+<pre><code class="language-nova">// REQUIRES_SMT_BACKEND z3
+
+#opaque #pure
+fn double(x int) -> int
+    requires x >= 0
+    ensures  result >= 0
+=> x * 2</code></pre>
+
+    <p>Без <code>reveal</code> caller может использовать только задекларированный <code>ensures</code> (result ≥ 0), но не то, что <code>result == x * 2</code>:</p>
+
+<pre><code class="language-nova">// EXPECT_COMPILE_ERROR contract violation
+
+#verify
+fn caller_no_reveal(n int) -> int
+    requires n >= 0
+    ensures  result == n * 2    // Z3 не может доказать — тело скрыто
+{
+    double(n)
+}</code></pre>
+
+    <h3 id="reveal"><code>reveal fn_name</code></h3>
+
+    <p><code>reveal fn_name</code> инжектирует body-аксиому <code>#opaque</code>-функции в текущую SMT-область. После <code>reveal</code> солвер может использовать полное тело для доказательств в этой функции:</p>
+
+<pre><code class="language-nova">// REQUIRES_SMT_BACKEND z3
+
+#verify
+fn caller_with_reveal(n int) -> int
+    requires n >= 0
+    ensures  result == n * 2
+{
+    reveal double       // инжектируется body-аксиома: double(x) == x * 2
+    double(n)
+}</code></pre>
+
+    <p><strong>Область действия:</strong> <code>reveal</code> локален для функции. Другие caller'ы не затрагиваются.</p>
+
+    <p><strong>Предупреждения:</strong></p>
+    <ul>
+      <li><code>W2402</code> — <code>reveal</code> в не-<code>#verify</code>-функции (нет SMT-контекста).</li>
+      <li><code>W2402</code> — дублирующий <code>reveal</code> для одного имени в той же области.</li>
+      <li><code>W2403</code> — <code>reveal</code> для функции, которая не является <code>#opaque</code>.</li>
+    </ul>
+
+    <h3 id="fuel"><code>#fuel(n)</code></h3>
+
+    <p><code>#fuel(n)</code> на <code>#opaque #pure</code>-рекурсивной функции включает <strong>N уровней разворачивания</strong> в SMT-области после <code>reveal</code>. Без fuel opaque body axiom — нерекурсивная. С <code>#fuel(2)</code> солвер получает два уровня разворачивания — достаточно для доказательства свойств маленьких конкретных входов:</p>
+
+<pre><code class="language-nova">// REQUIRES_SMT_BACKEND z3
+
+#opaque #pure #fuel(2)
+fn count_down(n int) -> int
+    requires n >= 0
+    ensures  result >= 0
+=>
+    if n == 0 { 0 } else { 1 + count_down(n - 1) }
+
+#verify
+fn prove_base_case() -> int
+    ensures result == 0
+{
+    reveal count_down
+    count_down(0)      // fuel разворачивает: count_down(0) == 0
+}
+
+#verify
+fn prove_one_step() -> int
+    ensures result == 1
+{
+    reveal count_down
+    count_down(1)      // fuel разворачивает: 1 + count_down(0) == 1
+}</code></pre>
+
+    <p>Fuel chain создаёт N промежуточных UF и связывает их аксиомами по примеру подхода Dafny.</p>
+
+    <hr>
+
+    <h2 id="quantifiers">Bounded quantifiers</h2>
+
+    <p>Nova поддерживает <strong>bounded quantifiers</strong> — <code>forall</code>/<code>exists</code> по конкретным коллекциям или индексным диапазонам. Unbounded universal quantifiers — ошибка компиляции.</p>
+
+<pre><code class="language-nova">// REQUIRES_SMT_BACKEND z3
+
+#verify
+fn all_nonneg_sum(a int, b int, c int) -> bool
+    requires a >= 0 && b >= 0 && c >= 0
+    ensures  result == true
+{
+    a + b + c >= 0
+}</code></pre>
+
+    <p>Синтаксис bounded quantifiers в контрактах:</p>
+
+<pre><code class="language-nova">// forall — универсальный
+requires forall i in 0..xs.len() : xs[i] >= 0
+
+// exists — экзистенциальный
+ensures  exists i in 0..result.len() : result[i] == target</code></pre>
+
+    <p>Коллекция после <code>in</code> должна быть итерируемой (<code>[]T</code>, range, set, map). Тело должно быть <code>bool</code> и <code>#pure</code>.</p>
+
+    <hr>
+
+    <h2 id="trusted-external">Доверенные внешние функции</h2>
+
+    <p><code>external fn</code> с контрактами требует <code>#trusted</code>. Контракты регистрируются как <strong>аксиомы</strong> — caller'ы получают <code>ensures</code> как предположения без доказательства. Компилятор не верифицирует тело (Nova-тела нет).</p>
+
+<pre><code class="language-nova">#trusted
+external fn libc_strlen(s str) -> int
+    requires s.is_valid_cstring()
+    ensures  result >= 0
+
+#verify
+fn use_strlen(s str) -> int
+    requires s.is_valid_cstring()
+    ensures  result >= 0
+{
+    libc_strlen(s)    // ensures из #trusted-аксиомы инжектируется
+}</code></pre>
+
+    <hr>
+
+    <h2 id="smt-backend">Выбор SMT-бэкенда</h2>
+
+    <table>
+      <thead><tr><th>Бэкенд</th><th>Активируется</th><th>Возможности</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Trivial</strong></td><td>по умолчанию</td><td>Constant-folding, линейные bounds на единичных binary ops. Быстрый, без зависимости Z3.</td></tr>
+        <tr><td><strong>Z3</strong></td><td><code>--smt-backend=z3</code> или <code>NOVA_SMT_BACKEND=z3</code></td><td>Полный LIA + EUF + bounded arrays. Обязателен для opaque/reveal, сложных арифметических цепочек, loop invariants.</td></tr>
+      </tbody>
+    </table>
+
+    <p>Тесты, требующие Z3, используют маркер <code>// REQUIRES_SMT_BACKEND z3</code> — test runner пропускает их при отсутствии Z3.</p>
+
+    <p>Таймаут на функцию: по умолчанию 2 секунды. Переопределить локально:</p>
+
+<pre><code class="language-nova">#verify_timeout(10000)
+#verify
+fn complex_proof(x int) -> int
+    ...</code></pre>
+
+    <hr>
+
+    <h2 id="grammar">Грамматика контрактов</h2>
+
+<pre><code>contract-clause  = requires-clause
+                 | ensures-clause
+                 | decreases-clause
+
+requires-clause  = 'requires' bool-expr
+ensures-clause   = 'ensures'  bool-expr
+decreases-clause = 'decreases' expr
+
+fn-contracts     = contract-clause*
+
+loop-invariant   = 'invariant' bool-expr
+loop-decreases   = 'decreases' expr
+
+calc-block       = 'calc' '{' calc-step+ '}'
+calc-step        = expr ';'
+               | ('==' | '&lt;=' | '&gt;=' | '&lt;' | '&gt;') expr ';'
+
+reveal-stmt      = 'reveal' ident
+apply-stmt       = 'apply' ident '(' expr-list ')'
+assert-static    = 'assert_static' bool-expr
+assume-stmt      = 'assume' bool-expr
+
+quantifier-expr  = 'forall' ident 'in' expr ':' bool-expr
+                 | 'exists' ident 'in' expr ':' bool-expr
+
+old-expr         = 'old' '(' expr ')'
+result-ref       = 'result'                  // только в ensures</code></pre>
+
+    <h4>Сводка атрибутов</h4>
+
+    <table>
+      <thead><tr><th>Атрибут</th><th>На</th><th>Значение</th></tr></thead>
+      <tbody>
+        <tr><td><code>#verify</code></td><td>fn</td><td>Включить SMT-верификацию</td></tr>
+        <tr><td><code>#pure</code></td><td>fn</td><td>Чистая (нет эффектов), используется в контрактах</td></tr>
+        <tr><td><code>#unverified</code></td><td>fn</td><td>Пропустить SMT, оставить как runtime check</td></tr>
+        <tr><td><code>#must_verify</code></td><td>fn</td><td>Требовать SMT-доказательство — ошибка компиляции если недоказуемо</td></tr>
+        <tr><td><code>#trusted</code></td><td>fn / <code>with</code> binding</td><td>Принять контракты как аксиомы без доказательства</td></tr>
+        <tr><td><code>#opaque</code></td><td><code>#pure</code> fn</td><td>Скрыть тело от SMT; требуется <code>reveal</code> для раскрытия</td></tr>
+        <tr><td><code>#fuel(n)</code></td><td><code>#opaque #pure</code> fn</td><td>N уровней рекурсивного разворачивания после <code>reveal</code></td></tr>
+        <tr><td><code>#verify_timeout(ms)</code></td><td><code>#verify</code> fn</td><td>Переопределить таймаут SMT на функцию</td></tr>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <h2 id="errors">Справочник ошибок</h2>
+
+    <table>
+      <thead><tr><th>Код</th><th>Сообщение</th><th>Причина</th></tr></thead>
+      <tbody>
+        <tr><td><code>W2401</code></td><td><code>contract not verified statically</code></td><td>SMT вернул Unknown или timeout; откат на runtime check</td></tr>
+        <tr><td><code>W2402</code></td><td><code>unverified: ...</code></td><td>Разное: мёртвая лемма, дублирующий apply/reveal, reveal вне verify-контекста</td></tr>
+        <tr><td><code>W2403</code></td><td><code>opaque: ...</code></td><td><code>reveal</code> для не-opaque fn, <code>#fuel(0)</code>, мёртвый <code>#opaque</code> (ни разу не reveal'ился)</td></tr>
+        <tr><td><code>E2401</code></td><td><code>unsupported expression in contract</code></td><td>Вызов с эффектом, match, lambda или не-<code>#pure</code> в контрактной позиции</td></tr>
+        <tr><td><code>E2402</code></td><td><code>contract violation</code></td><td>SMT опроверг контракт (нашёл контрпример)</td></tr>
+        <tr><td><code>trust-introduced</code></td><td>warning</td><td><code>assume</code> вне <code>#trusted</code>-контекста</td></tr>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <h2 id="bootstrap">Bootstrap-ограничения</h2>
+
+    <table>
+      <thead><tr><th>Что не работает / отложено</th><th>План</th></tr></thead>
+      <tbody>
+        <tr><td><code>#must_verify_module</code> — strict mode для всего модуля</td><td>D113 (Plan 33.3 Ф.13, V2)</td></tr>
+        <tr><td>SMT cache + инкрементальная верификация</td><td>D114 (V2)</td></tr>
+        <tr><td>Параллельная верификация через <code>rayon</code></td><td>D114 (V2)</td></tr>
+        <tr><td>Loop invariants с Z3 — полное индуктивное рассуждение</td><td>Plan 33.x V2</td></tr>
+        <tr><td><code>forall</code>/<code>exists</code> в loop invariants</td><td>Plan 33.x V2</td></tr>
+        <tr><td>Effect-aware контракты (<code>ensures Db.balance(...) == ...</code>)</td><td>D24 / D120 (частично в V1)</td></tr>
+        <tr><td>Рекурсивные <code>lemma</code>-тела (структурная индукция)</td><td>Research / V3</td></tr>
+        <tr><td>Нелинейная арифметика в контрактах</td><td>Z3 иногда справляется; статической гарантии нет</td></tr>
+        <tr><td>Рассуждения о floating-point</td><td>Не планируется</td></tr>
+        <tr><td>Строковые предикаты сложнее <code>len()</code> и equality</td><td>Не планируется для V1</td></tr>
+        <tr><td><code>#fuel(0)</code> — warning (<code>W2403</code>), используйте без <code>#fuel</code></td><td>По дизайну</td></tr>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <h2 id="related">Связанные документы</h2>
+
+    <ul>
+      <li><code>spec/decisions/09-tooling.md</code> — D24 / D89 / D111 / D112 / D113 / D114 / D116 (контракты, SMT, test tooling)</li>
+      <li><code>spec/decisions/04-effects.md</code> — D120 (<code>#pure</code> views + axioms), D115 (axiom binders)</li>
+      <li><code>docs/plans/33.9-opaque-reveal-fuel.md</code> — реализация <code>#opaque</code> / <code>reveal</code> / <code>#fuel(n)</code> (Plan 33.9)</li>
+      <li><code>nova_tests/contracts/</code> — ~280 тестов верификации контрактов</li>
+      <li><code>nova_tests/doc/f23_contracts_positive.nv</code> — базовый doc-пример контрактов</li>
+      <li><code>nova_tests/doc/f24_infer_contracts_positive.nv</code> — doc-пример инферированных контрактов</li>
+      <li><code>nova_tests/doc/f25_mutation_contracts_positive.nv</code> — doc-пример контрактов с мутацией</li>
+      <li><code>nova_tests/expected_runtime/</code> — тесты нарушений контракта в runtime (<code>contracts_*.nv</code>)</li>
+    </ul>
+
+  </main>
+</div>
