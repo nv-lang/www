@@ -1,14 +1,11 @@
 # Сборка и деплой nv-lang.org на GitHub Pages.
-# Astro-проект лежит в подкаталоге site/.
-#
-# ВНИМАНИЕ: до cutover (план www-02, Ф.8) триггер — только ручной
-# (workflow_dispatch), чтобы миграция не перезаписала живой сайт.
-# На cutover:
-#   1. заменить триггер на `push: branches: [main]`;
-#   2. Settings → Pages → Source → GitHub Actions.
+# Astro-проект в подкаталоге site/. Cutover выполнен 2026-05-22:
+# Pages Source = GitHub Actions, деплой на каждый push в main.
 name: Deploy to GitHub Pages
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
