@@ -64,7 +64,7 @@
 
       <div class="status-banner" style="margin-bottom:2rem;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:.1rem"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        <span><strong>Alpha-документация.</strong> Nova находится на стадии bootstrap. Эти документы отражают текущий замысел дизайна; некоторые функции реализованы частично. Актуальное состояние компилятора смотрите в <a href="https://github.com/nv-lang/nova">репозитории на GitHub</a>.</span>
+        <span><strong>Документация альфа-версии.</strong> Nova находится на ранней стадии разработки. Эти документы отражают текущий замысел; некоторые возможности реализованы частично. Актуальное состояние компилятора смотрите в <a href="https://github.com/nv-lang/nova">репозитории на GitHub</a>.</span>
       </div>
 
       <h1 id="introduction">Введение</h1>
@@ -97,7 +97,7 @@
       <pre><code>nova build hello.nv
 ./hello</code></pre>
 
-      <p>Обратите внимание, что <code>main</code> объявляет <code>Io</code> перед стрелкой возврата — даже точка входа верхнего уровня честна в отношении своих эффектов. <code>()</code> — тип возврата unit (значение не возвращается).</p>
+      <p>Точка входа программы — <code>fn main()</code>; <code>println</code> выводит строку в стандартный вывод.</p>
 
       <h2 id="next-steps">Следующие шаги</h2>
       <p>Разделы руководства по языку ниже подробно объясняют эффекты, контракты, систему типов и модель конкурентности. Для формального описания каждой конструкции языка смотрите <a href="/ru/spec/">Спецификацию языка</a>.</p>
@@ -124,8 +124,8 @@
       <p>Пользовательские эффекты поддерживаются. Вы объявляете интерфейс эффекта, предоставляете обработчик и внедряете его на границе вызова — никакого глобального состояния, никакого скрытого фреймворка внедрения зависимостей.</p>
 
       <pre><code class="language-nova">type Cache effect {
-    get(key str) -> Option[[]byte]
-    set(key str, val []byte) -> ()
+    get(key str) -> Option[[]u8]
+    set(key str, val []u8) -> ()
 }
 
 // Эффекты Cache и Db берутся из активной with-области.
@@ -152,7 +152,7 @@ fn get_profile(user_id u64) Cache Db -> Profile
         <li><code>invariant &lt;expr&gt;</code> — инвариант типа; должен выполняться для каждого значения типа</li>
       </ul>
 
-      <p>Компилятор проверяет контракты через SMT-решатель на этапе компиляции — доказанные стираются в release без затрат в runtime. Если солвер не может принять решение, контракт автоматически откатывается до runtime-assert'а в debug-сборках. Атрибут <code>#must_verify</code> на функции требует статического доказательства — компиляция падает, если солвер не справился.</p>
+      <p>Компилятор проверяет контракты через SMT-решатель на этапе компиляции — доказанные стираются в релизной сборке без затрат во время выполнения. Если решатель не может принять решение, контракт автоматически откатывается до проверки во время выполнения в отладочных сборках. Атрибут <code>#must_verify</code> на функции требует статического доказательства — компиляция прерывается, если решатель не справился.</p>
 
       <pre><code class="language-nova">fn sqrt(x f64) -> f64
     requires x >= 0.0
@@ -169,22 +169,22 @@ fn get_profile(user_id u64) Cache Db -> Profile
 
       <ul>
         <li><strong>Примитивы:</strong> <code>int</code>, <code>i8</code> <code>i16</code> <code>i32</code> <code>i64</code>, <code>u8</code> <code>u16</code> <code>u32</code> <code>u64</code>, <code>f32</code> <code>f64</code>, <code>bool</code>, <code>char</code>, <code>str</code></li>
-        <li><strong>Алгебраические типы:</strong> <code>struct</code> для произведений, <code>enum</code> для помеченных объединений</li>
-        <li><strong>Option и Result:</strong> <code>Option[T]</code> и <code>Result[T, E]</code> — встроенные перечисления, никакого null</li>
+        <li><strong>Алгебраические типы:</strong> единый keyword <code>type</code> — <code>type X { ... }</code> для записей (произведений), <code>type X | A | B</code> для sum-типов (помеченных объединений); без <code>struct</code>/<code>enum</code></li>
+        <li><strong>Option и Result:</strong> <code>Option[T]</code> и <code>Result[T, E]</code> — встроенные sum-типы, никакого null</li>
         <li><strong>Дженерики:</strong> параметрический полиморфизм с ограничениями протоколов</li>
-        <li><strong>Протоколы:</strong> структурные интерфейсы с реализациями по умолчанию</li>
+        <li><strong>Протоколы:</strong> структурные интерфейсы — любой тип с подходящими методами соответствует автоматически</li>
       </ul>
 
       <hr class="divider">
 
       <h1 id="concurrency">Конкурентность</h1>
-      <p>Рантайм Nova мультиплексирует <em>файберы</em> (лёгкие зелёные потоки) поверх OS-потоков с помощью work-stealing планировщика. Файбер порождается командой <code>spawn</code>, общение происходит через каналы:</p>
+      <p>Рантайм Nova распределяет <em>файберы</em> — лёгкие потоки, которыми управляет сам рантайм — поверх потоков ОС с помощью планировщика с перехватом задач. Файбер порождается командой <code>spawn</code>, общается через каналы:</p>
 
       <pre><code class="language-nova">// parallel for запускает каждую итерацию как файбер и собирает результаты
 let squares = parallel for i in 0..8 { i * i }
 // squares == [0, 1, 4, 9, 16, 25, 36, 49]
 
-// spawn для fire-and-forget работы; supervised ждёт все файберы
+// spawn — запустить и не ждать; supervised дождётся всех файберов
 let mut count = 0
 supervised {
     spawn { count = count + 1 }
@@ -197,11 +197,11 @@ supervised {
       <h1 id="memory">Память</h1>
       <p>Nova использует управляемую память по умолчанию. Текущий рантайм интегрирует <a href="https://www.hboehm.info/gc/">Boehm-Demers-Weiser GC</a>; конкурентный, поколенческий GC запланирован на будущее.</p>
 
-      <p>Для кода, чувствительного к задержкам, аннотируйте область или функцию с помощью <code>realtime nogc</code>, чтобы исключить паузы GC. Компилятор проверяет, что никаких GC-управляемых аллокаций внутри таких областей не происходит.</p>
+      <p>Для кода, чувствительного к задержкам, аннотируйте область или функцию с помощью <code>realtime nogc</code>, чтобы исключить паузы GC. Компилятор проверяет, что внутри таких областей не происходит выделений памяти под управлением GC.</p>
 
       <pre><code class="language-nova">fn process_audio_frame(frame AudioFrame) Dsp -> AudioFrame {
     realtime nogc {
-        // здесь разрешена только стековая аллокация
+        // здесь разрешено только размещение в стеке
         frame.apply_eq()
     }
 }</code></pre>
@@ -214,13 +214,13 @@ supervised {
       <p>Модуль <code>core</code> всегда в области видимости. Он предоставляет базовые типы (<code>Option</code>, <code>Result</code>, <code>Vec</code>, <code>Map</code>, <code>Set</code>, <code>str</code>, <code>[]u8</code>), базовые протоколы (<code>Eq</code>, <code>Ord</code>, <code>Hash</code>, <code>Display</code>, <code>Debug</code>) и систему макросов.</p>
 
       <h2 id="stdlib-io">io</h2>
-      <p>Стандартный ввод, вывод и файловый ввод-вывод. Требует эффект <code>Io</code>. Включает <code>stdin()</code>, <code>stdout()</code>, <code>stderr()</code>, <code>File.open()</code>, <code>File.create()</code> и буферизованные ридеры/райтеры.</p>
+      <p>Стандартный ввод, вывод и файловый ввод-вывод. Требует эффект <code>Io</code>. Включает <code>stdin()</code>, <code>stdout()</code>, <code>stderr()</code>, <code>File.open()</code>, <code>File.create()</code> и буферизованные чтение/запись.</p>
 
       <h2 id="stdlib-net">net</h2>
       <p>TCP и UDP сокеты, разрешение DNS и TLS. Требует эффект <code>Net</code>. Все операции с сокетами совместимы с файберами — блокирующие вызовы прозрачно уступают управление планировщику.</p>
 
       <h2 id="stdlib-collections">collections</h2>
-      <p>Расширенные структуры данных помимо core: <code>BTreeMap</code>, <code>BTreeSet</code>, <code>LinkedList</code>, <code>Deque</code>, <code>PriorityQueue</code> и персистентные/иммутабельные варианты.</p>
+      <p>Расширенные структуры данных помимо core: <code>BTreeMap</code>, <code>BTreeSet</code>, <code>LinkedList</code>, <code>Deque</code>, <code>PriorityQueue</code> и неизменяемые (персистентные) варианты.</p>
 
       <div class="note" style="margin-top:2.5rem;">
         Стандартная библиотека активно разрабатывается. Многие модули существуют в скелетной форме. Вклад приветствуется — смотрите <a href="https://github.com/nv-lang/nova/blob/main/CONTRIBUTING.md">руководство для контрибьюторов</a>.

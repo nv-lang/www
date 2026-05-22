@@ -97,7 +97,7 @@
       <pre><code>nova build hello.nv
 ./hello</code></pre>
 
-      <p>Notice that <code>main</code> declares <code>Io</code> before the return arrow — even the top-level entry point is honest about its effects. <code>()</code> is the unit return type (no value returned).</p>
+      <p>The program entry point is <code>fn main()</code>; <code>println</code> writes a line to standard output.</p>
 
       <h2 id="next-steps">Next steps</h2>
       <p>The language guide sections below explain effects, contracts, the type system, and the concurrency model in detail. For the formal treatment of every language construct, see the <a href="/spec/">Language Specification</a>.</p>
@@ -124,8 +124,8 @@
       <p>User-defined effects are supported. You declare an effect interface, provide a handler, and inject it at the call boundary — no global state, no hidden dependency injection framework.</p>
 
       <pre><code class="language-nova">type Cache effect {
-    get(key str) -> Option[[]byte]
-    set(key str, val []byte) -> ()
+    get(key str) -> Option[[]u8]
+    set(key str, val []u8) -> ()
 }
 
 // Cache and Db effects are looked up from the active with-scope.
@@ -169,16 +169,16 @@ fn get_profile(user_id u64) Cache Db -> Profile
 
       <ul>
         <li><strong>Primitives:</strong> <code>int</code>, <code>i8</code> <code>i16</code> <code>i32</code> <code>i64</code>, <code>u8</code> <code>u16</code> <code>u32</code> <code>u64</code>, <code>f32</code> <code>f64</code>, <code>bool</code>, <code>char</code>, <code>str</code></li>
-        <li><strong>Algebraic types:</strong> <code>struct</code> for products, <code>enum</code> for tagged unions</li>
-        <li><strong>Option and Result:</strong> <code>Option[T]</code> and <code>Result[T, E]</code> are built-in enums, no null</li>
+        <li><strong>Algebraic types:</strong> one <code>type</code> keyword — <code>type X { ... }</code> for records (products), <code>type X | A | B</code> for sum types (tagged unions); no <code>struct</code>/<code>enum</code></li>
+        <li><strong>Option and Result:</strong> <code>Option[T]</code> and <code>Result[T, E]</code> are built-in sum types — no null</li>
         <li><strong>Generics:</strong> parametric polymorphism with protocol bounds</li>
-        <li><strong>Protocols:</strong> structural interfaces with default implementations</li>
+        <li><strong>Protocols:</strong> structural interfaces — any type with matching methods conforms automatically</li>
       </ul>
 
       <hr class="divider">
 
       <h1 id="concurrency">Concurrency</h1>
-      <p>Nova's runtime multiplexes <em>fibers</em> (lightweight green threads) across OS threads using a work-stealing scheduler. You spawn a fiber with <code>spawn</code> and communicate over channels:</p>
+      <p>Nova's runtime multiplexes <em>fibers</em> — lightweight threads scheduled by the runtime — across OS threads using a work-stealing scheduler. You spawn a fiber with <code>spawn</code> and communicate over channels:</p>
 
       <pre><code class="language-nova">// parallel for runs each iteration as a fiber, collects results
 let squares = parallel for i in 0..8 { i * i }
