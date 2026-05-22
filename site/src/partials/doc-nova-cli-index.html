@@ -789,7 +789,7 @@ nova bench history-anomalies [--branch BRANCH] [--format text|json]</code></pre>
       <h2 id="migration">Migration Binaries</h2>
       <p>One-shot lexer-based migration tools in <code>nova-cli/src/bin/</code>. Kept in the repository as a reference for future atomic API-rename plans.</p>
 
-      <h3>migrate_plan60</h3>
+      <h3 id="migrate_plan60">migrate_plan60</h3>
       <p>Migrate field-style size accessors to method form (<a href="/spec/decisions/syntax/#d117">D117</a> / Plan 60):</p>
       <table style="font-size:.9rem;">
         <thead><tr><th>Before</th><th>After</th></tr></thead>
@@ -813,7 +813,7 @@ nova bench history-anomalies [--branch BRANCH] [--format text|json]</code></pre>
       </table>
       <p>Skip condition: previous significant token is <code>=</code> (method-value assignment). Comments, whitespace, and formatting are preserved token-for-token.</p>
 
-      <h3>migrate_plan65</h3>
+      <h3 id="migrate_plan65">migrate_plan65</h3>
       <p>Migrate <code>Time.after(&lt;lit&gt;)</code> → <code>ChanReader.close_after(Duration.from_*(&lt;lit&gt;))</code> (Plan 65 AD11):</p>
       <table style="font-size:.9rem;">
         <thead><tr><th>Before</th><th>After</th></tr></thead>

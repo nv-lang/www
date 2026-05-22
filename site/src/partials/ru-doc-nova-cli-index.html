@@ -789,7 +789,7 @@ nova bench history-anomalies [--branch BRANCH] [--format text|json]</code></pre>
       <h2 id="migration">Бинарники миграции</h2>
       <p>Одноразовые lexer-based инструменты в <code>nova-cli/src/bin/</code>. Хранятся в репозитории как reference для будущих атомарных API-rename планов.</p>
 
-      <h3>migrate_plan60</h3>
+      <h3 id="migrate_plan60">migrate_plan60</h3>
       <p>Миграция field-style size-accessors в method-form (<a href="/spec/decisions/syntax/#d117">D117</a> / Plan 60):</p>
       <table style="font-size:.9rem;">
         <thead><tr><th>До</th><th>После</th></tr></thead>
@@ -813,7 +813,7 @@ nova bench history-anomalies [--branch BRANCH] [--format text|json]</code></pre>
       </table>
       <p>Skip condition: предыдущий значимый token == <code>=</code> (method-value assignment). Комментарии / whitespace / formatting сохраняются 1:1.</p>
 
-      <h3>migrate_plan65</h3>
+      <h3 id="migrate_plan65">migrate_plan65</h3>
       <p>Миграция <code>Time.after(&lt;lit&gt;)</code> → <code>ChanReader.close_after(Duration.from_*(&lt;lit&gt;))</code> (Plan 65 AD11):</p>
       <table style="font-size:.9rem;">
         <thead><tr><th>До</th><th>После</th></tr></thead>
