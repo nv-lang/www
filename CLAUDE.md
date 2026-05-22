@@ -1,39 +1,52 @@
-# nv-lang/www — Astro site guide
+# nv-lang/www — repository guide
 
-Static site for **nv-lang.org**, built with **Astro**. Source lives here;
-`astro build` produces `dist/`, which GitHub Actions deploys to GitHub Pages.
+Repository for **nv-lang.org** — the Nova programming language website.
 
-> Миграция со старого «голого HTML» на Astro — см. `plans/www-02-astro-migration.md`.
+```
+www/
+├── site/             ← сам сайт: Astro-проект (см. ниже)
+├── plans/            планы развития (www-01, www-02 …)
+├── .github/workflows/  CI — сборка и деплой на GitHub Pages
+├── CLAUDE.md  README.md  LICENSE
+```
+
+Сайт собирается из `site/` Astro → `site/dist/` → GitHub Pages (через Actions).
+
+> Миграция со старого «голого HTML» на Astro — `plans/www-02-astro-migration.md`.
 
 ## Команды
 
+Выполнять **из каталога `site/`**:
+
 ```sh
 npm install        # один раз — зависимости
-npm run dev        # локальный dev-сервер (http://localhost:4321)
-npm run build      # сборка в dist/
-npm run preview    # просмотр собранного dist/
+npm run dev        # dev-сервер (http://localhost:4321)
+npm run build      # сборка в site/dist/
+npm run preview    # просмотр собранного
 npm run check      # проверка типов (.astro)
 ```
 
 Нужен Node 18.20.8+ / 20.3+ / 22+.
 
-## Структура
+## Структура `site/`
 
 ```
-astro.config.mjs     site, build.format 'preserve', интеграции
-src/
-├── pages/           страницы = маршруты. Путь файла = URL
-├── layouts/
-│   └── BaseLayout.astro   общий каркас: <html>, <head>, шапка, подвал, скрипт
-├── components/
-│   ├── Head.astro   все мета-теги <head> (CSP, og/twitter, hreflang, JSON-LD)
-│   ├── Header.astro общая шапка (RU/EN, active-подсветка, lang-switch)
-│   └── Footer.astro стандартный подвал (RU/EN)
-├── partials/        тело каждой страницы — готовый HTML (.html), verbatim
-└── styles/global.css  единственный CSS (импортируется в BaseLayout)
-public/              отдаётся как есть: favicon, logo, og-image,
-                     apple-touch-icon, js/, robots.txt, sitemap.xml, CNAME
-dist/                результат сборки (в .gitignore)
+site/
+├── astro.config.mjs   site, build.format 'preserve', интеграции
+├── package.json  tsconfig.json
+├── src/
+│   ├── pages/         страницы = маршруты. Путь файла = URL
+│   ├── layouts/
+│   │   └── BaseLayout.astro   каркас: <html>, <head>, шапка, подвал, скрипт
+│   ├── components/
+│   │   ├── Head.astro   мета-теги <head> (CSP, og/twitter, hreflang, JSON-LD)
+│   │   ├── Header.astro общая шапка (RU/EN, active, lang-switch)
+│   │   └── Footer.astro стандартный подвал (RU/EN)
+│   ├── partials/      тело каждой страницы — готовый HTML (.html), verbatim
+│   └── styles/global.css   единственный CSS (импортируется в BaseLayout)
+├── public/            отдаётся как есть: favicon, logo, og-image,
+│                      apple-touch-icon, js/, robots.txt, sitemap.xml, CNAME
+└── dist/              результат сборки (в .gitignore)
 ```
 
 ## Как устроена страница
@@ -75,33 +88,25 @@ const meta = { title: '…', description: '…', canonical: '…', lang: 'en' as
 | `/ru/doc/` … | RU | `/doc/` … |
 
 Языковая схема непоследовательна (главная RU без префикса, разделы EN без
-префикса) — это сохранено намеренно при миграции; унификация — отдельная задача.
+префикса) — сохранено намеренно при миграции; унификация — отдельная задача.
 
 ## Подсветка синтаксиса Nova
 
 `public/js/nova-highlight.js` подключён в `BaseLayout`, запускается на
 `DOMContentLoaded`. Добавь `class="language-nova"` на `<code>` внутри `<pre>`.
-Тёмная тема блока (`pre.nova-block`, VS Code Dark Modern) включается скриптом.
 
 ## Кодировка
 
 Все файлы — **UTF-8 без BOM**. Никогда не используй PowerShell `Set-Content`/
-`Get-Content` без `-Encoding utf8NoBOM` — портит `—`, `§` и т.п. Правь через
-редактор или инструменты агента.
+`Get-Content` без `-Encoding utf8NoBOM` — портит `—`, `§` и т.п.
 
 ## Деплой
 
-`.github/workflows/deploy.yml` — сборка Astro + публикация в GitHub Pages.
-До cutover (план www-02, Ф.8) триггер ручной (`workflow_dispatch`).
+`.github/workflows/deploy.yml` — сборка Astro (`path: ./site`) + публикация в
+GitHub Pages. До cutover (план www-02, Ф.8) триггер ручной (`workflow_dispatch`).
 На cutover: триггер → `push: branches: [main]`, Pages Source → GitHub Actions.
 
 ## Git
 
 Репозиторий `https://github.com/nv-lang/www`, ветка `main`.
-Стейдж только конкретные файлы — рядом могут работать другие агенты:
-
-```sh
-git add path/to/file
-git commit -m "…"
-git push
-```
+Стейдж только конкретные файлы — рядом могут работать другие агенты.

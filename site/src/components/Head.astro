@@ -82,4 +82,4 @@ const jsonLdData = {
     <meta name="twitter:image" content={OG_IMAGE} />
   </Fragment>
 )}
-{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLdData)} />}
+{jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLdData)} />}
