@@ -1,0 +1,37 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import DecisionsSidebar from '@components/DecisionsSidebar.astro';
+import { TOPICS } from '@data/decisions';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('decisions');
+  return TOPICS.map((t) => ({
+    params: { topic: t.slug },
+    props: { entry: entries.find((e) => e.id === t.file)!, topic: t },
+  }));
+}
+
+const { entry, topic } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<BaseLayout
+  title={`${topic.title} — решения по дизайну — Nova`}
+  description={`D-блоки спецификации Nova по разделу «${topic.title}».`}
+  canonical={`https://nv-lang.org/spec/decisions/${topic.slug}/`}
+  lang="ru"
+  active="spec"
+>
+  <div class="doc-layout">
+    <DecisionsSidebar current={topic.slug} />
+    <main id="main-content">
+      <p style="font-size:.85rem;color:var(--fg-muted);margin-bottom:1rem;">
+        <a href="/spec/decisions/">← Все решения</a>
+      </p>
+      <article class="doc-content">
+        <Content />
+      </article>
+    </main>
+  </div>
+</BaseLayout>

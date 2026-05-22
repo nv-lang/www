@@ -8,11 +8,11 @@ import Footer from '../components/Footer.astro';
 
 interface Props {
   title: string;
-  description: string;
+  description?: string;
   canonical: string;
   lang: 'ru' | 'en';
-  hreflangRu: string;
-  hreflangEn: string;
+  hreflangRu?: string;
+  hreflangEn?: string;
   hreflangXDefault?: string;
   ogType?: string;
   ogUrl?: string;

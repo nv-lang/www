@@ -4,9 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "sync:decisions": "node scripts/sync-decisions.mjs",
+    "predev": "node scripts/sync-decisions.mjs",
     "dev": "astro dev",
+    "prebuild": "node scripts/sync-decisions.mjs",
     "build": "astro build",
     "preview": "astro preview",
+    "precheck": "node scripts/sync-decisions.mjs",
     "check": "astro check"
   },
   "dependencies": {

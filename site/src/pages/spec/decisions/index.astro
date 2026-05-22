@@ -1,0 +1,53 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import DecisionsSidebar from '@components/DecisionsSidebar.astro';
+import { TOPICS, parseDBlocks } from '@data/decisions';
+
+const entries = await getCollection('decisions');
+const sections = TOPICS.map((t) => {
+  const entry = entries.find((e) => e.id === t.file);
+  return { topic: t, blocks: entry ? parseDBlocks(entry.body ?? '') : [] };
+});
+const total = sections.reduce((n, s) => n + s.blocks.length, 0);
+---
+
+<BaseLayout
+  title="Решения по дизайну (D-блоки) — Nova"
+  description="Все решения по дизайну языка Nova — D-блоки спецификации, сгруппированные по разделам."
+  canonical="https://nv-lang.org/spec/decisions/"
+  lang="ru"
+  active="spec"
+>
+  <div class="page-header">
+    <div class="container--narrow">
+      <h1>Решения по дизайну</h1>
+      <p>
+        Каждое значимое решение по языку Nova зафиксировано как <strong>D-блок</strong>:
+        что, правило, почему, что отвергнуто, цена. Всего D-блоков: {total}.
+      </p>
+    </div>
+  </div>
+
+  <div class="doc-layout">
+    <DecisionsSidebar current="index" />
+    <main id="main-content">
+      <article class="doc-content">
+        {sections.map((s) => (
+          <section style="margin-bottom:2.25rem;">
+            <h2 id={s.topic.slug}>{s.topic.title}</h2>
+            <ul>
+              {s.blocks.map((b) => (
+                <li>
+                  <a href={`/spec/decisions/${s.topic.slug}/#${b.anchor}`}>
+                    <strong>D{b.num}</strong> — {b.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </article>
+    </main>
+  </div>
+</BaseLayout>

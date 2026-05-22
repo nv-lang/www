@@ -5,7 +5,8 @@
     "paths": {
       "@layouts/*": ["src/layouts/*"],
       "@components/*": ["src/components/*"],
-      "@partials/*": ["src/partials/*"]
+      "@partials/*": ["src/partials/*"],
+      "@data/*": ["src/data/*"]
     }
   },
   "include": [".astro/types.d.ts", "**/*"],
