@@ -9,7 +9,7 @@
     "dev": "astro dev",
     "prebuild": "node scripts/sync-decisions.mjs",
     "build": "astro build",
-    "postbuild": "node scripts/check-links.mjs",
+    "postbuild": "pagefind --site dist && node scripts/check-links.mjs",
     "preview": "astro preview",
     "precheck": "node scripts/sync-decisions.mjs",
     "check": "astro check"
@@ -26,6 +26,7 @@
     "@astrojs/check": "^0.9.9",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
+    "pagefind": "^1.5.2",
     "typescript": "^6.0.3"
   }
 }

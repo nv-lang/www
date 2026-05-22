@@ -22,7 +22,7 @@ interface Props {
   twitterDescription?: string;
   jsonLd?: boolean;
   noindex?: boolean;
-  active?: 'home' | 'install' | 'doc' | 'spec' | 'blog';
+  active?: 'home' | 'install' | 'doc' | 'spec' | 'blog' | 'search';
   customFooter?: boolean;
   langRuUrl?: string;
   langEnUrl?: string;
@@ -40,7 +40,7 @@ const { lang, active, customFooter = false } = p;
   <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
     <Header lang={lang} active={active} langRuUrl={p.langRuUrl} langEnUrl={p.langEnUrl} />
-    <slot />
+    <div data-pagefind-body><slot /></div>
     {!customFooter && <Footer lang={lang} />}
     <script src="/js/nova-highlight.js" is:inline></script>
     <script src="/js/copy-code.js" is:inline></script>

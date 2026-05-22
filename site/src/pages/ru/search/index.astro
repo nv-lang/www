@@ -1,0 +1,58 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+const meta = {
+  title: "Поиск — Nova",
+  description: "Поиск по документации, справочнику языка и проектным решениям Nova.",
+  canonical: "https://nv-lang.org/ru/search/",
+  lang: "ru" as const,
+  noindex: true,
+  hreflangRu: "https://nv-lang.org/ru/search/",
+  hreflangEn: "https://nv-lang.org/search/",
+  hreflangXDefault: "https://nv-lang.org/search/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/ru/search/",
+  ogTitle: "Поиск — Nova",
+  ogDescription: "Поиск по документации, справочнику языка и проектным решениям Nova.",
+  twitterTitle: "Поиск — Nova",
+  twitterDescription: "Поиск по документации, справочнику языка и проектным решениям Nova.",
+  langRuUrl: "/ru/search/",
+  langEnUrl: "/search/",
+};
+---
+
+<BaseLayout {...meta} active="search">
+  <Fragment slot="head-extra">
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+  </Fragment>
+
+  <main id="main-content" class="search-page" data-pagefind-ignore>
+    <h1>Поиск</h1>
+    <p>Документация, справочник языка и проектные решения (D-блоки).</p>
+    <div id="search"></div>
+  </main>
+
+  <script src="/pagefind/pagefind-ui.js" is:inline></script>
+  <script is:inline>
+    window.addEventListener('DOMContentLoaded', () => {
+      if (typeof PagefindUI === 'undefined') return;
+      new PagefindUI({
+        element: '#search',
+        showSubResults: true,
+        showImages: false,
+        translations: {
+          placeholder: 'Поиск по сайту',
+          clear_search: 'Очистить',
+          load_more: 'Показать ещё',
+          search_label: 'Поиск по сайту',
+          filters_label: 'Фильтры',
+          zero_results: 'Ничего не найдено по запросу [SEARCH_TERM]',
+          many_results: 'Найдено результатов: [COUNT] — [SEARCH_TERM]',
+          one_result: 'Найден [COUNT] результат — [SEARCH_TERM]',
+          alt_search: 'Ничего не найдено по запросу [SEARCH_TERM]. Показаны результаты для [DIFFERENT_TERM]',
+          search_suggestion: 'Ничего не найдено по запросу [SEARCH_TERM]. Попробуйте другой запрос:',
+          searching: 'Поиск: [SEARCH_TERM]…',
+        },
+      });
+    });
+  </script>
+</BaseLayout>

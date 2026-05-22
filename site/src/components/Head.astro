@@ -27,8 +27,11 @@ const {
 } = Astro.props;
 
 const OG_IMAGE = 'https://nv-lang.org/og-image.png';
+// 'wasm-unsafe-eval' — поиск Pagefind компилирует WebAssembly; директива
+// разрешает только WASM, не eval(). connect-src не задан — fetch индекса
+// идёт со своего origin и покрыт default-src 'self'.
 const CSP =
-  "default-src 'self'; script-src 'self' 'unsafe-inline'; " +
+  "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; " +
   "style-src 'self' 'unsafe-inline'; img-src 'self' data:; " +
   "object-src 'none'; base-uri 'self'; upgrade-insecure-requests";
 

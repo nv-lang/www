@@ -1,0 +1,45 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+const meta = {
+  title: "Search — Nova",
+  description: "Search the Nova documentation, language spec, and design decisions.",
+  canonical: "https://nv-lang.org/search/",
+  lang: "en" as const,
+  noindex: true,
+  hreflangRu: "https://nv-lang.org/ru/search/",
+  hreflangEn: "https://nv-lang.org/search/",
+  hreflangXDefault: "https://nv-lang.org/search/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/search/",
+  ogTitle: "Search — Nova",
+  ogDescription: "Search the Nova documentation, language spec, and design decisions.",
+  twitterTitle: "Search — Nova",
+  twitterDescription: "Search the Nova documentation, language spec, and design decisions.",
+  langRuUrl: "/ru/search/",
+  langEnUrl: "/search/",
+};
+---
+
+<BaseLayout {...meta} active="search">
+  <Fragment slot="head-extra">
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+  </Fragment>
+
+  <main id="main-content" class="search-page" data-pagefind-ignore>
+    <h1>Search</h1>
+    <p>Documentation, language reference, and design decisions (D-blocks).</p>
+    <div id="search"></div>
+  </main>
+
+  <script src="/pagefind/pagefind-ui.js" is:inline></script>
+  <script is:inline>
+    window.addEventListener('DOMContentLoaded', () => {
+      if (typeof PagefindUI === 'undefined') return;
+      new PagefindUI({
+        element: '#search',
+        showSubResults: true,
+        showImages: false,
+      });
+    });
+  </script>
+</BaseLayout>
