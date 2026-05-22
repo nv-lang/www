@@ -169,19 +169,19 @@
   <h2>Design Decisions (D-blocks)</h2>
   <p>Every non-trivial language design choice is captured in a numbered D-block document in <a href="https://github.com/nv-lang/nova/tree/main/spec"><code>spec/</code></a>. D-blocks record the question, the options considered, the decision made, and the rationale. This makes the spec a readable history of the language, not just a reference.</p>
 
-  <p>Current D-block range: <strong>D1–D120</strong>. Selected highlights:</p>
+  <p>Over 120 D-blocks are recorded so far. A few key ones:</p>
 
   <ul>
-    <li><strong>D1</strong> — Why algebraic effects instead of monads or async/await</li>
-    <li><strong>D7</strong> — Contract checking modes and SMT solver integration</li>
-    <li><strong>D15</strong> — M:N runtime vs. async executor vs. OS threads</li>
-    <li><strong>D33</strong> — Contract inheritance and trait specialization rules</li>
-    <li><strong>D45</strong> — Documentation tooling and <code>nv doc</code> format</li>
-    <li><strong>D52</strong> — Redundant field specification in struct literals</li>
-    <li><strong>D63</strong> — Package manager manifest schema</li>
+    <li><strong><a href="/spec/decisions/philosophy/#d1">D1</a></strong> — Paradigm: <code>protocols</code> + <code>data</code>, no classes</li>
+    <li><strong><a href="/spec/decisions/effects/#d2">D2</a></strong> — Effects instead of <code>async</code>/<code>throws</code>/<code>unsafe</code></li>
+    <li><strong><a href="/spec/decisions/types/#d52">D52</a></strong> — Type declarations: newtype, <code>alias</code>, sum types</li>
+    <li><strong><a href="/spec/decisions/types/#d53">D53</a></strong> — Unification: <code>protocol</code> as a kind token under <code>type</code></li>
+    <li><strong><a href="/spec/decisions/runtime/#d7">D7</a></strong> — One language, three compilation modes</li>
+    <li><strong><a href="/spec/decisions/memory/#d6">D6</a></strong> — Memory: managed by default, regions opt-in</li>
+    <li><strong><a href="/spec/decisions/concurrency/#d14">D14</a></strong> — Fiber runtime — invisible infrastructure</li>
   </ul>
 
-  <p><a href="https://github.com/nv-lang/nova/tree/main/spec" class="btn btn-outline" style="display:inline-flex;margin-top:.75rem;">Browse all D-blocks on GitHub &rarr;</a></p>
+  <p><a href="/spec/decisions/" class="btn btn-outline" style="display:inline-flex;margin-top:.75rem;">Open the D-block browser &rarr;</a></p>
 
 </div>
 </main>

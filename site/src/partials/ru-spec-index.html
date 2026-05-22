@@ -169,19 +169,19 @@
   <h2>Проектные решения (D-блоки)</h2>
   <p>Каждый нетривиальный выбор в дизайне языка фиксируется в пронумерованном документе D-блока в <a href="https://github.com/nv-lang/nova/tree/main/spec"><code>spec/</code></a>. D-блоки фиксируют вопрос, рассмотренные варианты, принятое решение и обоснование. Это делает спецификацию читаемой историей языка, а не просто справочником.</p>
 
-  <p>Текущий диапазон D-блоков: <strong>D1—D120</strong>. Выбранные ключевые решения:</p>
+  <p>Сейчас зафиксировано свыше 120 D-блоков. Несколько ключевых:</p>
 
   <ul>
-    <li><strong>D1</strong> — Почему алгебраические эффекты вместо монад или async/await</li>
-    <li><strong>D7</strong> — Режимы проверки контрактов и интеграция SMT-решателя</li>
-    <li><strong>D15</strong> — M:N рантайм vs. async executor vs. OS-потоки</li>
-    <li><strong>D33</strong> — Наследование контрактов и правила специализации трейтов</li>
-    <li><strong>D45</strong> — Инструменты документирования и формат <code>nv doc</code></li>
-    <li><strong>D52</strong> — Спецификация избыточных полей в литералах структур</li>
-    <li><strong>D63</strong> — Схема манифеста пакетного менеджера</li>
+    <li><strong><a href="/spec/decisions/philosophy/#d1">D1</a></strong> — Парадигма: <code>protocols</code> + <code>data</code>, без классов</li>
+    <li><strong><a href="/spec/decisions/effects/#d2">D2</a></strong> — Эффекты вместо <code>async</code>/<code>throws</code>/<code>unsafe</code></li>
+    <li><strong><a href="/spec/decisions/types/#d52">D52</a></strong> — Объявление типов: newtype, <code>alias</code>, sum-типы</li>
+    <li><strong><a href="/spec/decisions/types/#d53">D53</a></strong> — Унификация: <code>protocol</code> как kind-токен под <code>type</code></li>
+    <li><strong><a href="/spec/decisions/runtime/#d7">D7</a></strong> — Один язык — три режима компиляции</li>
+    <li><strong><a href="/spec/decisions/memory/#d6">D6</a></strong> — Память: managed по умолчанию, regions opt-in</li>
+    <li><strong><a href="/spec/decisions/concurrency/#d14">D14</a></strong> — Fiber-рантайм — невидимая инфраструктура</li>
   </ul>
 
-  <p><a href="https://github.com/nv-lang/nova/tree/main/spec" class="btn btn-outline" style="display:inline-flex;margin-top:.75rem;">Просмотреть все D-блоки на GitHub &rarr;</a></p>
+  <p><a href="/spec/decisions/" class="btn btn-outline" style="display:inline-flex;margin-top:.75rem;">Открыть браузер D-блоков &rarr;</a></p>
 
 </div>
 </main>
