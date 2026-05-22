@@ -87,7 +87,7 @@ cargo test --manifest-path compiler-codegen/Cargo.toml</code></pre>
       <ol>
         <li><code>read_file(path)</code></li>
         <li><code>parser::parse(&amp;src)</code> → AST</li>
-        <li><code>check_module_path</code> — D78 path/module enforcement</li>
+        <li><code>check_module_path</code> — <a href="/spec/decisions/modules/#d78">D78</a> path/module enforcement</li>
         <li><code>types::check_module</code> → type-check + effect-inference</li>
         <li>Печатает <code>ok: {} parsed and checked</code></li>
       </ol>
@@ -134,7 +134,7 @@ cargo test --manifest-path compiler-codegen/Cargo.toml</code></pre>
       <ol>
         <li>parse + path-check + type-check</li>
         <li><code>annotate_map_literals</code> + <code>desugar_module</code></li>
-        <li><code>types::infer_effects</code> — D28 effect-inference для private fn</li>
+        <li><code>types::infer_effects</code> — <a href="/spec/decisions/effects/#d28">D28</a> effect-inference для private fn</li>
         <li><code>lints::lint_module</code> (если lint включён)</li>
         <li><code>CEmitter::new()</code> + <code>set_source_for_annotations(src)</code></li>
         <li><code>set_proven_contracts</code> — selective contract stripping (Plan 33.3, true zero-cost)</li>
@@ -179,7 +179,7 @@ cargo test --manifest-path compiler-codegen/Cargo.toml</code></pre>
       <hr class="divider">
 
       <h2 id="test-build">nova-codegen test-build</h2>
-      <p>Cross-platform per-file test runner (Plan 24): компиляция одного <code>.nv</code> в <code>.exe</code> и проверка EXPECT-маркеров (D89).</p>
+      <p>Cross-platform per-file test runner (Plan 24): компиляция одного <code>.nv</code> в <code>.exe</code> и проверка EXPECT-маркеров (<a href="/spec/decisions/tooling/#d89">D89</a>).</p>
       <pre><code class="language-bash">nova-codegen test-build FILE [--mode dev|release] [--toolchain auto|clang|msvc|gcc]
                              [--vcvars PATH] [--clang PATH]
                              [--cg-include PATH] [--rt-dir PATH] [--tmp-dir PATH]
@@ -204,7 +204,7 @@ cargo test --manifest-path compiler-codegen/Cargo.toml</code></pre>
       </table>
       <p><strong>Pipeline:</strong> detect toolchain → detect/build libuv → compile <code>.nv</code> → <code>.c</code> → <code>.exe</code> → run → проверить EXPECT-маркеры.</p>
       <p>Output format: <code>&lt;STATUS:14&gt; &lt;display&gt;  # &lt;detail&gt;</code></p>
-      <p><strong>EXPECT-маркеры (D89):</strong></p>
+      <p><strong>EXPECT-маркеры (<a href="/spec/decisions/tooling/#d89">D89</a>):</strong></p>
       <ul>
         <li><code>// EXPECT: &lt;line&gt;</code> — точное совпадение stdout-строки</li>
         <li><code>// EXPECT_STDERR: &lt;line&gt;</code> — для stderr</li>
@@ -306,7 +306,7 @@ NOVA_SMT_BACKEND=z3 nova test</code></pre>
       <table>
         <thead><tr><th>Модуль</th><th>Что</th></tr></thead>
         <tbody>
-          <tr><td><code>argbind</code></td><td>Named/positional arg binding (Plan 46 / D102).</td></tr>
+          <tr><td><code>argbind</code></td><td>Named/positional arg binding (Plan 46 / <a href="/spec/decisions/syntax/#d102">D102</a>).</td></tr>
           <tr><td><code>ast</code></td><td>Типы AST: <code>Module</code>, <code>Item</code>, <code>Expr</code>, <code>Stmt</code>, <code>Pattern</code>, …</td></tr>
           <tr><td><code>callnorm</code></td><td>Call-site normalization для named params.</td></tr>
           <tr><td><code>codegen</code></td><td>C-бэкенд: <code>CEmitter::emit_module</code>, <code>runtime_registry::all</code>, …</td></tr>
@@ -317,7 +317,7 @@ NOVA_SMT_BACKEND=z3 nova test</code></pre>
           <tr><td><code>interp</code></td><td>Treewalk-интерпретатор (<code>Interpreter::new</code> / <code>load_module</code> / <code>run_main</code> / <code>run_tests</code>).</td></tr>
           <tr><td><code>lexer</code></td><td>Токенизация: <code>lex(&amp;src) -&gt; Vec&lt;Token&gt;</code>.</td></tr>
           <tr><td><code>lints</code></td><td>D-rule based lints (<code>lint_module</code>).</td></tr>
-          <tr><td><code>manifest</code></td><td><code>nova.toml</code> + D78 path/module enforcement.</td></tr>
+          <tr><td><code>manifest</code></td><td><code>nova.toml</code> + <a href="/spec/decisions/modules/#d78">D78</a> path/module enforcement.</td></tr>
           <tr><td><code>parser</code></td><td>Recursive-descent parser (<code>parse(&amp;src) -&gt; Result&lt;Module, Diagnostic&gt;</code>).</td></tr>
           <tr><td><code>perf_timer</code></td><td><code>NOVA_PERF_TIMER</code> instrumentation.</td></tr>
           <tr><td><code>test_runner</code></td><td>Test discovery + parallel execution + toolchain detect.</td></tr>
@@ -372,11 +372,11 @@ NOVA_SMT_BACKEND=z3 nova test</code></pre>
         <li><code>_module.nv</code> convention для module-level <code>#forbid</code> / <code>#cfg</code> / <code>#doc</code>.</li>
       </ul>
 
-      <h3>D78 path/module enforcement</h3>
+      <h3><a href="/spec/decisions/modules/#d78">D78</a> path/module enforcement</h3>
       <p>Если файл лежит внутри пакета (<code>nova.toml</code> в parent dirs), компилятор проверяет соответствие <code>module X.Y.Z</code> ↔ filesystem path. Standalone <code>.nv</code> без <code>nova.toml</code> проверку проходят.</p>
 
-      <h3>Effect inference (D28)</h3>
-      <p><code>types::infer_effects</code> добавляет <code>Fail</code> в effect-row private fn, если тело содержит <code>throw</code> и нет явного <code>Fail</code>. Public fn — explicit only (D28: «public API не должно неявно throw'ить»).</p>
+      <h3>Effect inference (<a href="/spec/decisions/effects/#d28">D28</a>)</h3>
+      <p><code>types::infer_effects</code> добавляет <code>Fail</code> в effect-row private fn, если тело содержит <code>throw</code> и нет явного <code>Fail</code>. Public fn — explicit only (<a href="/spec/decisions/effects/#d28">D28</a>: «public API не должно неявно throw'ить»).</p>
 
       <h3>Plan 33.3 contract stripping (Ф.9.9)</h3>
       <p><code>CEmitter::set_proven_contracts</code> selectively strip'ает body proven контрактов в codegen (true zero-cost даже в debug). SMT-доказанные <code>requires</code>/<code>ensures</code>/<code>invariant</code> не эмитятся как runtime assertions.</p>
@@ -389,7 +389,7 @@ NOVA_SMT_BACKEND=z3 nova test</code></pre>
         <thead><tr><th>Файл</th><th>Что</th></tr></thead>
         <tbody>
           <tr><td><code>alloc.c</code> (или <code>alloc_boehm.c</code>, <code>alloc_rc.c</code>)</td><td>Allocator (Boehm GC default с Plan 27).</td></tr>
-          <tr><td><code>effects.c</code></td><td>Handler-стек (D61), <code>nova_interrupt</code> / <code>nova_interrupt_ptr</code>.</td></tr>
+          <tr><td><code>effects.c</code></td><td>Handler-стек (<a href="/spec/decisions/effects/#d61">D61</a>), <code>nova_interrupt</code> / <code>nova_interrupt_ptr</code>.</td></tr>
           <tr><td><code>fibers.c</code></td><td>Shim над <code>minicoro.h</code> + structured concurrency (Plan 44.5).</td></tr>
         </tbody>
       </table>
@@ -398,7 +398,7 @@ NOVA_SMT_BACKEND=z3 nova test</code></pre>
         <thead><tr><th>Header</th><th>Что</th></tr></thead>
         <tbody>
           <tr><td><code>array.h</code></td><td><code>NovaArray_&lt;T&gt;</code>, <code>NovaOpt_&lt;T&gt;</code> auto-gen helpers.</td></tr>
-          <tr><td><code>cast.h</code></td><td>D54 narrow casts (saturation, wrap-around semantics).</td></tr>
+          <tr><td><code>cast.h</code></td><td><a href="/spec/decisions/syntax/#d54">D54</a> narrow casts (saturation, wrap-around semantics).</td></tr>
           <tr><td><code>effects.h</code></td><td><code>NovaThrowKind</code>, <code>nova_throw_cancel</code>, <code>Handler[E, IRT]</code> API.</td></tr>
           <tr><td><code>fibers.h</code></td><td><code>nova_spawn</code>, <code>nova_supervised</code>, <code>nova_cancel_*</code>, M:N runtime.</td></tr>
           <tr><td><code>channels.h</code></td><td><code>Channel[T]</code> mpsc (Plan 44.1), <code>select</code> waiter.</td></tr>

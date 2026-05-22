@@ -160,7 +160,7 @@ fn JsonValue @is_object() -> bool</code></pre>
         <h3 style="margin-bottom:.3rem;">into — compact</h3>
         <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
         <pre><code class="language-nova">fn JsonValue @into() -> str</code></pre>
-        <p>Serializes to compact JSON (single line, no extra whitespace). This is the D73 <code>Into[str]</code> implementation, so <code>str.from(v)</code> works too. Round-trip: <code>Json.parse(v.into()) == v</code>.</p>
+        <p>Serializes to compact JSON (single line, no extra whitespace). This is the <a href="/spec/decisions/runtime/#d73">D73</a> <code>Into[str]</code> implementation, so <code>str.from(v)</code> works too. Round-trip: <code>Json.parse(v.into()) == v</code>.</p>
         <h4>Examples</h4>
         <pre><code class="language-nova">let v = Array([Num(1.0), Str("a")])
 let s str = v.into()

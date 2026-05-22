@@ -77,7 +77,7 @@
 
       <p><code>HashMap[K, V]</code> is Nova's hash map: open addressing with linear probing, automatic resize at <code>load_factor</code> (default 0.75). The key type must satisfy <code>Hashable</code> — a structural protocol requiring <code>hash() -> u64</code>. Built-in types (<code>str</code>, <code>int</code>, …) are Hashable by default.</p>
 
-      <p>The map-literal syntax <code>["key": value, ...]</code> (D108) desugars to <code>HashMap</code>, and a record literal <code>{field: val}</code> coerces to <code>HashMap[str, V]</code> (D55).</p>
+      <p>The map-literal syntax <code>["key": value, ...]</code> (<a href="/spec/decisions/syntax/#d108">D108</a>) desugars to <code>HashMap</code>, and a record literal <code>{field: val}</code> coerces to <code>HashMap[str, V]</code> (<a href="/spec/decisions/types/#d55">D55</a>).</p>
 
       <pre><code class="language-nova">let mut m = HashMap[str, int].new()
 m.insert("alice", 1)

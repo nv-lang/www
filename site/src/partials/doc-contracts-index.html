@@ -70,7 +70,7 @@
 
     <p>Nova's contract system lets you state what a function <strong>requires</strong> and <strong>ensures</strong>, then verifies those claims at compile time via an SMT solver. Proven contracts are erased in release builds — zero runtime cost. Unproven ones fall back to runtime assertions in debug.</p>
 
-    <p>Spec: D24 (SMT strategy) · D111 (<code>assume</code> / <code>assert_static</code> / <code>#trusted</code>) · D112 (bounded quantifiers) · D116 (Z3 backend).</p>
+    <p>Spec: <a href="/spec/decisions/tooling/#d24">D24</a> (SMT strategy) · <a href="/spec/decisions/tooling/#d111">D111</a> (<code>assume</code> / <code>assert_static</code> / <code>#trusted</code>) · <a href="/spec/decisions/tooling/#d112">D112</a> (bounded quantifiers) · <a href="/spec/decisions/tooling/#d116">D116</a> (Z3 backend).</p>
 
     <hr>
 
@@ -630,12 +630,12 @@ result-ref       = 'result'                  // only in ensures</code></pre>
     <table>
       <thead><tr><th>What does not work / is deferred</th><th>Plan</th></tr></thead>
       <tbody>
-        <tr><td><code>#must_verify_module</code> — strict mode for an entire module</td><td>D113 (Plan 33.3 Ф.13, V2)</td></tr>
-        <tr><td>SMT cache + incremental verification</td><td>D114 (V2)</td></tr>
-        <tr><td>Parallel verification via <code>rayon</code></td><td>D114 (V2)</td></tr>
+        <tr><td><code>#must_verify_module</code> — strict mode for an entire module</td><td><a href="/spec/decisions/tooling/#d113">D113</a> (Plan 33.3 Ф.13, V2)</td></tr>
+        <tr><td>SMT cache + incremental verification</td><td><a href="/spec/decisions/tooling/#d114">D114</a> (V2)</td></tr>
+        <tr><td>Parallel verification via <code>rayon</code></td><td><a href="/spec/decisions/tooling/#d114">D114</a> (V2)</td></tr>
         <tr><td>Loop invariants with Z3 — full inductive reasoning</td><td>Plan 33.x V2</td></tr>
         <tr><td><code>forall</code>/<code>exists</code> in loop invariants</td><td>Plan 33.x V2</td></tr>
-        <tr><td>Effect-aware contracts (<code>ensures Db.balance(...) == ...</code>)</td><td>D24 / D120 (partial in V1)</td></tr>
+        <tr><td>Effect-aware contracts (<code>ensures Db.balance(...) == ...</code>)</td><td><a href="/spec/decisions/tooling/#d24">D24</a> / <a href="/spec/decisions/effects/#d120">D120</a> (partial in V1)</td></tr>
         <tr><td>Recursive <code>lemma</code> bodies (structural induction)</td><td>Research / V3</td></tr>
         <tr><td>Non-linear arithmetic in contracts</td><td>Z3 can sometimes handle; no static guarantee</td></tr>
         <tr><td>Floating-point reasoning</td><td>Not planned</td></tr>
@@ -649,8 +649,8 @@ result-ref       = 'result'                  // only in ensures</code></pre>
     <h2 id="related">Related documents</h2>
 
     <ul>
-      <li><code>spec/decisions/09-tooling.md</code> — D24 / D89 / D111 / D112 / D113 / D114 / D116 (contracts, SMT, test tooling)</li>
-      <li><code>spec/decisions/04-effects.md</code> — D120 (<code>#pure</code> views + axioms), D115 (axiom binders)</li>
+      <li><code>spec/decisions/09-tooling.md</code> — <a href="/spec/decisions/tooling/#d24">D24</a> / <a href="/spec/decisions/tooling/#d89">D89</a> / <a href="/spec/decisions/tooling/#d111">D111</a> / <a href="/spec/decisions/tooling/#d112">D112</a> / <a href="/spec/decisions/tooling/#d113">D113</a> / <a href="/spec/decisions/tooling/#d114">D114</a> / <a href="/spec/decisions/tooling/#d116">D116</a> (contracts, SMT, test tooling)</li>
+      <li><code>spec/decisions/04-effects.md</code> — <a href="/spec/decisions/effects/#d120">D120</a> (<code>#pure</code> views + axioms), <a href="/spec/decisions/effects/#d115">D115</a> (axiom binders)</li>
       <li><code>docs/plans/33.9-opaque-reveal-fuel.md</code> — <code>#opaque</code> / <code>reveal</code> / <code>#fuel(n)</code> implementation (Plan 33.9)</li>
       <li><code>nova_tests/contracts/</code> — ~280 contract verification tests</li>
       <li><code>nova_tests/doc/f23_contracts_positive.nv</code> — basic contracts doc-example</li>

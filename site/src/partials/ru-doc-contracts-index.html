@@ -70,7 +70,7 @@
 
     <p>Система контрактов Nova позволяет описать, что функция <strong>требует</strong> и <strong>гарантирует</strong>, и проверяет эти утверждения на этапе компиляции через SMT-солвер. Доказанные контракты стираются в release-сборке — нулевая цена в runtime. Недоказанные откатываются до runtime-assert'а в debug.</p>
 
-    <p>Spec: D24 (SMT-стратегия) · D111 (<code>assume</code> / <code>assert_static</code> / <code>#trusted</code>) · D112 (bounded quantifiers) · D116 (Z3 backend).</p>
+    <p>Spec: <a href="/spec/decisions/tooling/#d24">D24</a> (SMT-стратегия) · <a href="/spec/decisions/tooling/#d111">D111</a> (<code>assume</code> / <code>assert_static</code> / <code>#trusted</code>) · <a href="/spec/decisions/tooling/#d112">D112</a> (bounded quantifiers) · <a href="/spec/decisions/tooling/#d116">D116</a> (Z3 backend).</p>
 
     <hr>
 
@@ -630,12 +630,12 @@ result-ref       = 'result'                  // только в ensures</code></
     <table>
       <thead><tr><th>Что не работает / отложено</th><th>План</th></tr></thead>
       <tbody>
-        <tr><td><code>#must_verify_module</code> — strict mode для всего модуля</td><td>D113 (Plan 33.3 Ф.13, V2)</td></tr>
-        <tr><td>SMT cache + инкрементальная верификация</td><td>D114 (V2)</td></tr>
-        <tr><td>Параллельная верификация через <code>rayon</code></td><td>D114 (V2)</td></tr>
+        <tr><td><code>#must_verify_module</code> — strict mode для всего модуля</td><td><a href="/spec/decisions/tooling/#d113">D113</a> (Plan 33.3 Ф.13, V2)</td></tr>
+        <tr><td>SMT cache + инкрементальная верификация</td><td><a href="/spec/decisions/tooling/#d114">D114</a> (V2)</td></tr>
+        <tr><td>Параллельная верификация через <code>rayon</code></td><td><a href="/spec/decisions/tooling/#d114">D114</a> (V2)</td></tr>
         <tr><td>Loop invariants с Z3 — полное индуктивное рассуждение</td><td>Plan 33.x V2</td></tr>
         <tr><td><code>forall</code>/<code>exists</code> в loop invariants</td><td>Plan 33.x V2</td></tr>
-        <tr><td>Effect-aware контракты (<code>ensures Db.balance(...) == ...</code>)</td><td>D24 / D120 (частично в V1)</td></tr>
+        <tr><td>Effect-aware контракты (<code>ensures Db.balance(...) == ...</code>)</td><td><a href="/spec/decisions/tooling/#d24">D24</a> / <a href="/spec/decisions/effects/#d120">D120</a> (частично в V1)</td></tr>
         <tr><td>Рекурсивные <code>lemma</code>-тела (структурная индукция)</td><td>Research / V3</td></tr>
         <tr><td>Нелинейная арифметика в контрактах</td><td>Z3 иногда справляется; статической гарантии нет</td></tr>
         <tr><td>Рассуждения о floating-point</td><td>Не планируется</td></tr>
@@ -649,8 +649,8 @@ result-ref       = 'result'                  // только в ensures</code></
     <h2 id="related">Связанные документы</h2>
 
     <ul>
-      <li><code>spec/decisions/09-tooling.md</code> — D24 / D89 / D111 / D112 / D113 / D114 / D116 (контракты, SMT, test tooling)</li>
-      <li><code>spec/decisions/04-effects.md</code> — D120 (<code>#pure</code> views + axioms), D115 (axiom binders)</li>
+      <li><code>spec/decisions/09-tooling.md</code> — <a href="/spec/decisions/tooling/#d24">D24</a> / <a href="/spec/decisions/tooling/#d89">D89</a> / <a href="/spec/decisions/tooling/#d111">D111</a> / <a href="/spec/decisions/tooling/#d112">D112</a> / <a href="/spec/decisions/tooling/#d113">D113</a> / <a href="/spec/decisions/tooling/#d114">D114</a> / <a href="/spec/decisions/tooling/#d116">D116</a> (контракты, SMT, test tooling)</li>
+      <li><code>spec/decisions/04-effects.md</code> — <a href="/spec/decisions/effects/#d120">D120</a> (<code>#pure</code> views + axioms), <a href="/spec/decisions/effects/#d115">D115</a> (axiom binders)</li>
       <li><code>docs/plans/33.9-opaque-reveal-fuel.md</code> — реализация <code>#opaque</code> / <code>reveal</code> / <code>#fuel(n)</code> (Plan 33.9)</li>
       <li><code>nova_tests/contracts/</code> — ~280 тестов верификации контрактов</li>
       <li><code>nova_tests/doc/f23_contracts_positive.nv</code> — базовый doc-пример контрактов</li>

@@ -87,7 +87,7 @@ cargo test --manifest-path compiler-codegen/Cargo.toml</code></pre>
       <ol>
         <li><code>read_file(path)</code></li>
         <li><code>parser::parse(&amp;src)</code> → AST</li>
-        <li><code>check_module_path</code> — D78 path/module enforcement</li>
+        <li><code>check_module_path</code> — <a href="/spec/decisions/modules/#d78">D78</a> path/module enforcement</li>
         <li><code>types::check_module</code> → type-check + effect inference</li>
         <li>Prints <code>ok: {} parsed and checked</code></li>
       </ol>
@@ -134,7 +134,7 @@ cargo test --manifest-path compiler-codegen/Cargo.toml</code></pre>
       <ol>
         <li>parse + path-check + type-check</li>
         <li><code>annotate_map_literals</code> + <code>desugar_module</code></li>
-        <li><code>types::infer_effects</code> — D28 effect inference for private fn</li>
+        <li><code>types::infer_effects</code> — <a href="/spec/decisions/effects/#d28">D28</a> effect inference for private fn</li>
         <li><code>lints::lint_module</code> (if lint enabled)</li>
         <li><code>CEmitter::new()</code> + <code>set_source_for_annotations(src)</code></li>
         <li><code>set_proven_contracts</code> — selective contract stripping (Plan 33.3, true zero-cost)</li>
@@ -179,7 +179,7 @@ cargo test --manifest-path compiler-codegen/Cargo.toml</code></pre>
       <hr class="divider">
 
       <h2 id="test-build">nova-codegen test-build</h2>
-      <p>Cross-platform per-file test runner (Plan 24): compile one <code>.nv</code> to <code>.exe</code> and check EXPECT markers (D89).</p>
+      <p>Cross-platform per-file test runner (Plan 24): compile one <code>.nv</code> to <code>.exe</code> and check EXPECT markers (<a href="/spec/decisions/tooling/#d89">D89</a>).</p>
       <pre><code class="language-bash">nova-codegen test-build FILE [--mode dev|release] [--toolchain auto|clang|msvc|gcc]
                              [--vcvars PATH] [--clang PATH]
                              [--cg-include PATH] [--rt-dir PATH] [--tmp-dir PATH]
@@ -204,7 +204,7 @@ cargo test --manifest-path compiler-codegen/Cargo.toml</code></pre>
       </table>
       <p><strong>Pipeline:</strong> detect toolchain → detect/build libuv → compile <code>.nv</code> → <code>.c</code> → <code>.exe</code> → run → check EXPECT markers.</p>
       <p>Output format: <code>&lt;STATUS:14&gt; &lt;display&gt;  # &lt;detail&gt;</code></p>
-      <p><strong>EXPECT markers (D89):</strong></p>
+      <p><strong>EXPECT markers (<a href="/spec/decisions/tooling/#d89">D89</a>):</strong></p>
       <ul>
         <li><code>// EXPECT: &lt;line&gt;</code> — exact stdout line match</li>
         <li><code>// EXPECT_STDERR: &lt;line&gt;</code> — stderr match</li>
@@ -306,7 +306,7 @@ NOVA_SMT_BACKEND=z3 nova test</code></pre>
       <table>
         <thead><tr><th>Module</th><th>What</th></tr></thead>
         <tbody>
-          <tr><td><code>argbind</code></td><td>Named/positional arg binding (Plan 46 / D102).</td></tr>
+          <tr><td><code>argbind</code></td><td>Named/positional arg binding (Plan 46 / <a href="/spec/decisions/syntax/#d102">D102</a>).</td></tr>
           <tr><td><code>ast</code></td><td>AST types: <code>Module</code>, <code>Item</code>, <code>Expr</code>, <code>Stmt</code>, <code>Pattern</code>, …</td></tr>
           <tr><td><code>callnorm</code></td><td>Call-site normalization for named params.</td></tr>
           <tr><td><code>codegen</code></td><td>C backend: <code>CEmitter::emit_module</code>, <code>runtime_registry::all</code>, …</td></tr>
@@ -317,7 +317,7 @@ NOVA_SMT_BACKEND=z3 nova test</code></pre>
           <tr><td><code>interp</code></td><td>Treewalk interpreter (<code>Interpreter::new</code> / <code>load_module</code> / <code>run_main</code> / <code>run_tests</code>).</td></tr>
           <tr><td><code>lexer</code></td><td>Tokenization: <code>lex(&amp;src) -&gt; Vec&lt;Token&gt;</code>.</td></tr>
           <tr><td><code>lints</code></td><td>D-rule based lints (<code>lint_module</code>).</td></tr>
-          <tr><td><code>manifest</code></td><td><code>nova.toml</code> + D78 path/module enforcement.</td></tr>
+          <tr><td><code>manifest</code></td><td><code>nova.toml</code> + <a href="/spec/decisions/modules/#d78">D78</a> path/module enforcement.</td></tr>
           <tr><td><code>parser</code></td><td>Recursive-descent parser (<code>parse(&amp;src) -&gt; Result&lt;Module, Diagnostic&gt;</code>).</td></tr>
           <tr><td><code>perf_timer</code></td><td><code>NOVA_PERF_TIMER</code> instrumentation.</td></tr>
           <tr><td><code>test_runner</code></td><td>Test discovery + parallel execution + toolchain detect.</td></tr>
@@ -372,11 +372,11 @@ NOVA_SMT_BACKEND=z3 nova test</code></pre>
         <li><code>_module.nv</code> convention for module-level <code>#forbid</code> / <code>#cfg</code> / <code>#doc</code>.</li>
       </ul>
 
-      <h3>D78 Path/Module Enforcement</h3>
+      <h3><a href="/spec/decisions/modules/#d78">D78</a> Path/Module Enforcement</h3>
       <p>If a file lives inside a package (<code>nova.toml</code> in parent dirs), the compiler verifies that <code>module X.Y.Z</code> matches the filesystem path. Standalone <code>.nv</code> files without <code>nova.toml</code> pass through.</p>
 
-      <h3>Effect Inference (D28)</h3>
-      <p><code>types::infer_effects</code> injects <code>Fail</code> into the effect row of private functions if the body contains <code>throw</code> and <code>Fail</code> is not declared explicitly. Public functions — explicit only (D28: "public API must not implicitly throw").</p>
+      <h3>Effect Inference (<a href="/spec/decisions/effects/#d28">D28</a>)</h3>
+      <p><code>types::infer_effects</code> injects <code>Fail</code> into the effect row of private functions if the body contains <code>throw</code> and <code>Fail</code> is not declared explicitly. Public functions — explicit only (<a href="/spec/decisions/effects/#d28">D28</a>: "public API must not implicitly throw").</p>
 
       <h3>Plan 33.3 Contract Stripping (Ф.9.9)</h3>
       <p><code>CEmitter::set_proven_contracts</code> selectively strips proven contract bodies in codegen (true zero-cost, even in debug). SMT-proven <code>requires</code>/<code>ensures</code>/<code>invariant</code> are not emitted as runtime assertions.</p>
@@ -389,7 +389,7 @@ NOVA_SMT_BACKEND=z3 nova test</code></pre>
         <thead><tr><th>File</th><th>What</th></tr></thead>
         <tbody>
           <tr><td><code>alloc.c</code> (or <code>alloc_boehm.c</code>, <code>alloc_rc.c</code>)</td><td>Allocator (Boehm GC default since Plan 27).</td></tr>
-          <tr><td><code>effects.c</code></td><td>Handler stack (D61), <code>nova_interrupt</code> / <code>nova_interrupt_ptr</code>.</td></tr>
+          <tr><td><code>effects.c</code></td><td>Handler stack (<a href="/spec/decisions/effects/#d61">D61</a>), <code>nova_interrupt</code> / <code>nova_interrupt_ptr</code>.</td></tr>
           <tr><td><code>fibers.c</code></td><td>Shim over <code>minicoro.h</code> + structured concurrency (Plan 44.5).</td></tr>
         </tbody>
       </table>
@@ -398,7 +398,7 @@ NOVA_SMT_BACKEND=z3 nova test</code></pre>
         <thead><tr><th>Header</th><th>What</th></tr></thead>
         <tbody>
           <tr><td><code>array.h</code></td><td><code>NovaArray_&lt;T&gt;</code>, <code>NovaOpt_&lt;T&gt;</code> auto-gen helpers.</td></tr>
-          <tr><td><code>cast.h</code></td><td>D54 narrow casts (saturation, wrap-around semantics).</td></tr>
+          <tr><td><code>cast.h</code></td><td><a href="/spec/decisions/syntax/#d54">D54</a> narrow casts (saturation, wrap-around semantics).</td></tr>
           <tr><td><code>effects.h</code></td><td><code>NovaThrowKind</code>, <code>nova_throw_cancel</code>, <code>Handler[E, IRT]</code> API.</td></tr>
           <tr><td><code>fibers.h</code></td><td><code>nova_spawn</code>, <code>nova_supervised</code>, <code>nova_cancel_*</code>, M:N runtime.</td></tr>
           <tr><td><code>channels.h</code></td><td><code>Channel[T]</code> mpsc (Plan 44.1), <code>select</code> waiter.</td></tr>

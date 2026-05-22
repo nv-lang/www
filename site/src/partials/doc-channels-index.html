@@ -423,7 +423,7 @@ arm-body     = block | stmt</code></pre>
       <p><strong>Bootstrap recv form</strong>: <code>Some(v) = rx =&gt; { ... }</code> — bare <code>rx</code> without <code>.recv()</code>. The spec also describes <code>pattern = rx.recv()</code>; the current compiler only accepts the bare form.</p>
     </blockquote>
 
-    <p><strong>Semantics</strong> (D94):</p>
+    <p><strong>Semantics</strong> (<a href="/spec/decisions/concurrency/#d94">D94</a>):</p>
     <ol>
       <li><strong>Guard evaluation</strong> — <code>if &lt;expr&gt;</code> before the arrow disables the arm when false.</li>
       <li><strong>Immediate check</strong> — all enabled arms are checked in pseudo-random order (Fisher-Yates). If ≥1 is ready — the arm runs without parking.</li>
@@ -678,9 +678,9 @@ test "select timeout: data wins over timeout" {
     assert(branch == 77)
 }</code></pre>
 
-    <p><code>tok.cancel()</code> cancels <strong>every</strong> pending waiter in any <code>select</code> block inside <code>supervised(cancel: tok)</code>. The fiber wakes, checks <code>cancel_requested</code>, and exits the supervised block via structured cancellation (D75 / Plan 49).</p>
+    <p><code>tok.cancel()</code> cancels <strong>every</strong> pending waiter in any <code>select</code> block inside <code>supervised(cancel: tok)</code>. The fiber wakes, checks <code>cancel_requested</code>, and exits the supervised block via structured cancellation (<a href="/spec/decisions/concurrency/#d75">D75</a> / Plan 49).</p>
 
-    <p>Cancellation is <strong>not an error</strong> — it does not turn into <code>throw</code> and does not invoke a <code>Fail</code> handler. The behavior is symmetric to Go's <code>context.Done()</code> but with a typed <code>CancelToken</code> (D75) instead of an <code>error</code> channel.</p>
+    <p>Cancellation is <strong>not an error</strong> — it does not turn into <code>throw</code> and does not invoke a <code>Fail</code> handler. The behavior is symmetric to Go's <code>context.Done()</code> but with a typed <code>CancelToken</code> (<a href="/spec/decisions/concurrency/#d75">D75</a>) instead of an <code>error</code> channel.</p>
 
     <hr>
 
@@ -714,7 +714,7 @@ defer tx.close()    // OK — tx is declared directly
 
     <h3>No auto-close on drop</h3>
 
-    <p>Unlike Rust mpsc, Nova does not have deterministic destructors (managed heap, D6). The GC will collect a sender "eventually" — which is <strong>non-deterministic</strong> and would make tests flaky. That is why <code>close()</code> is always explicit.</p>
+    <p>Unlike Rust mpsc, Nova does not have deterministic destructors (managed heap, <a href="/spec/decisions/memory/#d6">D6</a>). The GC will collect a sender "eventually" — which is <strong>non-deterministic</strong> and would make tests flaky. That is why <code>close()</code> is always explicit.</p>
 
     <h3>Idempotent</h3>
 
@@ -768,10 +768,10 @@ defer tx.close()    // OK — tx is declared directly
     <h2 id="related">Related documents</h2>
 
     <ul>
-      <li><code>spec/decisions/06-concurrency.md</code> — D79 / D91 / D94 / D75 / D97 (channels, select, cancel, fiber stacks)</li>
-      <li><code>docs/plans/21-channel-revision-implementation.md</code> — D91 implementation (capability split)</li>
+      <li><code>spec/decisions/06-concurrency.md</code> — <a href="/spec/decisions/concurrency/#d79">D79</a> / <a href="/spec/decisions/concurrency/#d91">D91</a> / <a href="/spec/decisions/concurrency/#d94">D94</a> / <a href="/spec/decisions/concurrency/#d75">D75</a> / <a href="/spec/decisions/concurrency/#d97">D97</a> (channels, select, cancel, fiber stacks)</li>
+      <li><code>docs/plans/21-channel-revision-implementation.md</code> — <a href="/spec/decisions/concurrency/#d91">D91</a> implementation (capability split)</li>
       <li><code>docs/plans/30-channel-improvements.md</code> — <code>send → bool</code> + <code>tx.clone()</code></li>
-      <li><code>docs/plans/31-channel-select.md</code> — <code>select { ... }</code> (D94)</li>
+      <li><code>docs/plans/31-channel-select.md</code> — <code>select { ... }</code> (<a href="/spec/decisions/concurrency/#d94">D94</a>)</li>
       <li><code>docs/plans/44.1-channel-hardening.md</code> — production-grade M:N safety (atomics, doubly-linked, cache padding)</li>
       <li><code>docs/plans/49-cancel-throw-routing.md</code> — cancel semantics (typed <code>CancelToken[T]</code>)</li>
       <li><code>docs/plans/65-chanreader-close-after.md</code> — <code>ChanReader.close_after(Duration)</code> (rename of <code>Time.after</code>)</li>

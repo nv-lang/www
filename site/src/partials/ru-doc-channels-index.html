@@ -423,7 +423,7 @@ arm-body     = block | stmt</code></pre>
       <p><strong>Bootstrap-форма recv</strong>: <code>Some(v) = rx =&gt; { ... }</code> — bare <code>rx</code> без <code>.recv()</code>. Spec упоминает также <code>pattern = rx.recv()</code> форму; в текущем компиляторе работает только bare-форма.</p>
     </blockquote>
 
-    <p><strong>Семантика</strong> (D94):</p>
+    <p><strong>Семантика</strong> (<a href="/spec/decisions/concurrency/#d94">D94</a>):</p>
     <ol>
       <li><strong>Guard evaluation</strong> — <code>if &lt;expr&gt;</code> перед стрелкой делает arm disabled когда false.</li>
       <li><strong>Immediate check</strong> — все enabled arms проверяются в псевдослучайном порядке (Fisher-Yates). Если ≥1 готов — выполняется без park'а.</li>
@@ -678,9 +678,9 @@ test "select timeout: data wins over timeout" {
     assert(branch == 77)
 }</code></pre>
 
-    <p><code>tok.cancel()</code> отменяет <strong>все</strong> pending waiters в любом <code>select</code>-блоке внутри <code>supervised(cancel: tok)</code>. Fiber просыпается, проверяет <code>cancel_requested</code>, и выходит из supervised-блока через структурную отмену (D75 / Plan 49).</p>
+    <p><code>tok.cancel()</code> отменяет <strong>все</strong> pending waiters в любом <code>select</code>-блоке внутри <code>supervised(cancel: tok)</code>. Fiber просыпается, проверяет <code>cancel_requested</code>, и выходит из supervised-блока через структурную отмену (<a href="/spec/decisions/concurrency/#d75">D75</a> / Plan 49).</p>
 
-    <p>Cancellation <strong>не ошибка</strong> — она не превращается в <code>throw</code>, не вызывает Fail-handler. Поведение симметрично Go <code>context.Done()</code>, но с типизированным <code>CancelToken</code> (D75) вместо <code>error</code>-канала.</p>
+    <p>Cancellation <strong>не ошибка</strong> — она не превращается в <code>throw</code>, не вызывает Fail-handler. Поведение симметрично Go <code>context.Done()</code>, но с типизированным <code>CancelToken</code> (<a href="/spec/decisions/concurrency/#d75">D75</a>) вместо <code>error</code>-канала.</p>
 
     <hr>
 
@@ -714,7 +714,7 @@ defer tx.close()    // OK — tx объявлен напрямую
 
     <h3>Auto-close на drop — нет</h3>
 
-    <p>В отличие от Rust mpsc, Nova не имеет deterministic destructor'ов (managed heap, D6). GC соберёт sender «когда-нибудь» — это <strong>недетерминированно</strong> и сделало бы тесты flaky. Поэтому <code>close()</code> всегда explicit.</p>
+    <p>В отличие от Rust mpsc, Nova не имеет deterministic destructor'ов (managed heap, <a href="/spec/decisions/memory/#d6">D6</a>). GC соберёт sender «когда-нибудь» — это <strong>недетерминированно</strong> и сделало бы тесты flaky. Поэтому <code>close()</code> всегда explicit.</p>
 
     <h3>Idempotent</h3>
 
@@ -768,10 +768,10 @@ defer tx.close()    // OK — tx объявлен напрямую
     <h2 id="related">Связанные документы</h2>
 
     <ul>
-      <li><code>spec/decisions/06-concurrency.md</code> — D79 / D91 / D94 / D75 / D97 (channels, select, cancel, fiber stacks)</li>
-      <li><code>docs/plans/21-channel-revision-implementation.md</code> — D91 implementation (capability-split)</li>
+      <li><code>spec/decisions/06-concurrency.md</code> — <a href="/spec/decisions/concurrency/#d79">D79</a> / <a href="/spec/decisions/concurrency/#d91">D91</a> / <a href="/spec/decisions/concurrency/#d94">D94</a> / <a href="/spec/decisions/concurrency/#d75">D75</a> / <a href="/spec/decisions/concurrency/#d97">D97</a> (channels, select, cancel, fiber stacks)</li>
+      <li><code>docs/plans/21-channel-revision-implementation.md</code> — <a href="/spec/decisions/concurrency/#d91">D91</a> implementation (capability-split)</li>
       <li><code>docs/plans/30-channel-improvements.md</code> — <code>send → bool</code> + <code>tx.clone()</code></li>
-      <li><code>docs/plans/31-channel-select.md</code> — <code>select { ... }</code> (D94)</li>
+      <li><code>docs/plans/31-channel-select.md</code> — <code>select { ... }</code> (<a href="/spec/decisions/concurrency/#d94">D94</a>)</li>
       <li><code>docs/plans/44.1-channel-hardening.md</code> — production-grade M:N safety (atomics, doubly-linked, cache padding)</li>
       <li><code>docs/plans/49-cancel-throw-routing.md</code> — cancel semantics (typed <code>CancelToken[T]</code>)</li>
       <li><code>docs/plans/65-chanreader-close-after.md</code> — <code>ChanReader.close_after(Duration)</code> (rename от <code>Time.after</code>)</li>

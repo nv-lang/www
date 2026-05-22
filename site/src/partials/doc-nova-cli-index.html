@@ -162,7 +162,7 @@ cargo build --release --manifest-path nova-cli/Cargo.toml --features z3-backend<
       <hr class="divider">
 
       <h2 id="project-root">Project Root Discovery</h2>
-      <p>Most commands search for <code>nova.toml</code> upward from CWD. This is workspace-aware (D78 AD6):</p>
+      <p>Most commands search for <code>nova.toml</code> upward from CWD. This is workspace-aware (<a href="/spec/decisions/modules/#d78">D78</a> AD6):</p>
       <ol>
         <li>Walk upward from CWD to filesystem root.</li>
         <li>At each level read <code>nova.toml</code> if present.</li>
@@ -297,7 +297,7 @@ cargo build --release --manifest-path nova-cli/Cargo.toml --features z3-backend<
       <hr class="divider">
 
       <h2 id="doc">nova doc</h2>
-      <p>Production-grade documentation generator (Plan 45 / D107). Supports Markdown, JSON, and HTML output, doc-tests, coverage metrics, watch mode, workspace mode, API diff, and contract mutation testing.</p>
+      <p>Production-grade documentation generator (Plan 45 / <a href="/spec/decisions/tooling/#d107">D107</a>). Supports Markdown, JSON, and HTML output, doc-tests, coverage metrics, watch mode, workspace mode, API diff, and contract mutation testing.</p>
       <pre><code class="language-bash">nova doc [FILE] [--format markdown|json|html] [--json-schema]
          [--include-private] [--test] [--check] [--watch]
          [--coverage [--coverage-threshold PERCENT]] [--jobs N]
@@ -308,7 +308,7 @@ cargo build --release --manifest-path nova-cli/Cargo.toml --features z3-backend<
         <thead><tr><th>Flag</th><th>Default</th><th>Description</th></tr></thead>
         <tbody>
           <tr><td><code>FILE</code></td><td>— (required except <code>--json-schema</code>)</td><td><code>.nv</code> file or directory.</td></tr>
-          <tr><td><code>--format</code></td><td><code>markdown</code></td><td><code>markdown</code>, <code>json</code> (D107 schema), <code>html</code>.</td></tr>
+          <tr><td><code>--format</code></td><td><code>markdown</code></td><td><code>markdown</code>, <code>json</code> (<a href="/spec/decisions/tooling/#d107">D107</a> schema), <code>html</code>.</td></tr>
           <tr><td><code>--json-schema</code></td><td>off</td><td>Print the embedded JSON Schema 2020-12 and exit.</td></tr>
           <tr><td><code>--include-private</code></td><td>off</td><td>Include non-exported items.</td></tr>
           <tr><td><code>--test</code></td><td>off</td><td>Run doc-tests.</td></tr>
@@ -360,7 +360,7 @@ module my.module
 export fn double(x int) -> int => x * 2</code></pre>
 
       <h3 id="doc-sections">Sections</h3>
-      <p>Standard sections are recognized and rendered in fixed order (D107):</p>
+      <p>Standard sections are recognized and rendered in fixed order (<a href="/spec/decisions/tooling/#d107">D107</a>):</p>
       <table>
         <thead><tr><th>Section</th><th>Purpose</th></tr></thead>
         <tbody>
@@ -414,7 +414,7 @@ export fn double(x int) -> int => x * 2</code></pre>
 /// 1.0.0
 export fn add(a int, b int) -> int => a + b</code></pre>
       <p><code># Since &gt;= 1.0</code> → <code>stability.tier = "stable"</code>, otherwise <code>unstable</code>.</p>
-      <p><strong>Via doc-attrs</strong> (D96 attribute syntax <code>#name(...)</code> — written between the doc-comment and the declaration, not inside <code>///</code>):</p>
+      <p><strong>Via doc-attrs</strong> (<a href="/spec/decisions/tooling/#d96">D96</a> attribute syntax <code>#name(...)</code> — written between the doc-comment and the declaration, not inside <code>///</code>):</p>
       <pre><code class="language-nova">/// Experimental API.
 #experimental(note = "may change in 0.5")
 #since("0.3.0")
@@ -436,7 +436,7 @@ export fn experimental_api() -> int => 0</code></pre>
       <p><code>#deprecated</code> takes precedence over a <code># Deprecated</code> section.</p>
 
       <h3 id="doc-json">JSON Output</h3>
-      <p>D107 schema v1. Keys in alphabetical order, byte-for-byte deterministic. Top-level fields:</p>
+      <p><a href="/spec/decisions/tooling/#d107">D107</a> schema v1. Keys in alphabetical order, byte-for-byte deterministic. Top-level fields:</p>
       <ul>
         <li><code>format_version: 1</code></li>
         <li><code>nova_version: "0.1.0"</code></li>
@@ -559,7 +559,7 @@ nova doc-query out.json "module-prefix=std,effect=Fs"</code></pre>
       <hr class="divider">
 
       <h2 id="contracts">nova contracts</h2>
-      <p>Contract inspection and verification (Plan 33 / D24). Output — JSON (AI-friendly schema, see <code>docs/contracts-diag-schema.json</code>).</p>
+      <p>Contract inspection and verification (Plan 33 / <a href="/spec/decisions/tooling/#d24">D24</a>). Output — JSON (AI-friendly schema, see <code>docs/contracts-diag-schema.json</code>).</p>
 
       <h3 id="contracts-list">nova contracts list</h3>
       <p>List all contracts in a file.</p>
@@ -709,7 +709,7 @@ nova doc-query out.json "module-prefix=std,effect=Fs"</code></pre>
         <thead><tr><th>Flag</th><th>Default</th><th>Description</th></tr></thead>
         <tbody>
           <tr><td><code>BINARY</code></td><td>—</td><td>Executable path.</td></tr>
-          <tr><td><code>--cache-sim</code></td><td>off</td><td>I1/D1/LL miss counts (slower).</td></tr>
+          <tr><td><code>--cache-sim</code></td><td>off</td><td>I1/<a href="/spec/decisions/philosophy/#d1">D1</a>/LL miss counts (slower).</td></tr>
           <tr><td><code>--workdir PATH</code></td><td>—</td><td>Working directory.</td></tr>
           <tr><td><code>--out PATH</code></td><td>—</td><td>JSON <code>CallgrindResult</code> output.</td></tr>
         </tbody>
@@ -790,7 +790,7 @@ nova bench history-anomalies [--branch BRANCH] [--format text|json]</code></pre>
       <p>One-shot lexer-based migration tools in <code>nova-cli/src/bin/</code>. Kept in the repository as a reference for future atomic API-rename plans.</p>
 
       <h3>migrate_plan60</h3>
-      <p>Migrate field-style size accessors to method form (D117 / Plan 60):</p>
+      <p>Migrate field-style size accessors to method form (<a href="/spec/decisions/syntax/#d117">D117</a> / Plan 60):</p>
       <table style="font-size:.9rem;">
         <thead><tr><th>Before</th><th>After</th></tr></thead>
         <tbody>

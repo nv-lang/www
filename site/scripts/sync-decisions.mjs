@@ -26,8 +26,13 @@ function rewriteLinks(md) {
 
 async function main() {
   // Список файлов каталога — через GitHub contents API.
+  // GITHUB_TOKEN (в CI — github.token) поднимает лимит API 60/ч → 5000/ч.
+  const apiHeaders = { ...UA, Accept: 'application/vnd.github+json' };
+  if (process.env.GITHUB_TOKEN) {
+    apiHeaders.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+  }
   const api = `https://api.github.com/repos/${REPO}/contents/${SRC}?ref=${BRANCH}`;
-  const res = await fetch(api, { headers: { ...UA, Accept: 'application/vnd.github+json' } });
+  const res = await fetch(api, { headers: apiHeaders });
   if (!res.ok) throw new Error(`GitHub API ${res.status} — ${api}`);
   const md = (await res.json()).filter((e) => e.type === 'file' && e.name.endsWith('.md'));
   if (md.length === 0) throw new Error(`нет .md в ${SRC}`);

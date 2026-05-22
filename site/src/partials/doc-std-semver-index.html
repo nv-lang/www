@@ -165,7 +165,7 @@ assert(!Version.from("1.0.0-alpha").is_stable()) // pre-release</code></pre>
 
       <p>All comparisons implement §&nbsp;11 precedence: <code>major</code> &gt; <code>minor</code> &gt; <code>patch</code> &gt; pre-release. Build metadata is ignored. Pre-release versions have lower precedence than the release (<code>1.0.0-alpha &lt; 1.0.0</code>).</p>
 
-      <p>Operator overloading (D46) means <code>v1 &lt; v2</code>, <code>v1 == v2</code>, <code>v1 != v2</code> work directly.</p>
+      <p>Operator overloading (<a href="/spec/decisions/syntax/#d46">D46</a>) means <code>v1 &lt; v2</code>, <code>v1 == v2</code>, <code>v1 != v2</code> work directly.</p>
 
       <div id="lt" style="margin-bottom:2.5rem;">
         <h3 style="margin-bottom:.3rem;">lt / gt / le / ge</h3>

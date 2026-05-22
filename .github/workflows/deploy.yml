@@ -28,6 +28,10 @@ jobs:
         with:
           path: ./site
           node-version: 24
+        env:
+          # prebuild тянет spec/decisions/ из репо nova — токен поднимает
+          # лимит GitHub API (60/ч → 5000/ч)
+          GITHUB_TOKEN: ${{ github.token }}
 
   deploy:
     needs: build

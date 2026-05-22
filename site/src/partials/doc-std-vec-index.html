@@ -32,7 +32,7 @@
   <main id="main-content">
     <article class="prose">
 
-      <p><code>[]T</code> is Nova's built-in dynamic array (D27 syntax, D32 <code>(ptr, len, cap)</code> representation). The built-in API — <code>len</code>, <code>cap</code>, <code>push</code>, <code>pop</code>, <code>with_capacity</code>, <code>[i]</code> — is compiler-provided. This module adds functional combinators via D35 receiver-generics.</p>
+      <p><code>[]T</code> is Nova's built-in dynamic array (<a href="/spec/decisions/syntax/#d27">D27</a> syntax, <a href="/spec/decisions/types/#d32">D32</a> <code>(ptr, len, cap)</code> representation). The built-in API — <code>len</code>, <code>cap</code>, <code>push</code>, <code>pop</code>, <code>with_capacity</code>, <code>[i]</code> — is compiler-provided. This module adds functional combinators via <a href="/spec/decisions/syntax/#d35">D35</a> receiver-generics.</p>
 
       <pre><code class="language-nova">let nums []int = [1, 2, 3, 4, 5]
 let squared = nums.map(|x| x * x)
@@ -46,7 +46,7 @@ assert(total == 15)</code></pre>
         <h2 style="margin-bottom:.3rem;">map</h2>
         <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">stable since 0.1</span>
         <pre><code class="language-nova">fn []T @map[U](f fn(T) -> U) -> []U</code></pre>
-        <p>Applies <code>f</code> to each element and returns a new array <code>[]U</code>. The method-level generic <code>[U]</code> (D42) lets a single <code>[]T</code> method produce any target type.</p>
+        <p>Applies <code>f</code> to each element and returns a new array <code>[]U</code>. The method-level generic <code>[U]</code> (<a href="/spec/decisions/types/#d42">D42</a>) lets a single <code>[]T</code> method produce any target type.</p>
         <h4>Examples</h4>
         <pre><code class="language-nova">let v []int = [1, 2, 3]
 assert(v.map(|x| x * 2) == [2, 4, 6])</code></pre>

@@ -162,7 +162,7 @@ cargo build --release --manifest-path nova-cli/Cargo.toml --features z3-backend<
       <hr class="divider">
 
       <h2 id="project-root">Поиск корня проекта</h2>
-      <p>Большинство команд ищут <code>nova.toml</code> снизу вверх от CWD (workspace-aware, D78 AD6):</p>
+      <p>Большинство команд ищут <code>nova.toml</code> снизу вверх от CWD (workspace-aware, <a href="/spec/decisions/modules/#d78">D78</a> AD6):</p>
       <ol>
         <li>Идём от CWD вверх до filesystem root.</li>
         <li>На каждом уровне читаем <code>nova.toml</code> если есть.</li>
@@ -297,7 +297,7 @@ cargo build --release --manifest-path nova-cli/Cargo.toml --features z3-backend<
       <hr class="divider">
 
       <h2 id="doc">nova doc</h2>
-      <p>Production-grade документация (Plan 45 / D107). Markdown / JSON / HTML + doc-tests + coverage + mutation testing + watch + workspace-mode.</p>
+      <p>Production-grade документация (Plan 45 / <a href="/spec/decisions/tooling/#d107">D107</a>). Markdown / JSON / HTML + doc-tests + coverage + mutation testing + watch + workspace-mode.</p>
       <pre><code class="language-bash">nova doc [FILE] [--format markdown|json|html] [--json-schema]
          [--include-private] [--test] [--check] [--watch]
          [--coverage [--coverage-threshold PERCENT]] [--jobs N]
@@ -308,7 +308,7 @@ cargo build --release --manifest-path nova-cli/Cargo.toml --features z3-backend<
         <thead><tr><th>Флаг</th><th>По умолчанию</th><th>Описание</th></tr></thead>
         <tbody>
           <tr><td><code>FILE</code></td><td>— (обязателен кроме <code>--json-schema</code>)</td><td><code>.nv</code> файл или директория.</td></tr>
-          <tr><td><code>--format</code></td><td><code>markdown</code></td><td><code>markdown</code>, <code>json</code> (D107 schema), <code>html</code>.</td></tr>
+          <tr><td><code>--format</code></td><td><code>markdown</code></td><td><code>markdown</code>, <code>json</code> (<a href="/spec/decisions/tooling/#d107">D107</a> schema), <code>html</code>.</td></tr>
           <tr><td><code>--json-schema</code></td><td>off</td><td>Вывести встроенную JSON Schema 2020-12 и выйти.</td></tr>
           <tr><td><code>--include-private</code></td><td>off</td><td>Включить non-exported items.</td></tr>
           <tr><td><code>--test</code></td><td>off</td><td>Запустить doc-tests.</td></tr>
@@ -360,7 +360,7 @@ module my.module
 export fn double(x int) -> int => x * 2</code></pre>
 
       <h3 id="doc-sections">Секции</h3>
-      <p>Распознаются стандартные секции (D107, fixed order):</p>
+      <p>Распознаются стандартные секции (<a href="/spec/decisions/tooling/#d107">D107</a>, fixed order):</p>
       <table>
         <thead><tr><th>Секция</th><th>Назначение</th></tr></thead>
         <tbody>
@@ -414,7 +414,7 @@ export fn double(x int) -> int => x * 2</code></pre>
 /// 1.0.0
 export fn add(a int, b int) -> int => a + b</code></pre>
       <p><code># Since &gt;= 1.0</code> → <code>stability.tier = "stable"</code>, иначе <code>unstable</code>.</p>
-      <p><strong>Через doc-attrs</strong> (D96 синтаксис <code>#name(...)</code> — пишется отдельной строкой между doc-comment'ом и item'ом, не внутри <code>///</code>):</p>
+      <p><strong>Через doc-attrs</strong> (<a href="/spec/decisions/tooling/#d96">D96</a> синтаксис <code>#name(...)</code> — пишется отдельной строкой между doc-comment'ом и item'ом, не внутри <code>///</code>):</p>
       <pre><code class="language-nova">/// Экспериментальное API.
 #experimental(note = "may change in 0.5")
 #since("0.3.0")
@@ -436,7 +436,7 @@ export fn experimental_api() -> int => 0</code></pre>
       <p><code>#deprecated</code> приоритетнее, чем <code># Deprecated</code> section.</p>
 
       <h3 id="doc-json">JSON-вывод</h3>
-      <p>D107 schema v1. Ключи в алфавитном порядке, byte-for-byte deterministic. Top-level fields:</p>
+      <p><a href="/spec/decisions/tooling/#d107">D107</a> schema v1. Ключи в алфавитном порядке, byte-for-byte deterministic. Top-level fields:</p>
       <ul>
         <li><code>format_version: 1</code></li>
         <li><code>nova_version: "0.1.0"</code></li>
@@ -559,7 +559,7 @@ nova doc-query out.json "module-prefix=std,effect=Fs"</code></pre>
       <hr class="divider">
 
       <h2 id="contracts">nova contracts</h2>
-      <p>Инспекция и верификация контрактов (Plan 33 / D24). Output — JSON (AI-friendly schema, см. <code>docs/contracts-diag-schema.json</code>).</p>
+      <p>Инспекция и верификация контрактов (Plan 33 / <a href="/spec/decisions/tooling/#d24">D24</a>). Output — JSON (AI-friendly schema, см. <code>docs/contracts-diag-schema.json</code>).</p>
 
       <h3 id="contracts-list">nova contracts list</h3>
       <p>Список всех контрактов в файле.</p>
@@ -709,7 +709,7 @@ nova doc-query out.json "module-prefix=std,effect=Fs"</code></pre>
         <thead><tr><th>Флаг</th><th>По умолчанию</th><th>Описание</th></tr></thead>
         <tbody>
           <tr><td><code>BINARY</code></td><td>—</td><td>Путь к executable.</td></tr>
-          <tr><td><code>--cache-sim</code></td><td>off</td><td>I1/D1/LL miss counts (медленнее).</td></tr>
+          <tr><td><code>--cache-sim</code></td><td>off</td><td>I1/<a href="/spec/decisions/philosophy/#d1">D1</a>/LL miss counts (медленнее).</td></tr>
           <tr><td><code>--workdir PATH</code></td><td>—</td><td>CWD для команды.</td></tr>
           <tr><td><code>--out PATH</code></td><td>—</td><td>JSON <code>CallgrindResult</code>.</td></tr>
         </tbody>
@@ -790,7 +790,7 @@ nova bench history-anomalies [--branch BRANCH] [--format text|json]</code></pre>
       <p>Одноразовые lexer-based инструменты в <code>nova-cli/src/bin/</code>. Хранятся в репозитории как reference для будущих атомарных API-rename планов.</p>
 
       <h3>migrate_plan60</h3>
-      <p>Миграция field-style size-accessors в method-form (D117 / Plan 60):</p>
+      <p>Миграция field-style size-accessors в method-form (<a href="/spec/decisions/syntax/#d117">D117</a> / Plan 60):</p>
       <table style="font-size:.9rem;">
         <thead><tr><th>До</th><th>После</th></tr></thead>
         <tbody>
