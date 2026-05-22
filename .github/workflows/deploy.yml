@@ -1,0 +1,40 @@
+# Сборка и деплой nv-lang.org на GitHub Pages.
+#
+# ВНИМАНИЕ: до cutover (план www-02, Ф.8) триггер — только ручной
+# (workflow_dispatch), чтобы миграция не перезаписала живой сайт.
+# На cutover:
+#   1. заменить триггер на `push: branches: [main]`;
+#   2. Settings → Pages → Source → GitHub Actions.
+name: Deploy to GitHub Pages
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build with Astro
+        uses: withastro/action@v3
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

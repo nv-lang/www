@@ -7,5 +7,7 @@ Thumbs.db
 
 # Local build / preview artifacts
 _site/
+dist/
+.astro/
 node_modules/
 *.log
