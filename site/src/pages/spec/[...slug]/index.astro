@@ -1,0 +1,39 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import SpecSidebar from '@components/SpecSidebar.astro';
+import { SPEC_DOCS } from '@data/spec';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('spec');
+  return SPEC_DOCS.map((doc) => ({
+    params: { slug: doc.slug },
+    props: { entry: entries.find((e) => e.id === doc.id)!, doc },
+  }));
+}
+
+const { entry, doc } = Astro.props;
+const { Content } = await render(entry);
+const ghUrl = `https://github.com/nv-lang/nova/blob/main/${doc.github}`;
+---
+
+<BaseLayout
+  title={`${doc.title} — спецификация — Nova`}
+  description={`${doc.title} — раздел спецификации языка Nova.`}
+  canonical={`https://nv-lang.org/spec/${doc.slug}/`}
+  lang="ru"
+  active="spec"
+>
+  <div class="doc-layout">
+    <SpecSidebar current={`spec:${doc.slug}`} />
+    <main id="main-content">
+      <div class="spec-doc__meta">
+        <a href="/spec/">&#8592; Спецификация</a>
+        <a href={ghUrl}>Источник на GitHub &#8599;</a>
+      </div>
+      <article class="doc-content">
+        <Content />
+      </article>
+    </main>
+  </div>
+</BaseLayout>

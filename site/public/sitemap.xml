@@ -214,6 +214,62 @@
     <priority>0.6</priority>
   </url>
 
+  <!-- ── Spec documents ─────────────────────────────────────────────────── -->
+  <url>
+    <loc>https://nv-lang.org/spec/overview/</loc>
+    <lastmod>2026-05-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://nv-lang.org/spec/syntax/</loc>
+    <lastmod>2026-05-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://nv-lang.org/spec/effects/</loc>
+    <lastmod>2026-05-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://nv-lang.org/spec/conversions/</loc>
+    <lastmod>2026-05-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://nv-lang.org/spec/revolutionary/</loc>
+    <lastmod>2026-05-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://nv-lang.org/spec/paradigm/</loc>
+    <lastmod>2026-05-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://nv-lang.org/spec/open-questions/</loc>
+    <lastmod>2026-05-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://nv-lang.org/spec/history/evolution/</loc>
+    <lastmod>2026-05-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://nv-lang.org/spec/history/rejected/</loc>
+    <lastmod>2026-05-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
   <!-- ── Russian pages ──────────────────────────────────────────────────── -->
   <url>
     <loc>https://nv-lang.org/ru/install/</loc>

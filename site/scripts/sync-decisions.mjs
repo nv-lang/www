@@ -1,85 +1,185 @@
-// Синхронизация D-блоков спецификации.
-// Тянет spec/decisions/*.md из репозитория nv-lang/nova через
-// raw.githubusercontent.com — только нужные файлы, без клонирования репо.
-// Запускается как prebuild/predev — часть `npm run build`, работает
-// одинаково локально и в CI (отдельный шаг workflow не нужен).
+// Синхронизация спецификации Nova из репозитория nv-lang/nova.
+// Тянет ВСЁ дерево spec/ и раскладывает по контент-коллекциям сайта:
+//   spec/decisions/NN-*.md, README.md  -> src/content/decisions/
+//   spec/*.md (обзорные документы)      -> src/content/spec/
+//   spec/decisions/history/*.md         -> src/content/spec/history/
+// Перекрёстные ссылки переписываются под URL сайта; якоря, которых нет
+// на целевой странице, отбрасываются (ссылка ведёт на саму страницу) —
+// чтобы линк-чекер не падал на неточных ссылках исходника.
+// Запускается как prebuild/predev — часть `npm run build`.
 import { mkdir, writeFile, rm } from 'node:fs/promises';
+import { posix } from 'node:path';
+import GithubSlugger from 'github-slugger';
 
 const REPO = 'nv-lang/nova';
 const BRANCH = 'main';
-const SRC = 'spec/decisions';
-const OUT = new URL('../src/content/decisions/', import.meta.url);
 const UA = { 'User-Agent': 'nv-lang-www-build' };
-const GH_BLOB = `https://github.com/${REPO}/blob/${BRANCH}/spec`;
+const GH_BLOB = `https://github.com/${REPO}/blob/${BRANCH}`;
+const DEC_OUT = new URL('../src/content/decisions/', import.meta.url);
+const SPEC_OUT = new URL('../src/content/spec/', import.meta.url);
 
-// slug темы из имени файла: 09-tooling.md -> tooling
-const slugOf = (name) => name.replace(/^\d+-/, '').replace(/\.md$/, '');
+// Обзорные документы spec/*.md -> /spec/<name>/
+const SPEC_DOCS = new Set([
+  'overview', 'paradigm', 'revolutionary',
+  'syntax', 'effects', 'conversions', 'open-questions',
+]);
 
-// Карта D-номер -> slug темы по ВСЕМ файлам. Нужна, потому что исходник
-// бывает неточен: ссылка (#dNN) или (NN-file.md#dNN) может указывать на
-// блок, который физически лежит в другом файле (D-блоки переезжают между
-// темами). Карта строится из фактических заголовков «## DNN.».
-function buildDMap(files) {
+// slug темы из имени файла решений: 09-tooling.md -> tooling
+const topicSlug = (decFile) => decFile.replace(/^\d+-/, '').replace(/\.md$/, '');
+
+// repo-путь .md -> URL страницы сайта, либо null (ведёт на GitHub).
+function pathToSite(repoPath) {
+  let m = repoPath.match(/^spec\/decisions\/(\d\d-[a-z]+)\.md$/);
+  if (m) return `/spec/decisions/${topicSlug(m[1])}/`;
+  m = repoPath.match(/^spec\/decisions\/history\/([a-z][a-z-]*)\.md$/);
+  if (m) return `/spec/history/${m[1]}/`;
+  m = repoPath.match(/^spec\/([a-z][a-z-]*)\.md$/);
+  if (m && SPEC_DOCS.has(m[1])) return `/spec/${m[1]}/`;
+  return null;
+}
+
+// Текст заголовка markdown в том виде, в каком его слагает rehype-slug.
+function headingText(line) {
+  return line
+    .replace(/^#+\s+/, '')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[*_~]+/g, '')
+    .trim();
+}
+
+// Множество валидных якорей файла: dNN для «## DNN.» (rehypeDAnchors) +
+// github-слаги остальных заголовков (rehype-slug пропускает те, у кого
+// уже есть id — поэтому для D-заголовков slug не вызывается).
+function anchorsOf(md) {
+  const set = new Set();
+  const slugger = new GithubSlugger();
+  for (const line of md.split('\n')) {
+    const h = line.match(/^(#{1,6})\s+(.+?)\s*$/);
+    if (!h) continue;
+    const d = h[2].match(/^D(\d+)\b/);
+    if (d && h[1].length >= 2 && h[1].length <= 4) set.add('d' + d[1]);
+    else set.add(slugger.slug(headingText(line)));
+  }
+  return set;
+}
+
+// Карта D-номер -> slug темы по всем файлам решений.
+function buildDMap(decFiles) {
   const map = {};
-  for (const { name, text } of files) {
-    const slug = slugOf(name);
-    for (const m of text.matchAll(/^##[ \t]+D(\d+)\./gm)) map[m[1]] = slug;
+  for (const f of decFiles) {
+    if (!/^\d/.test(f.name)) continue;
+    const slug = topicSlug(f.name);
+    for (const m of f.text.matchAll(/^##[ \t]+D(\d+)\./gm)) map[m[1]] = slug;
   }
   return map;
 }
 
-// Переписать перекрёстные ссылки .md под структуру сайта /spec/decisions/.
-// Любая ссылка на D-блок приводится к каноническому пути по карте dMap —
-// тема определяется по факту, а не по тому, как ссылка записана в исходнике.
-function rewriteLinks(md, dMap) {
-  return md
-    // ссылка на D-блок в любой форме:
-    //   (#d52), (#d52-slug), (02-types.md#d52), (02-types.md#d52-slug)
-    .replace(/\((?:\d\d-[a-z]+\.md)?#d(\d+)[^)]*\)/gi, (full, n) => {
-      const slug = dMap[n];
-      return slug ? `(/spec/decisions/${slug}/#d${n})` : full;
-    })
-    // ссылка на файл решений целиком: (02-types.md) -> (/spec/decisions/types/)
-    .replace(/\((\d\d)-([a-z]+)\.md\)/g, '(/spec/decisions/$2/)')
-    // history/ и ../ (в репо, не на сайте) -> GitHub
-    .replace(/\(history\/([^)]*)\)/g, `(${GH_BLOB}/decisions/history/$1)`)
-    .replace(/\(\.\.\/([^)]*)\)/g, `(${GH_BLOB}/$1)`);
+const isLink = (t) =>
+  t.startsWith('#') || t.startsWith('./') || t.startsWith('../') ||
+  /\.md([#?]|$)/.test(t);
+
+// Переписать ссылки markdown под структуру сайта.
+function rewriteLinks(md, repoPath, dMap, anchors) {
+  const dir = posix.dirname(repoPath);
+  const selfUrl = pathToSite(repoPath);
+  return md.replace(
+    /\]\(\s*([^)\s]+)(?:\s+"[^"]*")?\s*\)/g,
+    (full, target) => {
+      if (/^(https?:|mailto:|tel:)/i.test(target)) return full;
+      if (!isLink(target)) return full; // не ссылка (код вида `T[x](y)`)
+
+      const hash = target.indexOf('#');
+      const rawPath = hash >= 0 ? target.slice(0, hash) : target;
+      const anchor = hash >= 0 ? target.slice(hash + 1) : '';
+      const dm = anchor.match(/^d(\d+)$/i);
+
+      // ссылка-якорь на ту же страницу
+      if (rawPath === '') {
+        if (dm) {
+          const slug = dMap[dm[1]];
+          return `](${slug ? `/spec/decisions/${slug}/#d${dm[1]}` : '/spec/decisions/'})`;
+        }
+        if (selfUrl && anchors.get(selfUrl)?.has(anchor)) return full;
+        return '](#)'; // якоря нет на странице — ведём на верх
+      }
+
+      // ссылка на файл
+      const resolved = posix.normalize(posix.join(dir, rawPath));
+      const site = pathToSite(resolved);
+      if (!site) {
+        return `](${GH_BLOB}/${resolved}${anchor ? '#' + anchor : ''})`;
+      }
+      if (dm) {
+        const slug = dMap[dm[1]];
+        return `](${slug ? `/spec/decisions/${slug}/#d${dm[1]}` : site})`;
+      }
+      if (anchor) {
+        return `](${anchors.get(site)?.has(anchor) ? `${site}#${anchor}` : site})`;
+      }
+      return `](${site})`;
+    },
+  );
 }
 
 async function main() {
-  // Список файлов каталога — через GitHub contents API.
-  // GITHUB_TOKEN (в CI — github.token) поднимает лимит API 60/ч → 5000/ч.
   const apiHeaders = { ...UA, Accept: 'application/vnd.github+json' };
-  if (process.env.GITHUB_TOKEN) {
+  if (process.env.GITHUB_TOKEN)
     apiHeaders.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
-  }
-  const api = `https://api.github.com/repos/${REPO}/contents/${SRC}?ref=${BRANCH}`;
-  const res = await fetch(api, { headers: apiHeaders });
-  if (!res.ok) throw new Error(`GitHub API ${res.status} — ${api}`);
-  const entries = (await res.json()).filter(
-    (e) => e.type === 'file' && e.name.endsWith('.md'),
-  );
-  if (entries.length === 0) throw new Error(`нет .md в ${SRC}`);
 
-  // Скачать все файлы — карта D->тема строится по полному набору.
+  // всё дерево репозитория -> отбор spec/**/*.md
+  const treeUrl = `https://api.github.com/repos/${REPO}/git/trees/${BRANCH}?recursive=1`;
+  const tr = await fetch(treeUrl, { headers: apiHeaders });
+  if (!tr.ok) throw new Error(`GitHub API ${tr.status} — ${treeUrl}`);
+  const paths = (await tr.json()).tree
+    .filter((e) => e.type === 'blob' && e.path.startsWith('spec/') && e.path.endsWith('.md'))
+    .map((e) => e.path);
+  if (paths.length === 0) throw new Error('нет .md в spec/');
+
   const files = [];
-  for (const e of entries) {
-    const url = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${SRC}/${e.name}`;
-    const r = await fetch(url, { headers: UA });
-    if (!r.ok) throw new Error(`fetch ${r.status} — ${url}`);
-    files.push({ name: e.name, text: await r.text() });
+  for (const p of paths) {
+    const r = await fetch(
+      `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${p}`, { headers: UA });
+    if (!r.ok) throw new Error(`fetch ${r.status} — ${p}`);
+    files.push({ path: p, text: await r.text() });
   }
-  const dMap = buildDMap(files);
 
-  await rm(OUT, { recursive: true, force: true });
-  await mkdir(OUT, { recursive: true });
-  for (const { name, text } of files) {
-    await writeFile(new URL(name, OUT), rewriteLinks(text, dMap), 'utf8');
-    console.log(`  ✓ ${name}`);
+  // классификация
+  const decFiles = []; // { name, text, path }
+  const specFiles = []; // { rel, text, path }
+  for (const f of files) {
+    let m;
+    if ((m = f.path.match(/^spec\/decisions\/(\d\d-[a-z]+\.md|README\.md)$/)))
+      decFiles.push({ name: m[1], text: f.text, path: f.path });
+    else if ((m = f.path.match(/^spec\/decisions\/history\/([a-z][a-z-]*\.md)$/)))
+      specFiles.push({ rel: `history/${m[1]}`, text: f.text, path: f.path });
+    else if ((m = f.path.match(/^spec\/([a-z][a-z-]*)\.md$/)) && SPEC_DOCS.has(m[1]))
+      specFiles.push({ rel: `${m[1]}.md`, text: f.text, path: f.path });
   }
+  if (decFiles.length === 0 || specFiles.length === 0)
+    throw new Error('неожиданная структура spec/');
+
+  const dMap = buildDMap(decFiles);
+  const anchors = new Map();
+  for (const f of [...decFiles, ...specFiles]) {
+    const url = pathToSite(f.path);
+    if (url) anchors.set(url, anchorsOf(f.text));
+  }
+
+  await rm(DEC_OUT, { recursive: true, force: true });
+  await rm(SPEC_OUT, { recursive: true, force: true });
+  await mkdir(DEC_OUT, { recursive: true });
+  await mkdir(new URL('history/', SPEC_OUT), { recursive: true });
+  for (const f of decFiles)
+    await writeFile(new URL(f.name, DEC_OUT),
+      rewriteLinks(f.text, f.path, dMap, anchors), 'utf8');
+  for (const f of specFiles)
+    await writeFile(new URL(f.rel, SPEC_OUT),
+      rewriteLinks(f.text, f.path, dMap, anchors), 'utf8');
+
   console.log(
-    `sync-decisions: ${files.length} файлов, ${Object.keys(dMap).length} D-блоков`,
-  );
+    `sync: ${decFiles.length} файлов решений + ${specFiles.length} spec-документов, ` +
+    `${Object.keys(dMap).length} D-блоков`);
 }
 
 main().catch((e) => {

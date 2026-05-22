@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
+import rehypeSlug from 'rehype-slug';
 import { readdirSync, readFileSync } from 'node:fs';
 
 // Карта D-номер → slug раздела. Строится из синхронизированных файлов
@@ -112,6 +113,9 @@ export default defineConfig({
     // class="language-nova"; встроенный Shiki отключён — код рендерится
     // обычным <pre><code class="language-...">.
     syntaxHighlight: false,
-    rehypePlugins: [rehypeDAnchors, rehypeDLinks],
+    // rehypeDAnchors — стабильные #dNN; rehypeSlug — github-слаги на
+    // прочих заголовках (для якорных ссылок в spec-документах);
+    // rehypeDLinks — авто-ссылки на упоминания DNN.
+    rehypePlugins: [rehypeDAnchors, rehypeSlug, rehypeDLinks],
   },
 });

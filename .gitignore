@@ -13,4 +13,4 @@ node_modules/
 *.log
 
 # Synced from the nova repo at build time (scripts/sync-decisions.mjs)
-site/src/content/decisions/
+site/src/content/

@@ -1,7 +1,7 @@
 <div class="page-header">
   <div class="container--narrow">
     <h1>Language Specification</h1>
-    <p>Formal and semi-formal description of the Nova language. The spec lives on GitHub and is versioned alongside the compiler.</p>
+    <p>The Nova language specification — overview documents, design decisions, and history. All of it readable here on the site.</p>
   </div>
 </div>
 
@@ -10,169 +10,77 @@
 
   <div class="status-banner" style="margin-bottom:2.5rem;">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:.1rem"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-    <span><strong>Living document.</strong> The specification evolves with the language. Each section is tracked by D-blocks (design decisions) in the GitHub repository. Sections marked <em>Draft</em> describe features still under design; sections marked <em>Enforced</em> are implemented and stable.</span>
+    <span><strong>Living document.</strong> The specification evolves with the language. The full source lives in the <a href="https://github.com/nv-lang/nova/tree/main/spec">nv-lang/nova</a> repository and is mirrored here, in the site design.</span>
   </div>
 
-  <p>The full source of the specification is at <a href="https://github.com/nv-lang/nova/tree/main/spec"><code>github.com/nv-lang/nova/tree/main/spec</code></a>. Below is the section overview with direct links.</p>
-
-  <h2 style="margin-top:2.5rem;margin-bottom:1.25rem;">Sections</h2>
+  <h2 style="margin-top:0;margin-bottom:1.25rem;">Specification documents</h2>
 
   <ul class="spec-list">
-
     <li class="spec-list__item">
-      <span class="spec-list__num">§1</span>
+      <span class="spec-list__num">1</span>
       <div class="spec-list__body">
-        <h3>Introduction &amp; Design Goals</h3>
-        <p>Motivation for Nova, comparison with related languages, and the core design philosophy: explicit effects, machine-checkable contracts, no hidden control flow.</p>
+        <h3><a href="/spec/overview/">Overview</a></h3>
+        <p>The central idea behind Nova and a tour of what the language offers.</p>
       </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">View on GitHub &rarr;</a>
-      </div>
+      <div class="spec-list__link"><a href="/spec/overview/">Open &rarr;</a></div>
     </li>
-
     <li class="spec-list__item">
-      <span class="spec-list__num">§2</span>
+      <span class="spec-list__num">2</span>
       <div class="spec-list__body">
-        <h3>Lexical Structure</h3>
-        <p>Source encoding (UTF-8), tokens, keywords, operators, string literals (raw, interpolated, byte), numeric literals, and comments.</p>
+        <h3><a href="/spec/syntax/">Syntax</a></h3>
+        <p>Language syntax, walked through with minimal examples.</p>
       </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">View on GitHub &rarr;</a>
-      </div>
+      <div class="spec-list__link"><a href="/spec/syntax/">Open &rarr;</a></div>
     </li>
-
     <li class="spec-list__item">
-      <span class="spec-list__num">§3</span>
+      <span class="spec-list__num">3</span>
       <div class="spec-list__body">
-        <h3>Types</h3>
-        <p>Primitive types, structs, enums (sum types), tuples, arrays, slices, function types, generic parameters, trait bounds, and the <code>Option[T]</code> and <code>Result[T, E]</code> built-ins. Nominal vs. structural typing rules.</p>
+        <h3><a href="/spec/effects/">Effect system</a></h3>
+        <p>An introduction to the algebraic effect system.</p>
       </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">View on GitHub &rarr;</a>
-      </div>
+      <div class="spec-list__link"><a href="/spec/effects/">Open &rarr;</a></div>
     </li>
-
     <li class="spec-list__item">
-      <span class="spec-list__num">§4</span>
+      <span class="spec-list__num">4</span>
       <div class="spec-list__body">
-        <h3>Effects</h3>
-        <p>The algebraic effect system: built-in effects, user-defined effect interfaces, effect handlers, effect polymorphism, and the <code>uses</code> clause in function signatures. Effect inference and checking rules.</p>
+        <h3><a href="/spec/conversions/">Type conversions</a></h3>
+        <p>Every type-conversion rule, collected on one page.</p>
       </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">View on GitHub &rarr;</a>
-      </div>
+      <div class="spec-list__link"><a href="/spec/conversions/">Open &rarr;</a></div>
     </li>
-
     <li class="spec-list__item">
-      <span class="spec-list__num">§5</span>
+      <span class="spec-list__num">5</span>
       <div class="spec-list__body">
-        <h3>Contracts</h3>
-        <p><code>requires</code>, <code>ensures</code>, and <code>invariant</code> clauses: syntax, semantics, and the three checking modes (static via SMT, dynamic runtime assertion, erased). Contract inheritance, specialization, and the interaction with generics.</p>
+        <h3><a href="/spec/revolutionary/">What sets Nova apart</a></h3>
+        <p>The features that make Nova more than just another systems language.</p>
       </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">View on GitHub &rarr;</a>
-      </div>
+      <div class="spec-list__link"><a href="/spec/revolutionary/">Open &rarr;</a></div>
     </li>
-
     <li class="spec-list__item">
-      <span class="spec-list__num">§6</span>
+      <span class="spec-list__num">6</span>
       <div class="spec-list__body">
-        <h3>Expressions &amp; Statements</h3>
-        <p>Operator precedence, pattern matching, <code>if</code>/<code>else</code>/<code>when</code>, loops, <code>let</code> bindings, closures, try operator <code>?</code>, and expression-based control flow.</p>
+        <h3><a href="/spec/open-questions/">Open design questions</a></h3>
+        <p>Questions that were discussed but not yet settled as decisions.</p>
       </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">View on GitHub &rarr;</a>
-      </div>
+      <div class="spec-list__link"><a href="/spec/open-questions/">Open &rarr;</a></div>
     </li>
-
     <li class="spec-list__item">
-      <span class="spec-list__num">§7</span>
+      <span class="spec-list__num">7</span>
       <div class="spec-list__body">
-        <h3>Functions &amp; Methods</h3>
-        <p>Function declarations, associated functions (methods), trait implementations, overloading rules, variadic functions, and inline/extern annotations.</p>
+        <h3><a href="/spec/paradigm/">Paradigm</a></h3>
+        <p>The paradigm of an early language version. Kept for history — marked outdated.</p>
       </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">View on GitHub &rarr;</a>
-      </div>
+      <div class="spec-list__link"><a href="/spec/paradigm/">Open &rarr;</a></div>
     </li>
-
-    <li class="spec-list__item">
-      <span class="spec-list__num">§8</span>
-      <div class="spec-list__body">
-        <h3>Modules &amp; Packages</h3>
-        <p>Module system, visibility (<code>pub</code>, <code>pub(pkg)</code>, private), the <code>use</code> import declaration, package layout conventions, and the <code>nv</code> package manager manifest format.</p>
-      </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">View on GitHub &rarr;</a>
-      </div>
-    </li>
-
-    <li class="spec-list__item">
-      <span class="spec-list__num">§9</span>
-      <div class="spec-list__body">
-        <h3>Concurrency &amp; Runtime</h3>
-        <p>The M:N fiber model, the work-stealing scheduler, <code>spawn</code>, channels, structured concurrency scopes, and the <code>realtime nogc</code> annotation. Fiber lifecycle and cancellation.</p>
-      </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">View on GitHub &rarr;</a>
-      </div>
-    </li>
-
-    <li class="spec-list__item">
-      <span class="spec-list__num">§10</span>
-      <div class="spec-list__body">
-        <h3>Memory Model</h3>
-        <p>Managed memory, GC interface, <code>realtime nogc</code> regions, stack-only types, and the rules for sharing data across fibers. Eventual path to ownership-based memory management.</p>
-      </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">View on GitHub &rarr;</a>
-      </div>
-    </li>
-
-    <li class="spec-list__item">
-      <span class="spec-list__num">§11</span>
-      <div class="spec-list__body">
-        <h3>Error Handling</h3>
-        <p><code>Result[T, E]</code> as the primary error mechanism, the <code>?</code> propagation operator, error coercion via the <code>From</code> trait, panic semantics, and the distinction between recoverable and unrecoverable errors.</p>
-      </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">View on GitHub &rarr;</a>
-      </div>
-    </li>
-
-    <li class="spec-list__item">
-      <span class="spec-list__num">§12</span>
-      <div class="spec-list__body">
-        <h3>FFI &amp; Interoperability</h3>
-        <p>Calling C from Nova (<code>extern "C"</code>), calling Nova from C, ABI stability, unsafe blocks, and the <code>@repr</code> layout annotations.</p>
-      </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">View on GitHub &rarr;</a>
-      </div>
-    </li>
-
-    <li class="spec-list__item">
-      <span class="spec-list__num">§13</span>
-      <div class="spec-list__body">
-        <h3>Grammar</h3>
-        <p>Complete EBNF grammar for the Nova language, machine-readable and used to generate the parser. Updated automatically on each language change.</p>
-      </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">View on GitHub &rarr;</a>
-      </div>
-    </li>
-
   </ul>
 
   <hr class="divider">
 
-  <h2>Design Decisions (D-blocks)</h2>
-  <p>Every non-trivial language design choice is captured in a numbered D-block document in <a href="https://github.com/nv-lang/nova/tree/main/spec"><code>spec/</code></a>. D-blocks record the question, the options considered, the decision made, and the rationale. This makes the spec a readable history of the language, not just a reference.</p>
-
-  <p>Over 120 D-blocks are recorded so far. A few key ones:</p>
+  <h2>Design decisions (D-blocks)</h2>
+  <p>Every non-trivial language design choice is captured in a numbered D-block: the question, the options considered, the decision made, and the rationale. This makes the spec a readable history of the language, not just a reference. Over 120 D-blocks are recorded so far.</p>
 
   <ul>
-    <li><strong><a href="/spec/decisions/philosophy/#d1">D1</a></strong> — Paradigm: <code>protocols</code> + <code>data</code>, no classes</li>
+    <li><strong><a href="/spec/decisions/philosophy/#d1">D1</a></strong> — Paradigm: <code>protocol</code> + <code>data</code>, no classes</li>
     <li><strong><a href="/spec/decisions/effects/#d2">D2</a></strong> — Effects instead of <code>async</code>/<code>throws</code>/<code>unsafe</code></li>
     <li><strong><a href="/spec/decisions/types/#d52">D52</a></strong> — Type declarations: newtype, <code>alias</code>, sum types</li>
     <li><strong><a href="/spec/decisions/types/#d53">D53</a></strong> — Unification: <code>protocol</code> as a kind token under <code>type</code></li>
@@ -182,6 +90,28 @@
   </ul>
 
   <p><a href="/spec/decisions/" class="btn btn-outline" style="display:inline-flex;margin-top:.75rem;">Open the D-block browser &rarr;</a></p>
+
+  <hr class="divider">
+
+  <h2>History</h2>
+  <ul class="spec-list">
+    <li class="spec-list__item">
+      <span class="spec-list__num">&#8634;</span>
+      <div class="spec-list__body">
+        <h3><a href="/spec/history/evolution/">Decision evolution</a></h3>
+        <p>How decisions were revised over time, and why.</p>
+      </div>
+      <div class="spec-list__link"><a href="/spec/history/evolution/">Open &rarr;</a></div>
+    </li>
+    <li class="spec-list__item">
+      <span class="spec-list__num">&#10007;</span>
+      <div class="spec-list__body">
+        <h3><a href="/spec/history/rejected/">Rejected alternatives</a></h3>
+        <p>Ideas that were considered but not adopted into the design.</p>
+      </div>
+      <div class="spec-list__link"><a href="/spec/history/rejected/">Open &rarr;</a></div>
+    </li>
+  </ul>
 
 </div>
 </main>

@@ -887,6 +887,18 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
 }
 .doc-content blockquote p:last-child { margin-bottom: 0; }
 
+/* Метаполоса spec-документа: «назад» + ссылка на источник GitHub */
+.spec-doc__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+
 .sidebar-section {
   margin-bottom: 1.75rem;
 }

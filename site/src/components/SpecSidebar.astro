@@ -1,0 +1,65 @@
+---
+// Единая боковая навигация раздела /spec/ — обзорные документы,
+// решения (D-блоки) и история. current: 'spec:<slug>' для документа,
+// 'dec:index' / 'dec:<topic>' для страниц решений.
+import { TOPICS } from '@data/decisions';
+import { SPEC_DOCS } from '@data/spec';
+
+interface Props {
+  current?: string;
+}
+const { current } = Astro.props;
+
+const guide = SPEC_DOCS.filter((d) => d.group === 'guide' && d.slug !== 'open-questions');
+const extra = SPEC_DOCS.filter((d) => d.group === 'history' || d.slug === 'open-questions');
+---
+
+<aside class="doc-sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-section__title">Спецификация</div>
+    <ul>
+      <li>
+        <a href="/spec/" class={current === 'index' ? 'active' : undefined}>Обзор раздела</a>
+      </li>
+      {guide.map((d) => (
+        <li>
+          <a href={`/spec/${d.slug}/`} class={current === `spec:${d.slug}` ? 'active' : undefined}>
+            {d.title}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section__title">Решения (D-блоки)</div>
+    <ul>
+      <li>
+        <a href="/spec/decisions/" class={current === 'dec:index' ? 'active' : undefined}>
+          Все D-блоки
+        </a>
+      </li>
+      {TOPICS.map((t) => (
+        <li>
+          <a href={`/spec/decisions/${t.slug}/`} class={current === `dec:${t.slug}` ? 'active' : undefined}>
+            {t.title}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section__title">Ещё</div>
+    <ul>
+      {extra.map((d) => (
+        <li>
+          <a href={`/spec/${d.slug}/`} class={current === `spec:${d.slug}` ? 'active' : undefined}>
+            {d.title}
+          </a>
+        </li>
+      ))}
+      <li><a href="https://github.com/nv-lang/nova/tree/main/spec">Источник на GitHub &#8599;</a></li>
+    </ul>
+  </div>
+</aside>

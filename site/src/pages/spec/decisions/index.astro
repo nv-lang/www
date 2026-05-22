@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
-import DecisionsSidebar from '@components/DecisionsSidebar.astro';
+import SpecSidebar from '@components/SpecSidebar.astro';
 import { TOPICS, parseDBlocks } from '@data/decisions';
 
 const entries = await getCollection('decisions');
@@ -30,7 +30,7 @@ const total = sections.reduce((n, s) => n + s.blocks.length, 0);
   </div>
 
   <div class="doc-layout">
-    <DecisionsSidebar current="index" />
+    <SpecSidebar current="dec:index" />
     <main id="main-content">
       <article class="doc-content">
         {sections.map((s) => (

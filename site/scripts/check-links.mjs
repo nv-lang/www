@@ -90,6 +90,13 @@ for (const file of files) {
 
     let [path, anchor] = link.split('#');
     path = path.split('?')[0];
+    // якоря/пути сравниваем декодированными: id в HTML — сырой UTF-8,
+    // а href может быть percent-encoded (кириллица в #-якоре).
+    const decode = (s) => {
+      try { return decodeURIComponent(s); } catch { return s; }
+    };
+    path = decode(path);
+    if (anchor) anchor = decode(anchor);
 
     let target;
     if (path === '') {

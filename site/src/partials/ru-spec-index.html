@@ -1,7 +1,7 @@
 <div class="page-header">
   <div class="container--narrow">
     <h1>Спецификация языка</h1>
-    <p>Формальное и полуформальное описание языка Nova. Спецификация хранится на GitHub и версионируется вместе с компилятором.</p>
+    <p>Спецификация языка Nova — обзорные документы, решения по дизайну и история. Всё это читается здесь, на сайте.</p>
   </div>
 </div>
 
@@ -10,178 +10,108 @@
 
   <div class="status-banner" style="margin-bottom:2.5rem;">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:.1rem"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-    <span><strong>Живой документ.</strong> Спецификация развивается вместе с языком. Каждый раздел отслеживается D-блоками (проектными решениями) в репозитории на GitHub. Разделы с пометкой <em>Draft</em> описывают функции, ещё находящиеся на стадии проектирования; разделы с пометкой <em>Enforced</em> реализованы и стабильны.</span>
+    <span><strong>Живой документ.</strong> Спецификация развивается вместе с языком. Полный исходник лежит в репозитории <a href="https://github.com/nv-lang/nova/tree/main/spec">nv-lang/nova</a> и зеркалируется здесь, в дизайне сайта.</span>
   </div>
 
-  <p>Полный исходный код спецификации находится по адресу <a href="https://github.com/nv-lang/nova/tree/main/spec"><code>github.com/nv-lang/nova/tree/main/spec</code></a>. Ниже — обзор разделов с прямыми ссылками.</p>
-
-  <h2 style="margin-top:2.5rem;margin-bottom:1.25rem;">Разделы</h2>
+  <h2 style="margin-top:0;margin-bottom:1.25rem;">Документы спецификации</h2>
 
   <ul class="spec-list">
-
     <li class="spec-list__item">
-      <span class="spec-list__num">§1</span>
+      <span class="spec-list__num">1</span>
       <div class="spec-list__body">
-        <h3>Введение и цели дизайна</h3>
-        <p>Мотивация для Nova, сравнение с родственными языками и основная философия дизайна: явные эффекты, машинно-проверяемые контракты, отсутствие скрытого управления потоком выполнения.</p>
+        <h3><a href="/spec/overview/">Обзор языка</a></h3>
+        <p>Центральная идея Nova и обзор возможностей языка.</p>
       </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">Смотреть на GitHub &rarr;</a>
-      </div>
+      <div class="spec-list__link"><a href="/spec/overview/">Открыть &rarr;</a></div>
     </li>
-
     <li class="spec-list__item">
-      <span class="spec-list__num">§2</span>
+      <span class="spec-list__num">2</span>
       <div class="spec-list__body">
-        <h3>Лексическая структура</h3>
-        <p>Кодировка исходника (UTF-8), токены, ключевые слова, операторы, строковые литералы (raw, интерполированные, байтовые), числовые литералы и комментарии.</p>
+        <h3><a href="/spec/syntax/">Синтаксис</a></h3>
+        <p>Синтаксис языка с минимальными примерами.</p>
       </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">Смотреть на GitHub &rarr;</a>
-      </div>
+      <div class="spec-list__link"><a href="/spec/syntax/">Открыть &rarr;</a></div>
     </li>
-
     <li class="spec-list__item">
-      <span class="spec-list__num">§3</span>
+      <span class="spec-list__num">3</span>
       <div class="spec-list__body">
-        <h3>Типы</h3>
-        <p>Примитивные типы, структуры, перечисления (типы-суммы), кортежи, массивы, срезы, типы функций, дженерик-параметры, ограничения трейтов и встроенные <code>Option[T]</code> и <code>Result[T, E]</code>. Правила номинальной и структурной типизации.</p>
+        <h3><a href="/spec/effects/">Система эффектов</a></h3>
+        <p>Введение в систему алгебраических эффектов.</p>
       </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">Смотреть на GitHub &rarr;</a>
-      </div>
+      <div class="spec-list__link"><a href="/spec/effects/">Открыть &rarr;</a></div>
     </li>
-
     <li class="spec-list__item">
-      <span class="spec-list__num">§4</span>
+      <span class="spec-list__num">4</span>
       <div class="spec-list__body">
-        <h3>Эффекты</h3>
-        <p>Система алгебраических эффектов: встроенные эффекты, пользовательские интерфейсы эффектов, обработчики эффектов, полиморфизм эффектов и клауза <code>uses</code> в сигнатурах функций. Правила вывода и проверки эффектов.</p>
+        <h3><a href="/spec/conversions/">Конверсии типов</a></h3>
+        <p>Все правила преобразования типов на одной странице.</p>
       </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">Смотреть на GitHub &rarr;</a>
-      </div>
+      <div class="spec-list__link"><a href="/spec/conversions/">Открыть &rarr;</a></div>
     </li>
-
     <li class="spec-list__item">
-      <span class="spec-list__num">§5</span>
+      <span class="spec-list__num">5</span>
       <div class="spec-list__body">
-        <h3>Контракты</h3>
-        <p>Клаузы <code>requires</code>, <code>ensures</code> и <code>invariant</code>: синтаксис, семантика и три режима проверки (статический через SMT, динамическое проверочное утверждение в рантайме, стёртый). Наследование контрактов, специализация и взаимодействие с дженериками.</p>
+        <h3><a href="/spec/revolutionary/">Революционные возможности</a></h3>
+        <p>Чем Nova отличается от других системных языков.</p>
       </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">Смотреть на GitHub &rarr;</a>
-      </div>
+      <div class="spec-list__link"><a href="/spec/revolutionary/">Открыть &rarr;</a></div>
     </li>
-
     <li class="spec-list__item">
-      <span class="spec-list__num">§6</span>
+      <span class="spec-list__num">6</span>
       <div class="spec-list__body">
-        <h3>Выражения и операторы</h3>
-        <p>Приоритет операторов, сопоставление с образцом, <code>if</code>/<code>else</code>/<code>when</code>, циклы, привязки <code>let</code>, замыкания, оператор <code>?</code> и управление потоком на основе выражений.</p>
+        <h3><a href="/spec/open-questions/">Открытые вопросы дизайна</a></h3>
+        <p>Вопросы, которые обсуждались, но ещё не зафиксированы как решения.</p>
       </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">Смотреть на GitHub &rarr;</a>
-      </div>
+      <div class="spec-list__link"><a href="/spec/open-questions/">Открыть &rarr;</a></div>
     </li>
-
     <li class="spec-list__item">
-      <span class="spec-list__num">§7</span>
+      <span class="spec-list__num">7</span>
       <div class="spec-list__body">
-        <h3>Функции и методы</h3>
-        <p>Объявления функций, ассоциированные функции (методы), реализации трейтов, правила перегрузки, вариадические функции и аннотации inline/extern.</p>
+        <h3><a href="/spec/paradigm/">Парадигма</a></h3>
+        <p>Парадигма ранней версии языка. Сохранена для истории — помечена как устаревшая.</p>
       </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">Смотреть на GitHub &rarr;</a>
-      </div>
+      <div class="spec-list__link"><a href="/spec/paradigm/">Открыть &rarr;</a></div>
     </li>
-
-    <li class="spec-list__item">
-      <span class="spec-list__num">§8</span>
-      <div class="spec-list__body">
-        <h3>Модули и пакеты</h3>
-        <p>Система модулей, видимость (<code>pub</code>, <code>pub(pkg)</code>, приватная), объявление импорта <code>use</code>, соглашения о расположении пакетов и формат манифеста пакетного менеджера <code>nv</code>.</p>
-      </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">Смотреть на GitHub &rarr;</a>
-      </div>
-    </li>
-
-    <li class="spec-list__item">
-      <span class="spec-list__num">§9</span>
-      <div class="spec-list__body">
-        <h3>Конкурентность и рантайм</h3>
-        <p>Модель M:N файберов, work-stealing планировщик, <code>spawn</code>, каналы, области структурированной конкурентности и аннотация <code>realtime nogc</code>. Жизненный цикл файбера и отмена.</p>
-      </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">Смотреть на GitHub &rarr;</a>
-      </div>
-    </li>
-
-    <li class="spec-list__item">
-      <span class="spec-list__num">§10</span>
-      <div class="spec-list__body">
-        <h3>Модель памяти</h3>
-        <p>Управляемая память, интерфейс GC, регионы <code>realtime nogc</code>, типы только для стека и правила разделения данных между файберами. Предполагаемый путь к управлению памятью на основе владения.</p>
-      </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">Смотреть на GitHub &rarr;</a>
-      </div>
-    </li>
-
-    <li class="spec-list__item">
-      <span class="spec-list__num">§11</span>
-      <div class="spec-list__body">
-        <h3>Обработка ошибок</h3>
-        <p><code>Result[T, E]</code> как основной механизм ошибок, оператор распространения <code>?</code>, приведение ошибок через трейт <code>From</code>, семантика паники и различие между восстановимыми и невосстановимыми ошибками.</p>
-      </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">Смотреть на GitHub &rarr;</a>
-      </div>
-    </li>
-
-    <li class="spec-list__item">
-      <span class="spec-list__num">§12</span>
-      <div class="spec-list__body">
-        <h3>FFI и совместимость</h3>
-        <p>Вызов C из Nova (<code>extern "C"</code>), вызов Nova из C, стабильность ABI, небезопасные блоки и аннотации разметки <code>@repr</code>.</p>
-      </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">Смотреть на GitHub &rarr;</a>
-      </div>
-    </li>
-
-    <li class="spec-list__item">
-      <span class="spec-list__num">§13</span>
-      <div class="spec-list__body">
-        <h3>Грамматика</h3>
-        <p>Полная грамматика EBNF для языка Nova, машинночитаемая и используемая для генерации парсера. Обновляется автоматически при каждом изменении языка.</p>
-      </div>
-      <div class="spec-list__link">
-        <a href="https://github.com/nv-lang/nova/tree/main/spec">Смотреть на GitHub &rarr;</a>
-      </div>
-    </li>
-
   </ul>
 
   <hr class="divider">
 
-  <h2>Проектные решения (D-блоки)</h2>
-  <p>Каждый нетривиальный выбор в дизайне языка фиксируется в пронумерованном документе D-блока в <a href="https://github.com/nv-lang/nova/tree/main/spec"><code>spec/</code></a>. D-блоки фиксируют вопрос, рассмотренные варианты, принятое решение и обоснование. Это делает спецификацию читаемой историей языка, а не просто справочником.</p>
-
-  <p>Сейчас зафиксировано свыше 120 D-блоков. Несколько ключевых:</p>
+  <h2>Решения по дизайну (D-блоки)</h2>
+  <p>Каждое значимое решение по дизайну языка зафиксировано как нумерованный D-блок: вопрос, рассмотренные варианты, принятое решение и обоснование. Спецификация так становится читаемой историей языка, а не просто справочником. Всего зафиксировано более 120 D-блоков.</p>
 
   <ul>
-    <li><strong><a href="/spec/decisions/philosophy/#d1">D1</a></strong> — Парадигма: <code>protocols</code> + <code>data</code>, без классов</li>
+    <li><strong><a href="/spec/decisions/philosophy/#d1">D1</a></strong> — Парадигма: <code>protocol</code> + <code>data</code>, без классов</li>
     <li><strong><a href="/spec/decisions/effects/#d2">D2</a></strong> — Эффекты вместо <code>async</code>/<code>throws</code>/<code>unsafe</code></li>
-    <li><strong><a href="/spec/decisions/types/#d52">D52</a></strong> — Объявление типов: newtype, <code>alias</code>, sum-типы</li>
+    <li><strong><a href="/spec/decisions/types/#d52">D52</a></strong> — Объявления типов: newtype, <code>alias</code>, сумма-типы</li>
     <li><strong><a href="/spec/decisions/types/#d53">D53</a></strong> — Унификация: <code>protocol</code> как kind-токен под <code>type</code></li>
-    <li><strong><a href="/spec/decisions/runtime/#d7">D7</a></strong> — Один язык — три режима компиляции</li>
-    <li><strong><a href="/spec/decisions/memory/#d6">D6</a></strong> — Память: managed по умолчанию, regions opt-in</li>
-    <li><strong><a href="/spec/decisions/concurrency/#d14">D14</a></strong> — Fiber-рантайм — невидимая инфраструктура</li>
+    <li><strong><a href="/spec/decisions/runtime/#d7">D7</a></strong> — Один язык, три режима компиляции</li>
+    <li><strong><a href="/spec/decisions/memory/#d6">D6</a></strong> — Память: управляемая по умолчанию, регионы — опционально</li>
+    <li><strong><a href="/spec/decisions/concurrency/#d14">D14</a></strong> — Файбер-рантайм — невидимая инфраструктура</li>
   </ul>
 
   <p><a href="/spec/decisions/" class="btn btn-outline" style="display:inline-flex;margin-top:.75rem;">Открыть браузер D-блоков &rarr;</a></p>
+
+  <hr class="divider">
+
+  <h2>История</h2>
+  <ul class="spec-list">
+    <li class="spec-list__item">
+      <span class="spec-list__num">&#8634;</span>
+      <div class="spec-list__body">
+        <h3><a href="/spec/history/evolution/">Эволюция решений</a></h3>
+        <p>Как решения пересматривались со временем и почему.</p>
+      </div>
+      <div class="spec-list__link"><a href="/spec/history/evolution/">Открыть &rarr;</a></div>
+    </li>
+    <li class="spec-list__item">
+      <span class="spec-list__num">&#10007;</span>
+      <div class="spec-list__body">
+        <h3><a href="/spec/history/rejected/">Отвергнутые альтернативы</a></h3>
+        <p>Идеи, которые рассматривались, но не вошли в дизайн.</p>
+      </div>
+      <div class="spec-list__link"><a href="/spec/history/rejected/">Открыть &rarr;</a></div>
+    </li>
+  </ul>
 
 </div>
 </main>
