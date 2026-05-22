@@ -13,24 +13,6 @@
     'stroke="currentColor" stroke-width="2.5" stroke-linecap="round" ' +
     'stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
 
-  async function copy(text) {
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch {
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      try {
-        document.execCommand('copy');
-      } finally {
-        ta.remove();
-      }
-    }
-  }
-
   for (const pre of document.querySelectorAll('pre')) {
     const code = pre.querySelector('code');
     if (!code) continue; // только блоки кода, не plain <pre>
@@ -50,8 +32,12 @@
     let busy = false;
     btn.addEventListener('click', async () => {
       if (busy) return;
+      try {
+        await navigator.clipboard.writeText(code.innerText);
+      } catch {
+        return; // буфер обмена недоступен — без ложного «скопировано»
+      }
       busy = true;
-      await copy(code.innerText);
       btn.innerHTML = ICON_DONE;
       btn.classList.add('copied');
       setTimeout(() => {
