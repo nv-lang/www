@@ -780,55 +780,54 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
 .search-page h1 { font-size: 2rem; margin-bottom: 0.35rem; }
 .search-page > p { color: var(--fg-muted); margin-bottom: 1.75rem; }
 
-/* Pagefind UI — результаты под дизайн сайта. Префикс #search — id-селектор:
-   побеждает дефолтные class-стили Pagefind по специфичности (иначе, например,
-   padding карточки оставался бы дефолтным 24px 0 32px 0 — без полей по бокам). */
+/* Pagefind UI — выдача в стиле поисковой системы: без карточек, без
+   анимации, простой список (заголовок-ссылка + сниппет). Префикс #search —
+   id-селектор побеждает дефолтные class-стили Pagefind по специфичности. */
 #search .pagefind-ui__message {
   font-size: 0.92rem;
   font-weight: 600;
   color: var(--fg-muted);
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
-/* мягкая акцентная подсветка совпадений вместо кричащего жёлтого */
-#search .pagefind-ui__result-excerpt mark {
-  background: var(--accent-light);
-  color: var(--accent);
-  border-radius: 3px;
-  padding: 0.04em 0.22em;
-  font-weight: 600;
-}
-/* каждый результат — карточка с тенью и подъёмом по hover */
 #search .pagefind-ui__result {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1.15rem 1.35rem;
-  margin-bottom: 0.85rem;
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  margin: 0 0 1.75rem;
+  transition: none;
 }
 #search .pagefind-ui__result:hover {
-  border-color: var(--accent);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
+  transform: none;
+  box-shadow: none;
+  border: none;
 }
-#search .pagefind-ui__result-title { margin: 0; }
+#search .pagefind-ui__result-title { margin: 0 0 0.15rem; }
+/* заголовок результата — ссылка, как в поисковой выдаче */
 #search .pagefind-ui__result-link {
-  font-size: 1.03rem;
-  font-weight: 700;
-  color: var(--fg);
+  font-size: 1.15rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--accent);
 }
-#search .pagefind-ui__result-link:hover { color: var(--accent); }
+#search .pagefind-ui__result-link:hover { text-decoration: underline; }
 #search .pagefind-ui__result-excerpt {
-  font-size: 0.9rem;
-  line-height: 1.55;
+  font-size: 0.93rem;
+  line-height: 1.6;
   color: var(--fg-muted);
-  margin: 0.3rem 0 0;
+  margin: 0.15rem 0 0;
+}
+/* совпадения в сниппете — просто жирным, как в поисковой выдаче */
+#search .pagefind-ui__result-excerpt mark {
+  background: none;
+  color: var(--fg);
+  font-weight: 600;
+  padding: 0;
 }
 /* вложенные совпадения — подзаголовки страницы (отступ даёт Pagefind) */
 #search .pagefind-ui__result-nested .pagefind-ui__result-link {
-  font-size: 0.93rem;
-  font-weight: 600;
+  font-size: 0.98rem;
 }
 
 /* ── Doc layout ──────────────────────────────────────────────────────────── */
