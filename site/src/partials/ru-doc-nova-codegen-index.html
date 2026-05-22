@@ -34,9 +34,9 @@
       <ul>
         <li><a href="#env">Переменные окружения</a></li>
         <li><a href="#features">Cargo features</a></li>
-        <li><a href="#library-api">Library API</a></li>
+        <li><a href="#library-api">API библиотеки</a></li>
         <li><a href="#architecture">Архитектура</a></li>
-        <li><a href="#runtime">Runtime (nova_rt/)</a></li>
+        <li><a href="#runtime">Рантайм (nova_rt/)</a></li>
         <li><a href="/ru/doc/nova-cli/">nova CLI &#8599;</a></li>
         <li><a href="/ru/doc/">&#8592; Документация</a></li>
       </ul>
@@ -301,7 +301,7 @@ NOVA_SMT_BACKEND=z3 nova test</code></pre>
 
       <hr class="divider">
 
-      <h2 id="library-api">Library API (<code>nova_codegen</code>)</h2>
+      <h2 id="library-api">API библиотеки (<code>nova_codegen</code>)</h2>
       <p><code>nova-cli</code> использует <code>nova-codegen</code> как path-зависимость и работает с library-API напрямую (без subprocess). Публичные модули из <code>lib.rs</code>:</p>
       <table>
         <thead><tr><th>Модуль</th><th>Что</th></tr></thead>
@@ -383,7 +383,7 @@ NOVA_SMT_BACKEND=z3 nova test</code></pre>
 
       <hr class="divider">
 
-      <h2 id="runtime">Runtime (<code>nova_rt/</code>)</h2>
+      <h2 id="runtime">Рантайм (<code>nova_rt/</code>)</h2>
       <p>C-исходники линкуются в каждый <code>.exe</code>. Минимум 3 <code>.c</code>:</p>
       <table>
         <thead><tr><th>Файл</th><th>Что</th></tr></thead>
