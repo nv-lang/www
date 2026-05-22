@@ -1040,7 +1040,7 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
 
 .spec-list__item {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr;
   align-items: baseline;
   gap: 1rem;
   padding: 1.1rem 0;
@@ -1054,7 +1054,7 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--fg-subtle);
-  min-width: 2.5rem;
+  min-width: 1.75rem;
 }
 
 .spec-list__body h3 {
@@ -1066,16 +1066,6 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
   color: var(--fg-muted);
   font-size: 0.88rem;
   margin: 0;
-}
-
-.spec-list__link a {
-  font-size: 0.83rem;
-  white-space: nowrap;
-}
-
-@media (max-width: 640px) {
-  .spec-list__item { grid-template-columns: auto 1fr; }
-  .spec-list__link { grid-column: 2; }
 }
 
 /* ── Misc ─────────────────────────────────────────────────────────────────── */
