@@ -2,7 +2,7 @@
   <div class="container--narrow">
     <p style="font-size:.85rem;color:var(--fg-muted);margin-bottom:.4rem;"><a href="/ru/doc/">Документация</a></p>
     <h1>Контракты и формальная верификация</h1>
-    <p>Описываете, что функция <strong>требует</strong> и <strong>гарантирует</strong>; компилятор проверяет на этапе компиляции через SMT. Доказанные контракты стираются в release — нулевая цена в runtime.</p>
+    <p>Описываете, что функция <strong>требует</strong> и <strong>гарантирует</strong>; компилятор проверяет на этапе компиляции через SMT. Доказанные контракты стираются в релизной сборке — нулевая цена во время выполнения.</p>
   </div>
 </div>
 
@@ -11,7 +11,7 @@
     <div class="sidebar-section">
       <div class="sidebar-section__title">Обзор</div>
       <ul>
-        <li><a href="#quickstart">Quickstart</a></li>
+        <li><a href="#quickstart">Быстрый старт</a></li>
       </ul>
     </div>
     <div class="sidebar-section">
@@ -45,22 +45,22 @@
     <div class="sidebar-section">
       <div class="sidebar-section__title">Расширенное</div>
       <ul>
-        <li><a href="#loop-invariants">Loop invariants</a></li>
+        <li><a href="#loop-invariants">Инварианты циклов</a></li>
         <li><a href="#lemmas">Леммы и apply</a></li>
         <li><a href="#opaque">#opaque</a></li>
         <li><a href="#reveal">reveal fn_name</a></li>
         <li><a href="#fuel">#fuel(n)</a></li>
-        <li><a href="#quantifiers">Bounded quantifiers</a></li>
+        <li><a href="#quantifiers">Ограниченные кванторы</a></li>
         <li><a href="#trusted-external">Доверенные внешние fn</a></li>
       </ul>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-section__title">Справочник</div>
       <ul>
-        <li><a href="#smt-backend">SMT backend</a></li>
+        <li><a href="#smt-backend">SMT-бэкенд</a></li>
         <li><a href="#grammar">Грамматика</a></li>
         <li><a href="#errors">Коды ошибок</a></li>
-        <li><a href="#bootstrap">Bootstrap-ограничения</a></li>
+        <li><a href="#bootstrap">Ограничения bootstrap</a></li>
         <li><a href="#related">Связанные документы</a></li>
       </ul>
     </div>
@@ -68,13 +68,13 @@
 
   <main id="main-content" class="doc-content">
 
-    <p>Система контрактов Nova позволяет описать, что функция <strong>требует</strong> и <strong>гарантирует</strong>, и проверяет эти утверждения на этапе компиляции через SMT-солвер. Доказанные контракты стираются в release-сборке — нулевая цена в runtime. Недоказанные откатываются до runtime-assert'а в debug.</p>
+    <p>Система контрактов Nova позволяет описать, что функция <strong>требует</strong> и <strong>гарантирует</strong>, и проверяет эти утверждения на этапе компиляции через SMT-решатель. Доказанные контракты стираются в релизной сборке — нулевая цена во время выполнения. Недоказанные откатываются до проверки во время выполнения в отладочной сборке.</p>
 
     <p>Spec: <a href="/spec/decisions/tooling/#d24">D24</a> (SMT-стратегия) · <a href="/spec/decisions/tooling/#d111">D111</a> (<code>assume</code> / <code>assert_static</code> / <code>#trusted</code>) · <a href="/spec/decisions/tooling/#d112">D112</a> (bounded quantifiers) · <a href="/spec/decisions/tooling/#d116">D116</a> (Z3 backend).</p>
 
     <hr>
 
-    <h2 id="quickstart">Quickstart</h2>
+    <h2 id="quickstart">Быстрый старт</h2>
 
 <pre><code class="language-nova">// Простое precondition + postcondition.
 #verify
@@ -333,7 +333,7 @@ fn add_assoc_proof(a int, b int, c int) -> bool
 
     <hr>
 
-    <h2 id="loop-invariants">Loop invariants</h2>
+    <h2 id="loop-invariants">Инварианты циклов</h2>
 
     <p>Клаузула <code>invariant</code> внутри тела цикла утверждает условие, которое выполняется <strong>при каждом входе в итерацию</strong>. SMT-солвер проверяет:</p>
     <ol>
@@ -495,9 +495,9 @@ fn prove_one_step() -> int
 
     <hr>
 
-    <h2 id="quantifiers">Bounded quantifiers</h2>
+    <h2 id="quantifiers">Ограниченные кванторы</h2>
 
-    <p>Nova поддерживает <strong>bounded quantifiers</strong> — <code>forall</code>/<code>exists</code> по конкретным коллекциям или индексным диапазонам. Unbounded universal quantifiers — ошибка компиляции.</p>
+    <p>Nova поддерживает <strong>ограниченные кванторы</strong> — <code>forall</code>/<code>exists</code> по конкретным коллекциям или индексным диапазонам. Неограниченные кванторы всеобщности — ошибка компиляции.</p>
 
 <pre><code class="language-nova">// REQUIRES_SMT_BACKEND z3
 
@@ -625,7 +625,7 @@ result-ref       = 'result'                  // только в ensures</code></
 
     <hr>
 
-    <h2 id="bootstrap">Bootstrap-ограничения</h2>
+    <h2 id="bootstrap">Ограничения bootstrap-версии</h2>
 
     <table>
       <thead><tr><th>Что не работает / отложено</th><th>План</th></tr></thead>
