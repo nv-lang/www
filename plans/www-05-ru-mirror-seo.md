@@ -208,5 +208,6 @@ alias, не дубликат — нет SEO penalty).
 - [www-02](www-02-astro-migration.md) — Astro генерирует canonical/hreflang.
 - [www-04](www-04-revenue-pages.md) — новые страницы, на которые
   ru-RU hreflang применится автоматически при следующем deploy.
-- `nova-private/docs/plans/04-monetization.md` раздел 9 —
-  «отечественное ПО» нарратив, для которого .ru SEO важен.
+- «Отечественное ПО» / импортозамещение narrative для РФ-аудитории
+  (рассматривается во внутренней стратегической документации,
+  вне этого репо) — для него .ru SEO-присутствие важно.
