@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import body from '@partials/ru-newsletter-index.html?raw';
+const meta = {
+  title: "Рассылка — Nova",
+  description: "Еженедельный insight по серьёзной инженерии с AI-агентами: что работает, где агенты ломаются, реальные кейсы из разработки Nova.",
+  canonical: "https://nv-lang.org/ru/newsletter/",
+  lang: "ru" as const,
+  hreflangRu: "https://nv-lang.org/ru/newsletter/",
+  hreflangEn: "https://nv-lang.org/newsletter/",
+  hreflangXDefault: "https://nv-lang.org/newsletter/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/ru/newsletter/",
+  ogTitle: "Рассылка — Nova",
+  ogDescription: "Еженедельный insight по серьёзной инженерии с AI-агентами.",
+  twitterTitle: "Рассылка — Nova",
+  twitterDescription: "Еженедельный insight по серьёзной инженерии с AI-агентами.",
+  langRuUrl: "/ru/newsletter/",
+  langEnUrl: "/newsletter/",
+};
+---
+
+<BaseLayout {...meta} active={undefined}>
+  <Fragment set:html={body} />
+</BaseLayout>

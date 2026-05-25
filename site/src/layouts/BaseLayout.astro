@@ -22,7 +22,7 @@ interface Props {
   twitterDescription?: string;
   jsonLd?: boolean;
   noindex?: boolean;
-  active?: 'home' | 'install' | 'doc' | 'spec' | 'blog' | 'search';
+  active?: 'home' | 'install' | 'doc' | 'spec' | 'blog' | 'search' | 'course';
   customFooter?: boolean;
   langRuUrl?: string;
   langEnUrl?: string;
@@ -45,5 +45,6 @@ const { lang, active, customFooter = false } = p;
     <script src="/js/nova-highlight.js" is:inline></script>
     <script src="/js/copy-code.js" is:inline></script>
     <script src="/js/scroll-spy.js" is:inline></script>
+    <script src="/js/email-subscribe.js" is:inline></script>
   </body>
 </html>

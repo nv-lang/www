@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import body from '@partials/ru-support-index.html?raw';
+const meta = {
+  title: "Поддержать Nova",
+  description: "Способы поддержать развитие Nova — финансовое спонсорство, вклад в код, помощь сообществу.",
+  canonical: "https://nv-lang.org/ru/support/",
+  lang: "ru" as const,
+  hreflangRu: "https://nv-lang.org/ru/support/",
+  hreflangEn: "https://nv-lang.org/support/",
+  hreflangXDefault: "https://nv-lang.org/support/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/ru/support/",
+  ogTitle: "Поддержать Nova",
+  ogDescription: "Способы поддержать развитие Nova.",
+  twitterTitle: "Поддержать Nova",
+  twitterDescription: "Способы поддержать развитие Nova.",
+  langRuUrl: "/ru/support/",
+  langEnUrl: "/support/",
+};
+---
+
+<BaseLayout {...meta} active={undefined}>
+  <Fragment set:html={body} />
+</BaseLayout>

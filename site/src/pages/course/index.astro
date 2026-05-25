@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import body from '@partials/course-index.html?raw';
+const meta = {
+  title: "AI-engineering at scale — Nova course",
+  description: "Live cohort-based course on serious engineering with AI agents. Plan-driven execution, audit cycle, worktree discipline — the methodology behind Nova.",
+  canonical: "https://nv-lang.org/course/",
+  lang: "en" as const,
+  hreflangRu: "https://nv-lang.org/ru/course/",
+  hreflangEn: "https://nv-lang.org/course/",
+  hreflangXDefault: "https://nv-lang.org/course/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/course/",
+  ogTitle: "AI-engineering at scale — Nova course",
+  ogDescription: "Live cohort-based course on serious engineering with AI agents. The methodology behind Nova.",
+  twitterTitle: "AI-engineering at scale — Nova course",
+  twitterDescription: "Live cohort-based course on serious engineering with AI agents. The methodology behind Nova.",
+  langRuUrl: "/ru/course/",
+  langEnUrl: "/course/",
+};
+---
+
+<BaseLayout {...meta} active="course">
+  <Fragment set:html={body} />
+</BaseLayout>

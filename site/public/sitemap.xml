@@ -22,6 +22,63 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://nv-lang.org/"/>
   </url>
 
+  <!-- ── Community / revenue pages (course, newsletter, support) ────────── -->
+  <!-- /sponsors/ is intentionally excluded (noindex until 0.1 release) -->
+  <url>
+    <loc>https://nv-lang.org/course/</loc>
+    <lastmod>2026-05-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nv-lang.org/course/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://nv-lang.org/ru/course/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nv-lang.org/course/"/>
+  </url>
+  <url>
+    <loc>https://nv-lang.org/ru/course/</loc>
+    <lastmod>2026-05-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nv-lang.org/course/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://nv-lang.org/ru/course/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nv-lang.org/course/"/>
+  </url>
+  <url>
+    <loc>https://nv-lang.org/newsletter/</loc>
+    <lastmod>2026-05-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nv-lang.org/newsletter/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://nv-lang.org/ru/newsletter/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nv-lang.org/newsletter/"/>
+  </url>
+  <url>
+    <loc>https://nv-lang.org/ru/newsletter/</loc>
+    <lastmod>2026-05-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nv-lang.org/newsletter/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://nv-lang.org/ru/newsletter/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nv-lang.org/newsletter/"/>
+  </url>
+  <url>
+    <loc>https://nv-lang.org/support/</loc>
+    <lastmod>2026-05-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nv-lang.org/support/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://nv-lang.org/ru/support/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nv-lang.org/support/"/>
+  </url>
+  <url>
+    <loc>https://nv-lang.org/ru/support/</loc>
+    <lastmod>2026-05-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nv-lang.org/support/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://nv-lang.org/ru/support/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nv-lang.org/support/"/>
+  </url>
+
   <!-- ── English pages ──────────────────────────────────────────────────── -->
   <url>
     <loc>https://nv-lang.org/install/</loc>

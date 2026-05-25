@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import body from '@partials/ru-course-index.html?raw';
+const meta = {
+  title: "AI-инженерия на масштабе — курс Nova",
+  description: "Cohort-курс по серьёзной инженерии с AI-агентами. Plan-driven исполнение, аудит-цикл, worktree-дисциплина — методология за Nova.",
+  canonical: "https://nv-lang.org/ru/course/",
+  lang: "ru" as const,
+  hreflangRu: "https://nv-lang.org/ru/course/",
+  hreflangEn: "https://nv-lang.org/course/",
+  hreflangXDefault: "https://nv-lang.org/course/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/ru/course/",
+  ogTitle: "AI-инженерия на масштабе — курс Nova",
+  ogDescription: "Cohort-курс по серьёзной инженерии с AI-агентами. Методология за Nova.",
+  twitterTitle: "AI-инженерия на масштабе — курс Nova",
+  twitterDescription: "Cohort-курс по серьёзной инженерии с AI-агентами. Методология за Nova.",
+  langRuUrl: "/ru/course/",
+  langEnUrl: "/course/",
+};
+---
+
+<BaseLayout {...meta} active="course">
+  <Fragment set:html={body} />
+</BaseLayout>

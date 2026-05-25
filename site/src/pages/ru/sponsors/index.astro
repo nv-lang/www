@@ -1,0 +1,24 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import body from '@partials/ru-sponsors-index.html?raw';
+const meta = {
+  title: "Спонсоры — Nova",
+  description: "Корпоративное спонсорство проекта Nova. Открывается после релиза 0.1.",
+  canonical: "https://nv-lang.org/ru/sponsors/",
+  lang: "ru" as const,
+  hreflangRu: "https://nv-lang.org/ru/sponsors/",
+  hreflangEn: "https://nv-lang.org/sponsors/",
+  hreflangXDefault: "https://nv-lang.org/sponsors/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/ru/sponsors/",
+  ogTitle: "Спонсоры — Nova",
+  ogDescription: "Корпоративное спонсорство проекта Nova. Открывается после релиза 0.1.",
+  noindex: true,
+  langRuUrl: "/ru/sponsors/",
+  langEnUrl: "/sponsors/",
+};
+---
+
+<BaseLayout {...meta} active={undefined}>
+  <Fragment set:html={body} />
+</BaseLayout>

@@ -35,6 +35,14 @@ const ru = lang === 'ru';
       </ul>
     </div>
     <div class="footer-col">
+      <div class="footer-col__title">{ru ? 'Сообщество' : 'Community'}</div>
+      <ul>
+        <li><a href={ru ? '/ru/course/' : '/course/'}>{ru ? 'Курс' : 'Course'}</a></li>
+        <li><a href={ru ? '/ru/newsletter/' : '/newsletter/'}>{ru ? 'Рассылка' : 'Newsletter'}</a></li>
+        <li><a href={ru ? '/ru/support/' : '/support/'}>{ru ? 'Поддержать' : 'Support'}</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
       <div class="footer-col__title">{ru ? 'Контакты' : 'Contact'}</div>
       <ul>
         <li><a href="mailto:hello@nv-lang.org">hello@nv-lang.org</a></li>

@@ -3,7 +3,7 @@
 // lang-switch выводится только если переданы обе ссылки (на 404 его нет).
 interface Props {
   lang: 'ru' | 'en';
-  active?: 'home' | 'install' | 'doc' | 'spec' | 'blog' | 'search';
+  active?: 'home' | 'install' | 'doc' | 'spec' | 'blog' | 'search' | 'course';
   langRuUrl?: string; // ссылка lang-switch на RU-версию
   langEnUrl?: string; // ссылка lang-switch на EN-версию
 }
@@ -12,16 +12,16 @@ const showLangSwitch = Boolean(langRuUrl && langEnUrl);
 
 const t = lang === 'ru'
   ? {
-      labels: { home: 'Главная', install: 'Установка', doc: 'Doc', spec: 'Spec', blog: 'Blog', search: 'Поиск' },
-      urls: { home: '/ru/', install: '/ru/install/', doc: '/ru/doc/', spec: '/ru/spec/', blog: '/ru/blog/', search: '/ru/search/' },
+      labels: { home: 'Главная', install: 'Установка', doc: 'Doc', spec: 'Spec', blog: 'Blog', course: 'Курс', search: 'Поиск' },
+      urls: { home: '/ru/', install: '/ru/install/', doc: '/ru/doc/', spec: '/ru/spec/', blog: '/ru/blog/', course: '/ru/course/', search: '/ru/search/' },
       logo: '/ru/', nav: 'Основная', toggle: 'Навигация', langLabel: 'Язык',
     }
   : {
-      labels: { home: 'Home', install: 'Install', doc: 'Doc', spec: 'Spec', blog: 'Blog', search: 'Search' },
-      urls: { home: '/', install: '/install/', doc: '/doc/', spec: '/spec/', blog: '/blog/', search: '/search/' },
+      labels: { home: 'Home', install: 'Install', doc: 'Doc', spec: 'Spec', blog: 'Blog', course: 'Course', search: 'Search' },
+      urls: { home: '/', install: '/install/', doc: '/doc/', spec: '/spec/', blog: '/blog/', course: '/course/', search: '/search/' },
       logo: '/', nav: 'Main', toggle: 'Toggle navigation', langLabel: 'Language',
     };
-const items = ['home', 'install', 'doc', 'spec', 'blog', 'search'] as const;
+const items = ['home', 'install', 'doc', 'spec', 'blog', 'course', 'search'] as const;
 ---
 
 <header class="site-header">
