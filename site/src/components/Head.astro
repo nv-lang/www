@@ -28,11 +28,12 @@ const {
 
 const OG_IMAGE = 'https://nv-lang.org/og-image.png';
 // 'wasm-unsafe-eval' — поиск Pagefind компилирует WebAssembly; директива
-// разрешает только WASM, не eval(). connect-src не задан — fetch индекса
-// идёт со своего origin и покрыт default-src 'self'.
+// разрешает только WASM, не eval().
+// connect-src: 'self' для Pagefind-индекса + email.nv-lang.org для подписок.
 const CSP =
   "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; " +
   "style-src 'self' 'unsafe-inline'; img-src 'self' data:; " +
+  "connect-src 'self' https://email.nv-lang.org; " +
   "object-src 'none'; base-uri 'self'; upgrade-insecure-requests";
 
 const jsonLdData = {
