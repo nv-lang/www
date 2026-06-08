@@ -117,13 +117,22 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://nv-lang.org/blog/"/>
   </url>
   <url>
-    <loc>https://nv-lang.org/blog/2026-05-18-hello-nova.html</loc>
+    <loc>https://nv-lang.org/blog/2026-05-18-hello-nova/</loc>
     <lastmod>2026-05-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nv-lang.org/blog/2026-05-18-hello-nova.html"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://nv-lang.org/ru/blog/2026-05-18-hello-nova.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://nv-lang.org/blog/2026-05-18-hello-nova.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nv-lang.org/blog/2026-05-18-hello-nova/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://nv-lang.org/ru/blog/2026-05-18-hello-nova/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nv-lang.org/blog/2026-05-18-hello-nova/"/>
+  </url>
+  <url>
+    <loc>https://nv-lang.org/blog/2026-06-08-month-with-claude/</loc>
+    <lastmod>2026-06-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nv-lang.org/blog/2026-06-08-month-with-claude/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://nv-lang.org/ru/blog/2026-06-08-month-with-claude/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nv-lang.org/blog/2026-06-08-month-with-claude/"/>
   </url>
   <url>
     <loc>https://nv-lang.org/doc/channels/</loc>
@@ -365,13 +374,22 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://nv-lang.org/blog/"/>
   </url>
   <url>
-    <loc>https://nv-lang.org/ru/blog/2026-05-18-hello-nova.html</loc>
+    <loc>https://nv-lang.org/ru/blog/2026-05-18-hello-nova/</loc>
     <lastmod>2026-05-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nv-lang.org/blog/2026-05-18-hello-nova.html"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://nv-lang.org/ru/blog/2026-05-18-hello-nova.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://nv-lang.org/blog/2026-05-18-hello-nova.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nv-lang.org/blog/2026-05-18-hello-nova/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://nv-lang.org/ru/blog/2026-05-18-hello-nova/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nv-lang.org/blog/2026-05-18-hello-nova/"/>
+  </url>
+  <url>
+    <loc>https://nv-lang.org/ru/blog/2026-06-08-month-with-claude/</loc>
+    <lastmod>2026-06-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nv-lang.org/blog/2026-06-08-month-with-claude/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://nv-lang.org/ru/blog/2026-06-08-month-with-claude/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nv-lang.org/blog/2026-06-08-month-with-claude/"/>
   </url>
   <url>
     <loc>https://nv-lang.org/ru/doc/channels/</loc>

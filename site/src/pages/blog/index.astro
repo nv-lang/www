@@ -1,25 +1,51 @@
 ---
+// Индекс блога (en). Список постов генерируется из коллекции blog
+// (lang === 'en'), сортировка по дате убыванию.
+import { getCollection } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
-import body from '@partials/blog-index.html?raw';
+
+const posts = (await getCollection('blog'))
+  .filter((p) => p.data.lang === 'en')
+  .sort((a, b) => b.data.date.localeCompare(a.data.date));
+
 const meta = {
-  title: "Blog — Nova",
-  description: "The Nova language blog: announcements, design notes, and development updates.",
-  canonical: "https://nv-lang.org/blog/",
-  lang: "en" as const,
-  hreflangRu: "https://nv-lang.org/ru/blog/",
-  hreflangEn: "https://nv-lang.org/blog/",
-  hreflangXDefault: "https://nv-lang.org/blog/",
-  ogType: "website",
-  ogUrl: "https://nv-lang.org/blog/",
-  ogTitle: "Blog — Nova",
-  ogDescription: "The Nova language blog: announcements, design notes, and development updates.",
-  twitterTitle: "Blog — Nova",
-  twitterDescription: "The Nova language blog: announcements, design notes, and development updates.",
-  langRuUrl: "/ru/blog/",
-  langEnUrl: "/blog/",
+  title: 'Blog — Nova',
+  description: 'The Nova language blog: announcements, design notes, and development updates.',
+  canonical: 'https://nv-lang.org/blog/',
+  lang: 'en' as const,
+  hreflangRu: 'https://nv-lang.org/ru/blog/',
+  hreflangEn: 'https://nv-lang.org/blog/',
+  hreflangXDefault: 'https://nv-lang.org/blog/',
+  ogType: 'website',
+  ogUrl: 'https://nv-lang.org/blog/',
+  ogTitle: 'Blog — Nova',
+  ogDescription: 'The Nova language blog: announcements, design notes, and development updates.',
+  twitterTitle: 'Blog — Nova',
+  twitterDescription: 'The Nova language blog: announcements, design notes, and development updates.',
+  langRuUrl: '/ru/blog/',
+  langEnUrl: '/blog/',
 };
 ---
 
 <BaseLayout {...meta} active="blog">
-  <Fragment set:html={body} />
+  <div class="page-header">
+    <div class="container--narrow">
+      <h1>Blog</h1>
+      <p>Design notes, announcements, and development updates from the Nova team.</p>
+    </div>
+  </div>
+
+  <main id="main-content" style="padding:2.5rem 1.5rem 5rem;">
+    <div class="container--narrow">
+      <ul class="blog-list">
+        {posts.map((post) => (
+          <li class="blog-list__item">
+            <div class="blog-list__date">{post.data.dateLabel}</div>
+            <a class="blog-list__title" href={`/blog/${post.data.slug}/`}>{post.data.title}</a>
+            <p class="blog-list__excerpt">{post.data.excerpt}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </main>
 </BaseLayout>

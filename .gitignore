@@ -12,5 +12,8 @@ dist/
 node_modules/
 *.log
 
-# Synced from the nova repo at build time (scripts/sync-decisions.mjs)
-site/src/content/
+# Synced from the nova repo at build time (scripts/sync-decisions.mjs).
+# Only these subfolders are generated; blog/ is original content and
+# stays tracked.
+site/src/content/decisions/
+site/src/content/spec/

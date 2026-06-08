@@ -1,0 +1,62 @@
+---
+// Русская версия поста блога. Рендерит markdown из коллекции blog
+// (lang === 'ru'). Slug берётся из имени файла без суффикса .ru.
+// Подсветка кода Nova — клиентский nova-highlight.js (BaseLayout).
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts
+    .filter((p) => p.data.lang === 'ru')
+    .map((post) => ({
+      params: { slug: post.data.slug },
+      props: { post, slug: post.data.slug },
+    }));
+}
+
+const { post, slug } = Astro.props;
+const { Content } = await render(post);
+const d = post.data;
+const ruUrl = `/ru/blog/${slug}/`;
+const enUrl = `/blog/${slug}/`;
+---
+
+<BaseLayout
+  title={`${d.title} — Блог Nova`}
+  description={d.description}
+  canonical={d.canonical ?? `https://nv-lang.org${ruUrl}`}
+  lang="ru"
+  hreflangRu={`https://nv-lang.org${ruUrl}`}
+  hreflangEn={`https://nv-lang.org${enUrl}`}
+  hreflangXDefault={`https://nv-lang.org${enUrl}`}
+  ogType="article"
+  ogUrl={`https://nv-lang.org${ruUrl}`}
+  ogTitle={d.title}
+  ogDescription={d.description}
+  twitterTitle={d.title}
+  twitterDescription={d.description}
+  langRuUrl={ruUrl}
+  langEnUrl={enUrl}
+  active="blog"
+>
+  <main id="main-content" style="padding:3rem 1.5rem 5rem;">
+    <div class="container--narrow">
+
+      <p style="margin-bottom:1.5rem;"><a href="/ru/blog/" style="color:var(--fg-muted);font-size:.88rem;">&larr; Все посты</a></p>
+
+      <article class="prose">
+        <h1 style="font-size:clamp(1.75rem,4vw,2.4rem);margin-bottom:.75rem;">{d.title}</h1>
+
+        <div class="post-meta">
+          <span class="post-meta__author">{d.author}</span>
+          <span>{d.dateLabel}</span>
+          {d.tags.map((t) => <span class="post-tag">{t}</span>)}
+        </div>
+
+        <Content />
+      </article>
+
+    </div>
+  </main>
+</BaseLayout>
