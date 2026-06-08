@@ -1,15 +1,15 @@
 ---
 title: "Hello, Nova"
-description: "Introducing Nova: what it is, why we are building it, and what works today — algebraic effects, static contracts, M:N runtime, and documentation tooling."
+description: "Introducing Nova: what it is, why I am building it, and what works today — algebraic effects, static contracts, M:N runtime, and documentation tooling."
 slug: "2026-05-18-hello-nova"
 date: "2026-05-18"
 dateLabel: "May 18, 2026"
 lang: "en"
 tags: ["Announcement", "Language"]
-excerpt: "Introducing Nova — what it is, why we are building it, and what works today: algebraic effects, static contracts, M:N runtime, and documentation tooling. A look at the bootstrap stage and the road ahead."
+excerpt: "Introducing Nova — what it is, why I am building it, and what works today: algebraic effects, static contracts, M:N runtime, and documentation tooling. A look at the bootstrap stage and the road ahead."
 ---
 
-Today we are opening the doors on **Nova** — a general-purpose systems programming language we have been building in the open for the past year. This post explains what Nova is, why it exists, and what already works right now.
+Today I am opening the doors on **Nova** — a general-purpose systems programming language I have been building in the open. This post explains what Nova is, why it exists, and what already works right now.
 
 Nova is not yet another "safe C replacement" nor a JavaScript killer. It is a language whose central bet is this: *if you make side effects and invariants first-class citizens of the type system, you eliminate entire categories of bugs before the program ever runs.*
 
@@ -125,9 +125,9 @@ The near-term roadmap (Plans 60–64 in the repository) covers:
 
 The specification is public, the compiler is open source, and the design process happens on GitHub. If any of this resonates with you, the best way to follow along is to [star the repository](https://github.com/nv-lang/nova) and read the D-blocks.
 
-We are also accepting contributions. The [contributor guide](https://github.com/nv-lang/nova/blob/main/CONTRIBUTING.md) explains where help is most needed right now.
+I am also accepting contributions. The [contributor guide](https://github.com/nv-lang/nova/blob/main/CONTRIBUTING.md) explains where help is most needed right now.
 
-The language is young. The ideas are not. We look forward to building it with you.
+The language is young. The ideas are not. I look forward to building it with you.
 
 ---
 
