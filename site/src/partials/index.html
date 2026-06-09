@@ -81,6 +81,50 @@ fn fetch_user(id u64) Db Log -> Result[User, NotFound]
   </div>
 </section>
 
+<!-- ── AI-era pitch ───────────────────────────────────────────────────────── -->
+<section class="ai-pitch">
+  <div class="container">
+    <p class="section-label" style="text-align:center;">Создан для сегодня</p>
+    <h2 class="ai-pitch__heading">Язык, который пишет ИИ,<br>и который человек может проверить</h2>
+    <p class="ai-pitch__sub">Всё больше кода генерируется ИИ. Но проверяет его по-прежнему человек. Nova — первый язык, явно оптимизированный для этого соотношения: побочные эффекты видны в типе, и проверить функцию можно, не читая её тело и всё, что она вызывает.</p>
+    <div class="ai-pitch__grid">
+
+      <div class="ai-pitch__item">
+        <div class="ai-pitch__dot" style="--dot:#a78bfa;"></div>
+        <div>
+          <strong>Алгебраические эффекты</strong>
+          <p>Побочные эффекты указаны в сигнатуре — между параметрами и стрелкой возврата. Ревью становится локальным: видно, что делает функция, без чтения её тела.</p>
+        </div>
+      </div>
+
+      <div class="ai-pitch__item">
+        <div class="ai-pitch__dot" style="--dot:#34d399;"></div>
+        <div>
+          <strong>Тесты без моков</strong>
+          <p>Любую зависимость можно подменить через блок <code>with</code> — та же бизнес-логика работает с реальной базой в продакшене и с in-memory обработчиком в тестах. Мокинг-библиотеки не нужны.</p>
+        </div>
+      </div>
+
+      <div class="ai-pitch__item">
+        <div class="ai-pitch__dot" style="--dot:#fb923c;"></div>
+        <div>
+          <strong>Конкурентность без async/await</strong>
+          <p><code>parallel for</code> запускает итерации параллельно со структурным скоупингом. Функциям не нужно ключевое слово <code>async</code> — приостановка амбиентная. Нет «заражения» async.</p>
+        </div>
+      </div>
+
+      <div class="ai-pitch__item">
+        <div class="ai-pitch__dot" style="--dot:#f472b6;"></div>
+        <div>
+          <strong>Статические контракты</strong>
+          <p>Клаузы <code>requires</code> и <code>ensures</code> образуют спектр: без аннотаций работает как Go; добавьте аннотации — компилятор докажет их статически, как F* или Dafny.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <!-- ── Second code example ───────────────────────────────────────────────── -->
 <section style="background:var(--bg-alt);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:4rem 1.5rem;">
   <div class="showcase-split">

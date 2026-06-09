@@ -1,11 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-  <!-- Background -->
-  <rect width="1200" height="630" fill="#0b0a12"/>
-
-  <!-- Subtle grid pattern -->
   <defs>
     <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff08" stroke-width="1"/>
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff06" stroke-width="1"/>
     </pattern>
     <linearGradient id="og-tile" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#2b1b41"/>
@@ -21,15 +17,28 @@
       <stop offset="0.52" stop-color="#f0e6fb"/>
       <stop offset="1"    stop-color="#c2a0ea"/>
     </linearGradient>
+    <radialGradient id="bg-glow" gradientUnits="userSpaceOnUse" cx="320" cy="315" r="400">
+      <stop offset="0"   stop-color="#4a1f7a" stop-opacity="0.28"/>
+      <stop offset="1"   stop-color="#0b0a12" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="code-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a1626"/>
+      <stop offset="1" stop-color="#110e1c"/>
+    </linearGradient>
+    <clipPath id="code-clip">
+      <rect x="648" y="98" width="512" height="490" rx="0"/>
+    </clipPath>
   </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#0b0a12"/>
   <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect width="1200" height="630" fill="url(#bg-glow)"/>
+  <rect x="0" y="0" width="1200" height="2" fill="#6b3fa0" opacity="0.7"/>
 
-  <!-- Accent glow -->
-  <ellipse cx="600" cy="315" rx="500" ry="280" fill="none" stroke="#6b3fa0" stroke-width="1" opacity="0.15"/>
-  <ellipse cx="600" cy="315" rx="300" ry="180" fill="#6b3fa018"/>
+  <!-- ── LEFT COLUMN ── -->
 
-  <!-- Nova symbol — «новая звезда» -->
-  <g transform="translate(72,60) scale(2.5)">
+  <g transform="translate(72,64) scale(2.6)">
     <rect width="32" height="32" rx="7" fill="url(#og-tile)"/>
     <rect width="32" height="32" rx="7" fill="url(#og-halo)"/>
     <path d="M24 5 Q24.8 7.1 27 7.9 Q24.8 8.7 24 10.8 Q23.2 8.7 21 7.9 Q23.2 7.1 24 5 Z"
@@ -37,54 +46,147 @@
     <path d="M16 2.9 Q18.7 13.3 27.3 16 Q18.7 18.7 16 29.1 Q13.3 18.7 4.7 16 Q13.3 13.3 16 2.9 Z"
           fill="url(#og-star)"/>
     <circle cx="16" cy="16" r="2" fill="#ffffff"/>
-    <rect x="0.6" y="0.6" width="30.8" height="30.8" rx="6.4" fill="none"
-          stroke="#ffffff" stroke-opacity="0.08"/>
   </g>
 
-  <!-- Main title -->
-  <text x="72" y="250" font-family="system-ui,-apple-system,sans-serif" font-size="80"
-        font-weight="700" fill="#ffffff" letter-spacing="-2">Nova</text>
+  <text x="72" y="248" font-family="system-ui,-apple-system,sans-serif"
+        font-size="80" font-weight="800" fill="#ffffff" letter-spacing="-3">Nova</text>
 
-  <!-- Tagline -->
-  <text x="72" y="320" font-family="system-ui,-apple-system,sans-serif" font-size="28"
-        fill="#8892a4" font-weight="400">General-purpose systems language</text>
+  <text x="72" y="300" font-family="system-ui,-apple-system,sans-serif"
+        font-size="22" fill="#9d8ab0" letter-spacing="0.3">A language for the AI era</text>
 
-  <!-- Feature pills -->
-  <rect x="72" y="370" width="190" height="40" rx="20" fill="#6b3fa033" stroke="#6b3fa080" stroke-width="1"/>
-  <text x="167" y="396" font-family="system-ui,-apple-system,sans-serif" font-size="16"
-        fill="#c2a0ea" text-anchor="middle" font-weight="500">Algebraic Effects</text>
+  <rect x="72" y="324" width="44" height="2" rx="1" fill="#7c3aed" opacity="0.9"/>
 
-  <rect x="278" y="370" width="170" height="40" rx="20" fill="#6b3fa033" stroke="#6b3fa080" stroke-width="1"/>
-  <text x="363" y="396" font-family="system-ui,-apple-system,sans-serif" font-size="16"
-        fill="#c2a0ea" text-anchor="middle" font-weight="500">Static Contracts</text>
+  <!-- Feature 1 -->
+  <circle cx="78" cy="360" r="3.5" fill="#a78bfa"/>
+  <text x="94" y="365" font-family="system-ui,-apple-system,sans-serif"
+        font-size="17" font-weight="600" fill="#c2a0ea">Algebraic effects</text>
+  <text x="94" y="384" font-family="system-ui,-apple-system,sans-serif"
+        font-size="13" fill="#4e4465">Side effects in the type — review stays local</text>
 
-  <rect x="464" y="370" width="150" height="40" rx="20" fill="#6b3fa033" stroke="#6b3fa080" stroke-width="1"/>
-  <text x="539" y="396" font-family="system-ui,-apple-system,sans-serif" font-size="16"
-        fill="#c2a0ea" text-anchor="middle" font-weight="500">M:N Runtime</text>
+  <!-- Feature 2 -->
+  <circle cx="78" cy="412" r="3.5" fill="#34d399"/>
+  <text x="94" y="417" font-family="system-ui,-apple-system,sans-serif"
+        font-size="17" font-weight="600" fill="#6ee7b7">Tests without mocks</text>
+  <text x="94" y="436" font-family="system-ui,-apple-system,sans-serif"
+        font-size="13" fill="#4e4465">Swap handlers via with — same code, any backend</text>
 
-  <!-- URL -->
-  <text x="72" y="560" font-family="system-ui,-apple-system,sans-serif" font-size="22"
-        fill="#4a5568" font-weight="400">nv-lang.org</text>
+  <!-- Feature 3 -->
+  <circle cx="78" cy="464" r="3.5" fill="#fb923c"/>
+  <text x="94" y="469" font-family="system-ui,-apple-system,sans-serif"
+        font-size="17" font-weight="600" fill="#fdba74">No async/await</text>
+  <text x="94" y="488" font-family="system-ui,-apple-system,sans-serif"
+        font-size="13" fill="#4e4465">parallel for — structured concurrency, no function colours</text>
 
-  <!-- Code snippet decoration -->
-  <rect x="730" y="120" width="400" height="390" rx="12" fill="#15131d" stroke="#2a2535" stroke-width="1"/>
-  <rect x="730" y="120" width="400" height="36" rx="12" fill="#2a2535"/>
-  <rect x="730" y="144" width="400" height="12" fill="#2a2535"/>
-  <circle cx="756" cy="138" r="6" fill="#ef4444" opacity="0.8"/>
-  <circle cx="778" cy="138" r="6" fill="#f59e0b" opacity="0.8"/>
-  <circle cx="800" cy="138" r="6" fill="#22c55e" opacity="0.8"/>
-  <!-- Code lines -->
-  <rect x="754" y="178" width="100" height="10" rx="2" fill="#6b3fa0" opacity="0.8"/>
-  <rect x="862" y="178" width="60" height="10" rx="2" fill="#a78bfa" opacity="0.8"/>
-  <rect x="754" y="208" width="80" height="10" rx="2" fill="#34d399" opacity="0.7"/>
-  <rect x="842" y="208" width="110" height="10" rx="2" fill="#8892a4" opacity="0.5"/>
-  <rect x="770" y="238" width="150" height="10" rx="2" fill="#fb923c" opacity="0.7"/>
-  <rect x="754" y="268" width="180" height="10" rx="2" fill="#8892a4" opacity="0.5"/>
-  <rect x="770" y="298" width="120" height="10" rx="2" fill="#c2a0ea" opacity="0.8"/>
-  <rect x="754" y="328" width="90" height="10" rx="2" fill="#34d399" opacity="0.7"/>
-  <rect x="754" y="358" width="200" height="10" rx="2" fill="#8892a4" opacity="0.5"/>
-  <rect x="770" y="388" width="140" height="10" rx="2" fill="#fb923c" opacity="0.7"/>
-  <rect x="754" y="418" width="60" height="10" rx="2" fill="#8892a4" opacity="0.5"/>
-  <rect x="754" y="448" width="100" height="10" rx="2" fill="#6b3fa0" opacity="0.8"/>
-  <rect x="754" y="478" width="40" height="10" rx="2" fill="#8892a4" opacity="0.5"/>
+  <!-- Feature 4 -->
+  <circle cx="78" cy="516" r="3.5" fill="#f472b6"/>
+  <text x="94" y="521" font-family="system-ui,-apple-system,sans-serif"
+        font-size="17" font-weight="600" fill="#f9a8d4">Static contracts</text>
+  <text x="94" y="540" font-family="system-ui,-apple-system,sans-serif"
+        font-size="13" fill="#4e4465">requires / ensures — from Go simplicity to F* proofs</text>
+
+  <text x="72" y="596" font-family="system-ui,-apple-system,sans-serif"
+        font-size="17" fill="#2e2844" letter-spacing="0.5">nv-lang.org</text>
+
+  <!-- ── RIGHT COLUMN: code window ── -->
+  <rect x="648" y="52" width="512" height="538" rx="14" fill="url(#code-bg)" stroke="#23203a" stroke-width="1.5"/>
+
+  <!-- Chrome -->
+  <rect x="648" y="52" width="512" height="42" rx="14" fill="#1c1928"/>
+  <rect x="648" y="80" width="512" height="14" fill="#1c1928"/>
+  <circle cx="677" cy="73" r="5.5" fill="#ef4444" opacity="0.7"/>
+  <circle cx="698" cy="73" r="5.5" fill="#f59e0b" opacity="0.7"/>
+  <circle cx="719" cy="73" r="5.5" fill="#22c55e" opacity="0.7"/>
+  <text x="752" y="79" font-family="monospace" font-size="12" fill="#3d3a52">transfer.nv</text>
+
+  <!-- Code — clipped to window body -->
+  <g clip-path="url(#code-clip)" font-family="monospace" font-size="14.5">
+    <!-- fn transfer( -->
+    <text x="668" y="122" fill="#a78bfa">fn </text>
+    <text x="693" y="122" fill="#60a5fa">transfer</text>
+    <text x="761" y="122" fill="#cbd5e1">(from </text>
+    <text x="817" y="122" fill="#34d399">AccountId</text>
+    <text x="895" y="122" fill="#cbd5e1">, to </text>
+    <text x="931" y="122" fill="#34d399">AccountId</text>
+    <text x="1009" y="122" fill="#cbd5e1">, amount </text>
+    <text x="668" y="142" fill="#34d399">        Money</text>
+    <text x="770" y="142" fill="#cbd5e1">)</text>
+
+    <!-- effects line -->
+    <text x="668" y="162" fill="#fb923c">    Db </text>
+    <text x="718" y="162" fill="#f87171">Fail</text>
+    <text x="752" y="162" fill="#cbd5e1">[</text>
+    <text x="760" y="162" fill="#34d399">InsufficientFunds</text>
+    <text x="906" y="162" fill="#cbd5e1">] -&gt; </text>
+    <text x="947" y="162" fill="#34d399">Receipt</text>
+
+    <text x="668" y="182" fill="#94a3b8">{</text>
+
+    <!-- let src -->
+    <text x="668" y="202" fill="#a78bfa">    let </text>
+    <text x="713" y="202" fill="#cbd5e1">src = </text>
+    <text x="763" y="202" fill="#fb923c">Db</text>
+    <text x="780" y="202" fill="#cbd5e1">.query(</text>
+    <text x="832" y="202" fill="#4ade80">sql`SELECT * FROM accounts</text>
+    <text x="668" y="220" fill="#4ade80">              WHERE id = </text>
+    <text x="848" y="220" fill="#94a3b8">${from}</text>
+    <text x="906" y="220" fill="#4ade80">`)</text>
+
+    <!-- if -->
+    <text x="668" y="240" fill="#a78bfa">    if </text>
+    <text x="713" y="240" fill="#cbd5e1">src[0].balance &lt; amount {</text>
+
+    <text x="668" y="260" fill="#a78bfa">        throw </text>
+    <text x="773" y="260" fill="#f87171">InsufficientFunds</text>
+
+    <text x="668" y="278" fill="#94a3b8">    }</text>
+
+    <!-- exec debit -->
+    <text x="668" y="298" fill="#fb923c">    Db</text>
+    <text x="694" y="298" fill="#cbd5e1">.exec(</text>
+    <text x="745" y="298" fill="#4ade80">sql`UPDATE accounts</text>
+    <text x="668" y="316" fill="#4ade80">        SET balance = balance - </text>
+    <text x="891" y="316" fill="#94a3b8">${amount}</text>
+    <text x="955" y="316" fill="#4ade80">...`)</text>
+
+    <text x="668" y="336" fill="#94a3b8">}</text>
+
+    <!-- separator -->
+    <rect x="668" y="348" width="476" height="1" fill="#2a2040"/>
+
+    <!-- production with block -->
+    <text x="668" y="370" fill="#3d3a52">// production</text>
+    <text x="668" y="390" fill="#a78bfa">with </text>
+    <text x="713" y="390" fill="#fb923c">Db</text>
+    <text x="729" y="390" fill="#cbd5e1"> = </text>
+    <text x="750" y="390" fill="#60a5fa">postgres</text>
+    <text x="820" y="390" fill="#cbd5e1">(</text>
+    <text x="828" y="390" fill="#4ade80">"postgres://..."</text>
+    <text x="965" y="390" fill="#cbd5e1">) {</text>
+    <text x="668" y="410" fill="#60a5fa">    transfer</text>
+    <text x="736" y="410" fill="#cbd5e1">(1, 2, </text>
+    <text x="791" y="410" fill="#fbbf24">100</text>
+    <text x="816" y="410" fill="#cbd5e1">)</text>
+    <text x="668" y="430" fill="#94a3b8">}</text>
+
+    <!-- test block -->
+    <text x="668" y="454" fill="#3d3a52">// test — same fn, zero mocks</text>
+    <text x="668" y="474" fill="#a78bfa">test </text>
+    <text x="704" y="474" fill="#4ade80">"transfer moves money"</text>
+    <text x="895" y="474" fill="#94a3b8"> {</text>
+    <text x="668" y="494" fill="#a78bfa">    with </text>
+    <text x="722" y="494" fill="#fb923c">Db</text>
+    <text x="738" y="494" fill="#cbd5e1"> = </text>
+    <text x="759" y="494" fill="#60a5fa">in_memory_db</text>
+    <text x="863" y="494" fill="#cbd5e1">([...</text>
+    <text x="903" y="494" fill="#fbbf24">Account</text>
+    <text x="962" y="494" fill="#cbd5e1">...]) {</text>
+    <text x="668" y="514" fill="#60a5fa">        transfer</text>
+    <text x="756" y="514" fill="#cbd5e1">(1, 2, </text>
+    <text x="811" y="514" fill="#fbbf24">100</text>
+    <text x="836" y="514" fill="#cbd5e1">)</text>
+    <text x="668" y="532" fill="#94a3b8">  } }</text>
+
+    <!-- cursor -->
+    <rect x="668" y="546" width="8" height="16" rx="1" fill="#a78bfa" opacity="0.65"/>
+  </g>
 </svg>

@@ -610,6 +610,69 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
   margin: 0;
 }
 
+/* ── AI-era pitch ────────────────────────────────────────────────────────── */
+.ai-pitch {
+  padding: 5rem 1.5rem;
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.ai-pitch__heading {
+  text-align: center;
+  font-size: clamp(1.55rem, 3.5vw, 2.2rem);
+  letter-spacing: -0.025em;
+  margin-bottom: 0.75rem;
+}
+
+.ai-pitch__sub {
+  text-align: center;
+  color: var(--fg-muted);
+  font-size: 1.05rem;
+  max-width: 640px;
+  margin-inline: auto;
+  margin-bottom: 3rem;
+}
+
+.ai-pitch__grid {
+  max-width: 1100px;
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.75rem 2.5rem;
+}
+
+.ai-pitch__item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.ai-pitch__dot {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--dot);
+  margin-top: 0.45rem;
+  box-shadow: 0 0 8px var(--dot);
+}
+
+.ai-pitch__item strong {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+  color: var(--fg);
+}
+
+.ai-pitch__item p {
+  color: var(--fg-muted);
+  font-size: 0.93rem;
+  margin: 0;
+  line-height: 1.6;
+}
+
 /* ── Install section ─────────────────────────────────────────────────────── */
 .install {
   background: var(--bg-alt);
