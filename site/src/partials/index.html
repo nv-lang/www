@@ -67,7 +67,7 @@ fn fetch_user(id u64) Db Log -> Result[User, NotFound]
         <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
       </div>
       <h3>Статические контракты</h3>
-      <p>Клаузы <code>requires</code>, <code>ensures</code> и <code>invariant</code> проверяются SMT-решателем на этапе компиляции, при необходимости верифицируются в runtime в debug-режиме и стираются с нулевой стоимостью в release.</p>
+      <p>Аннотации <code>requires</code>, <code>ensures</code> и <code>invariant</code> доказываются SMT-решателем на этапе компиляции, при необходимости проверяются в рантайме в режиме отладки и удаляются без накладных расходов в релизе.</p>
     </div>
 
     <div class="feature-card">
