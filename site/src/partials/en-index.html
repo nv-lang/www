@@ -119,7 +119,7 @@ fn fetch_user(id u64) Db Log -> Result[User, NotFound]
         <div class="ai-pitch__dot" style="--dot:#f472b6;"></div>
         <div>
           <strong>Static contracts</strong>
-          <p><code>requires</code> and <code>ensures</code> clauses cover a spectrum: write nothing and it runs like Go; add annotations and the compiler proves them statically, like F* or Dafny.</p>
+          <p>Contracts are optional — add <code>requires</code> and <code>ensures</code> where you need them. The compiler proves them statically when it can, falls back to runtime checks in debug, and erases them in release.</p>
         </div>
       </div>
 

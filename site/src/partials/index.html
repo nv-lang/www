@@ -117,7 +117,7 @@ fn fetch_user(id u64) Db Log -> Result[User, NotFound]
         <div class="ai-pitch__dot" style="--dot:#f472b6;"></div>
         <div>
           <strong>Статические контракты</strong>
-          <p>Клаузы <code>requires</code> и <code>ensures</code> образуют спектр: без аннотаций работает как Go; добавьте аннотации — компилятор докажет их статически, как F* или Dafny.</p>
+          <p>Контракты опциональны — добавляй <code>requires</code> и <code>ensures</code> там, где нужно. Компилятор доказывает их статически когда может, в debug-режиме проверяет в рантайме, в release — убирает полностью.</p>
         </div>
       </div>
 
