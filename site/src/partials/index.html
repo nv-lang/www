@@ -75,7 +75,7 @@ fn fetch_user(id u64) Db Log -> Result[User, NotFound]
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       </div>
       <h3>M:N Рантайм</h3>
-      <p>Файберы поверх OS-потоков с work-stealing планировщиком. Managed-память по умолчанию (Boehm GC сейчас, concurrent GC в планах). Для latency-sensitive путей — <code>realtime nogc</code>.</p>
+      <p>Корутины поверх системных потоков с планировщиком на основе похищения задач. Память управляется автоматически (Boehm GC сейчас, инкрементальный GC в планах). Для путей с жёсткими требованиями по задержке — <code>realtime nogc</code>.</p>
     </div>
 
   </div>
