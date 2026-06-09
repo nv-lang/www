@@ -26,7 +26,6 @@
         <pre><code class="language-nova">// Algebraic effects in signatures
 fn fetch_user(id u64) Db Log -> Result[User, NotFound]
     requires id > 0
-    ensures  result.is_ok() ==> result.unwrap().id == id
 {
     Log.info("fetching ${id}")
     match Db.find_user(id) {
