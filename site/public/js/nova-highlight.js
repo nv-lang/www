@@ -10,22 +10,24 @@
   // keyword.control.flow.nova  → tok-kw-ctrl  (#c586c0 purple)
   const CTRL_KEYWORDS = new Set([
     'if','else','match','for','while','loop','break','continue','return',
-    'throw','spawn','detach','parallel','supervised','race','select',
-    'with_timeout','cancel_scope','in','forbid','realtime','with',
-    'region','interrupt','defer','requires','ensures','invariant',
+    'throw','spawn','detach','parallel','supervised','blocking','select',
+    'in','forbid','realtime','with','interrupt',
+    'defer','errdefer','okdefer','requires','ensures','invariant',
   ]);
 
   // keyword.declaration.nova + storage.modifier.nova  → tok-kw-decl  (#569cd6 blue)
+  // Source-of-truth for keywords: compiler-codegen/src/lexer/mod.rs.
+  // Removed (retracted/now plain idents): let, readonly, handler.
   const DECL_KEYWORDS = new Set([
-    'fn','type','alias','effect','handler','protocol','let','const',
-    'module','import','export','as','use','test','external',
-    'mut','readonly','is','old',
+    'fn','type','alias','effect','protocol','const',
+    'module','import','export','as','use','test','external','lemma',
+    'mut','consume','ro','priv','pub','unsafe','is','old',
   ]);
 
   // support.type.primitive.nova  → tok-type  (#4ec9b0 teal)
   const PRIMITIVES = new Set([
     'int','i8','i16','i32','i64','u8','u16','u32','u64','f32','f64',
-    'str','bool','char','any',
+    'str','bool','char','byte','any',
   ]);
 
   // entity.name.type.prelude.nova + constant.language  → tok-type  (#4ec9b0 teal)
