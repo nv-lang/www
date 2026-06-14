@@ -12,7 +12,8 @@
     "postbuild": "pagefind --site dist && node scripts/check-links.mjs",
     "preview": "astro preview",
     "precheck": "node scripts/sync-decisions.mjs",
-    "check": "astro check"
+    "check": "astro check",
+    "check:highlight": "node scripts/check-highlight-keywords.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.6",
