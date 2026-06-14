@@ -219,9 +219,10 @@ fn main() {
     <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
   </div>
 
-  <p style="color:var(--fg-muted);margin-bottom:1rem;">Скомпилируйте и запустите:</p>
+  <p style="color:var(--fg-muted);margin-bottom:1rem;">Скомпилируйте в native binary и запустите его:</p>
   <div class="copy-block" style="margin-bottom:1.5rem;">
-    <pre><code>nova run hello.nv</code></pre>
+    <pre><code>nova build hello.nv -o hello
+./hello</code></pre>
     <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
   </div>
 

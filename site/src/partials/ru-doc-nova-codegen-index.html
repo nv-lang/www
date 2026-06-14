@@ -2,7 +2,7 @@
   <div class="container--narrow">
     <p style="font-size:.85rem;color:var(--fg-muted);margin-bottom:.4rem;"><a href="/ru/doc/">Документация</a></p>
     <h1>nova-codegen</h1>
-    <p>Внутренний компилятор Nova: парсер + type-checker + treewalk-интерпретатор + C-бэкенд + cross-file resolver + SMT-верификатор контрактов. Версия: <code>0.1.0</code> (bootstrap).</p>
+    <p>Внутренний компилятор Nova: парсер + type-checker + C-бэкенд + cross-file resolver + SMT-верификатор контрактов. Версия: <code>0.1.0</code> (bootstrap). Treewalk-интерпретатор сейчас не поддерживается — собирается и запускается только C-бэкенд.</p>
   </div>
 </div>
 
@@ -96,25 +96,12 @@ cargo test --manifest-path compiler-codegen/Cargo.toml</code></pre>
       <hr class="divider">
 
       <h2 id="run">nova-codegen run</h2>
-      <p>Type-check + интерпретировать (вызывается <code>fn main</code>).</p>
-      <pre><code class="language-bash">nova-codegen run FILE</code></pre>
-      <p><strong>Pipeline:</strong></p>
-      <ol>
-        <li>parse + path-check + type-check</li>
-        <li><code>types::annotate_map_literals</code> — аннотация <code>[k: v]</code>-литералов inferred K/V</li>
-        <li><code>desugar::desugar_module</code> — десугаринг map-литералов в <code>with_capacity</code> + <code>@insert</code></li>
-        <li><code>interp::Interpreter::new()</code> → <code>load_module</code> → <code>run_main</code></li>
-      </ol>
-      <p>Treewalk-интерпретатор имеет паритет с codegen-бэкендом — те же эффекты, handler'ы, structured concurrency, контракты, defer, channels.</p>
+      <p><strong>Сейчас не поддерживается.</strong> Эта подкоманда запускала treewalk-интерпретатор, который сейчас не собирается и не запускается — поддерживается только C-бэкенд. Чтобы скомпилировать и запустить файл, используй <a href="#compile">compile</a> + C-тулчейн, либо собери и запусти исполняемый файл через CLI-команды <a href="/doc/nova-cli/#build"><code>nova build</code></a> / <a href="/doc/nova-cli/#test"><code>nova test</code></a>.</p>
 
       <hr class="divider">
 
       <h2 id="test">nova-codegen test</h2>
-      <p>Запустить <code>test "..." { ... }</code> блоки в файле через интерпретатор.</p>
-      <pre><code class="language-bash">nova-codegen test FILE</code></pre>
-      <p><strong>Pipeline:</strong> parse → path-check → annotate_map_literals → desugar → <code>interp::run_tests</code> → <code>tests: N passed, N failed</code>.</p>
-      <p>Exit <code>1</code> если хотя бы один тест fail'нул; печатает имена failed-тестов.</p>
-      <p>Это интерпретаторный тест-режим (быстро, без C-pipeline). Для проверки codegen-pipeline используй <a href="#test-build">test-build</a> или <a href="#test-all">test-all</a>.</p>
+      <p><strong>Сейчас не поддерживается.</strong> Это был интерпретаторный тест-режим (без C-pipeline); treewalk-интерпретатор сейчас не собирается и не запускается. Для прогона тестов через C-бэкенд используй <a href="#test-build">test-build</a> или <a href="#test-all">test-all</a>, либо CLI-команду <a href="/doc/nova-cli/#test"><code>nova test</code></a>.</p>
 
       <hr class="divider">
 
@@ -314,7 +301,7 @@ NOVA_SMT_BACKEND=z3 nova test</code></pre>
           <tr><td><code>diag</code></td><td>Структурированные диагностики (<code>Diagnostic</code>, <code>Span</code>, <code>byte_to_line_col</code>).</td></tr>
           <tr><td><code>doc</code></td><td>Plan 45 — DocModel, рендеры, MCP-server.</td></tr>
           <tr><td><code>imports</code></td><td>Plan 35 R31 — cross-file resolver (<code>resolve_imports_inline</code>).</td></tr>
-          <tr><td><code>interp</code></td><td>Treewalk-интерпретатор (<code>Interpreter::new</code> / <code>load_module</code> / <code>run_main</code> / <code>run_tests</code>).</td></tr>
+          <tr><td><code>interp</code></td><td>Treewalk-интерпретатор — <strong>сейчас не поддерживается</strong> (не собирается и не запускается; поддерживается только C-бэкенд).</td></tr>
           <tr><td><code>lexer</code></td><td>Токенизация: <code>lex(&amp;src) -&gt; Vec&lt;Token&gt;</code>.</td></tr>
           <tr><td><code>lints</code></td><td>D-rule based lints (<code>lint_module</code>).</td></tr>
           <tr><td><code>manifest</code></td><td><code>nova.toml</code> + <a href="/spec/decisions/modules/#d78">D78</a> path/module enforcement.</td></tr>
@@ -335,7 +322,7 @@ NOVA_SMT_BACKEND=z3 nova test</code></pre>
   parser/                 recursive-descent parser
   ast/                    типы AST
   types/                  type checker + effect inference + lints
-  interp/                 treewalk interpreter
+  interp/                 treewalk interpreter (сейчас не поддерживается)
   codegen/                C-бэкенд
     emit_c.rs             основной codegen (~20k LOC)
     runtime_registry.rs   source-of-truth для std/runtime/*.nv stubs

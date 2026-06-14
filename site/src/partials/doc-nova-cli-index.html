@@ -22,7 +22,6 @@
       <div class="sidebar-section__title">Commands</div>
       <ul>
         <li><a href="#check">nova check</a></li>
-        <li><a href="#run">nova run</a></li>
         <li><a href="#build">nova build</a></li>
         <li><a href="#test">nova test</a></li>
         <li><a href="#test-build">nova test-build</a></li>
@@ -92,7 +91,7 @@ nova check                       # type-check the whole workspace
 nova check src/                  # recursively check a directory
 nova check src/lib.nv            # single file
 
-nova run hello.nv                # run via interpreter
+nova build hello.nv -o hello     # compile to native binary
 nova build app.nv -o app         # compile to native binary
 nova test                        # run all nova_tests/
 nova test --filter basics        # run subset by substring
@@ -195,13 +194,6 @@ cargo build --release --manifest-path nova-cli/Cargo.toml --features z3-backend<
       </table>
       <p><strong>Always skipped:</strong> <code>target/</code>, <code>node_modules/</code>, <code>vendor/</code>, <code>.git/</code>, <code>.hg/</code>, <code>.svn/</code>, dirs starting with <code>_</code> or <code>.</code>, <code>std/runtime/</code>.</p>
       <p>Summary: <code>pass=N fail=N warnings=N (X.YYs)</code>. Exit <code>1</code> on any FAIL.</p>
-
-      <hr class="divider">
-
-      <h2 id="run">nova run</h2>
-      <p>Run a <code>.nv</code> file via the interpreter (no native compilation).</p>
-      <pre><code class="language-bash">nova run FILE</code></pre>
-      <p><code>FILE</code> must be a <code>.nv</code> file with <code>fn main</code>.</p>
 
       <hr class="divider">
 

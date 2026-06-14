@@ -2,7 +2,7 @@
   <div class="container--narrow">
     <p style="font-size:.85rem;color:var(--fg-muted);margin-bottom:.4rem;"><a href="/doc/">Documentation</a></p>
     <h1>nova-codegen</h1>
-    <p>Internal Nova compiler: parser + type checker + treewalk interpreter + C backend + cross-file resolver + SMT contract verifier. Version: <code>0.1.0</code> (bootstrap).</p>
+    <p>Internal Nova compiler: parser + type checker + C backend + cross-file resolver + SMT contract verifier. Version: <code>0.1.0</code> (bootstrap). The treewalk interpreter is currently unsupported — only the C backend is built and run.</p>
   </div>
 </div>
 
@@ -96,25 +96,12 @@ cargo test --manifest-path compiler-codegen/Cargo.toml</code></pre>
       <hr class="divider">
 
       <h2 id="run">nova-codegen run</h2>
-      <p>Type-check and interpret (calls <code>fn main</code>).</p>
-      <pre><code class="language-bash">nova-codegen run FILE</code></pre>
-      <p><strong>Pipeline:</strong></p>
-      <ol>
-        <li>parse + path-check + type-check</li>
-        <li><code>types::annotate_map_literals</code> — annotate <code>[k: v]</code> literals with inferred K/V</li>
-        <li><code>desugar::desugar_module</code> — desugar map literals into <code>with_capacity</code> + <code>@insert</code></li>
-        <li><code>interp::Interpreter::new()</code> → <code>load_module</code> → <code>run_main</code></li>
-      </ol>
-      <p>The treewalk interpreter has parity with the C backend — same effects, handlers, structured concurrency, contracts, defer, channels.</p>
+      <p><strong>Currently unsupported.</strong> This subcommand drove the treewalk interpreter, which is not built or run at present — only the C backend is supported. To compile and run a file, use <a href="#compile">compile</a> + a C toolchain, or build and run an executable via the <a href="/doc/nova-cli/#build"><code>nova build</code></a> / <a href="/doc/nova-cli/#test"><code>nova test</code></a> CLI commands.</p>
 
       <hr class="divider">
 
       <h2 id="test">nova-codegen test</h2>
-      <p>Run <code>test "..." { ... }</code> blocks in a file via the interpreter.</p>
-      <pre><code class="language-bash">nova-codegen test FILE</code></pre>
-      <p><strong>Pipeline:</strong> parse → path-check → annotate_map_literals → desugar → <code>interp::run_tests</code> → <code>tests: N passed, N failed</code>.</p>
-      <p>Exit <code>1</code> if at least one test failed; prints names of failed tests.</p>
-      <p>This is the interpreter-mode test runner (fast, no C pipeline). For codegen pipeline checks use <a href="#test-build">test-build</a> or <a href="#test-all">test-all</a>.</p>
+      <p><strong>Currently unsupported.</strong> This was the interpreter-mode test runner (no C pipeline); the treewalk interpreter is not built or run at present. For test runs through the C backend use <a href="#test-build">test-build</a> or <a href="#test-all">test-all</a>, or the <a href="/doc/nova-cli/#test"><code>nova test</code></a> CLI command.</p>
 
       <hr class="divider">
 
@@ -314,7 +301,7 @@ NOVA_SMT_BACKEND=z3 nova test</code></pre>
           <tr><td><code>diag</code></td><td>Structured diagnostics (<code>Diagnostic</code>, <code>Span</code>, <code>byte_to_line_col</code>).</td></tr>
           <tr><td><code>doc</code></td><td>Plan 45 — DocModel, renderers, MCP server.</td></tr>
           <tr><td><code>imports</code></td><td>Plan 35 R31 — cross-file resolver (<code>resolve_imports_inline</code>).</td></tr>
-          <tr><td><code>interp</code></td><td>Treewalk interpreter (<code>Interpreter::new</code> / <code>load_module</code> / <code>run_main</code> / <code>run_tests</code>).</td></tr>
+          <tr><td><code>interp</code></td><td>Treewalk interpreter — <strong>currently unsupported</strong> (not built or run; only the C backend is supported).</td></tr>
           <tr><td><code>lexer</code></td><td>Tokenization: <code>lex(&amp;src) -&gt; Vec&lt;Token&gt;</code>.</td></tr>
           <tr><td><code>lints</code></td><td>D-rule based lints (<code>lint_module</code>).</td></tr>
           <tr><td><code>manifest</code></td><td><code>nova.toml</code> + <a href="/spec/decisions/modules/#d78">D78</a> path/module enforcement.</td></tr>
@@ -335,7 +322,7 @@ NOVA_SMT_BACKEND=z3 nova test</code></pre>
   parser/                 recursive-descent parser
   ast/                    AST types
   types/                  type checker + effect inference + lints
-  interp/                 treewalk interpreter
+  interp/                 treewalk interpreter (currently unsupported)
   codegen/                C backend
     emit_c.rs             main codegen (~20k LOC)
     runtime_registry.rs   source-of-truth for std/runtime/*.nv stubs
