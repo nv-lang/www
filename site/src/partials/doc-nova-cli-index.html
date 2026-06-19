@@ -229,7 +229,9 @@ cargo build --release --manifest-path nova-cli/Cargo.toml --features z3-backend<
           [--results-file PATH] [--rerun-failed] [--retries N]
           [--include-stdlib] [--keep-artifacts] [--gc boehm|malloc]
           [--list] [--filter-from PATH] [--shuffle [SEED]]
-          [--skip PATTERN]... [--mono-depth N]</code></pre>
+          [--skip PATTERN]... [--mono-depth N]
+          [--positive] [--compile-error] [--panic] [--timeout-type]
+          [--exit] [--slow] [--full]</code></pre>
       <table>
         <thead><tr><th>Flag</th><th>Default</th><th>Description</th></tr></thead>
         <tbody>
@@ -253,8 +255,16 @@ cargo build --release --manifest-path nova-cli/Cargo.toml --features z3-backend<
           <tr><td><code>--shuffle [SEED]</code></td><td>off</td><td>Random order; optional seed for reproducibility.</td></tr>
           <tr><td><code>--skip PATTERN</code></td><td><code>[]</code></td><td>Skip tests by name/path substring (repeatable).</td></tr>
           <tr><td><code>--mono-depth N</code></td><td><code>500</code></td><td>Monomorphization limit.</td></tr>
+          <tr><td><code>--positive</code></td><td>on (default)</td><td>Select positive tests (no <code>EXPECT_*</code> marker). Default when no type flag given.</td></tr>
+          <tr><td><code>--compile-error</code></td><td>off</td><td>Select <code>EXPECT_COMPILE_ERROR</code> tests.</td></tr>
+          <tr><td><code>--panic</code></td><td>off</td><td>Select <code>EXPECT_RUNTIME_PANIC</code> tests.</td></tr>
+          <tr><td><code>--timeout-type</code></td><td>off</td><td>Select <code>EXPECT_TIMEOUT</code> tests.</td></tr>
+          <tr><td><code>--exit</code></td><td>off</td><td>Select <code>EXPECT_EXIT</code> tests.</td></tr>
+          <tr><td><code>--slow</code></td><td>off</td><td>Include <code>*_slow.nv</code> tests (any type). Alias: <code>--include-slow</code>.</td></tr>
+          <tr><td><code>--full</code></td><td>off</td><td>All types + slow (<code>--positive --compile-error --panic --timeout-type --exit --slow</code>).</td></tr>
         </tbody>
       </table>
+      <p><strong>Category flags</strong> are additive (OR): multiple flags union their sets. Default (no flag) = positive ∩ fast. Detection is by <code>EXPECT_*</code> marker in file header, not folder — catches neg-tests outside <code>neg/</code>. (Plan 169.1.1, D304)</p>
       <p><strong>Output formats:</strong> <code>text</code> (human, colored), <code>json</code> (array with <code>name</code>/<code>status</code>/<code>duration_ms</code>/<code>stderr</code>), <code>tap</code> (TAP v13), <code>junit</code> (JUnit XML for CI aggregators).</p>
       <p><strong>EXPECT markers</strong> in test files:</p>
       <ul>

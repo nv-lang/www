@@ -229,7 +229,9 @@ cargo build --release --manifest-path nova-cli/Cargo.toml --features z3-backend<
           [--results-file PATH] [--rerun-failed] [--retries N]
           [--include-stdlib] [--keep-artifacts] [--gc boehm|malloc]
           [--list] [--filter-from PATH] [--shuffle [SEED]]
-          [--skip PATTERN]... [--mono-depth N]</code></pre>
+          [--skip PATTERN]... [--mono-depth N]
+          [--positive] [--compile-error] [--panic] [--timeout-type]
+          [--exit] [--slow] [--full]</code></pre>
       <table>
         <thead><tr><th>Флаг</th><th>По умолчанию</th><th>Описание</th></tr></thead>
         <tbody>
@@ -253,8 +255,16 @@ cargo build --release --manifest-path nova-cli/Cargo.toml --features z3-backend<
           <tr><td><code>--shuffle [SEED]</code></td><td>off</td><td>Случайный порядок; опц. seed для воспроизводимости.</td></tr>
           <tr><td><code>--skip PATTERN</code></td><td><code>[]</code></td><td>Пропустить тесты по substring имени или пути (repeatable).</td></tr>
           <tr><td><code>--mono-depth N</code></td><td><code>500</code></td><td>Лимит mono-instantiation.</td></tr>
+          <tr><td><code>--positive</code></td><td>on (дефолт)</td><td>Выбрать positive тесты (без маркера <code>EXPECT_*</code>). Дефолт когда не задан ни один тип-флаг.</td></tr>
+          <tr><td><code>--compile-error</code></td><td>off</td><td>Тесты с маркером <code>EXPECT_COMPILE_ERROR</code>.</td></tr>
+          <tr><td><code>--panic</code></td><td>off</td><td>Тесты с маркером <code>EXPECT_RUNTIME_PANIC</code>.</td></tr>
+          <tr><td><code>--timeout-type</code></td><td>off</td><td>Тесты с маркером <code>EXPECT_TIMEOUT</code>.</td></tr>
+          <tr><td><code>--exit</code></td><td>off</td><td>Тесты с маркером <code>EXPECT_EXIT</code>.</td></tr>
+          <tr><td><code>--slow</code></td><td>off</td><td>Включить <code>*_slow.nv</code> тесты (любой тип). Алиас: <code>--include-slow</code>.</td></tr>
+          <tr><td><code>--full</code></td><td>off</td><td>Все типы + slow (объединение всех флагов выше).</td></tr>
         </tbody>
       </table>
+      <p><strong>Флаги категорий</strong> аддитивны (OR): несколько флагов объединяют свои множества. Дефолт (без флагов) = positive ∩ fast. Детекция по маркеру <code>EXPECT_*</code> в заголовке файла, не по папке — ловит neg-тесты вне <code>neg/</code>. (Plan 169.1.1, D304)</p>
       <p><strong>Форматы вывода:</strong> <code>text</code> (человекочитаемый, цветной), <code>json</code> (массив с <code>name</code>/<code>status</code>/<code>duration_ms</code>/<code>stderr</code>), <code>tap</code> (TAP v13), <code>junit</code> (JUnit XML для CI-агрегаторов).</p>
       <p><strong>EXPECT-маркеры</strong> в тестовых файлах:</p>
       <ul>
