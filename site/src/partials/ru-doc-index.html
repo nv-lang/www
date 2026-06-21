@@ -73,13 +73,13 @@
       <p>Nova нацелена на область, где нужен контроль системного уровня (предсказуемая производительность, явное управление ресурсами), но также желательны гарантии безопасности, которые обеспечивает современная теория типов. Это не исследовательский язык — он компилируется в нативный код и предназначен для создания реального программного обеспечения.</p>
 
       <h2 id="installation">Установка</h2>
-      <p>Nova — pre-alpha, компилятор собирается из исходников (Rust 1.78+ и Clang 17+, либо MSVC 2022 на Windows):</p>
+      <p>Nova — pre-alpha, CLI <code>nova</code> собирается из исходников (стабильный Rust 1.85+; для компиляции программ нужен C-тулчейн — Clang, MSVC или GCC):</p>
 
       <pre><code>git clone https://github.com/nv-lang/nova
-cd nova/compiler-codegen
+cd nova/nova-cli
 cargo build --release</code></pre>
 
-      <p>Компилятор будет в <code>target/release/nova-codegen</code>; добавьте его в <code>PATH</code> (или симлинк <code>nova</code>). Подробные шаги — на <a href="/ru/install/">странице установки</a>.</p>
+      <p>CLI <code>nova</code> будет в <code>nova-cli/target/release/nova</code>; добавьте его в <code>PATH</code>. Подробные шаги — на <a href="/ru/install/">странице установки</a>.</p>
 
       <h2 id="hello-world">Hello, World</h2>
       <p>Создайте файл <code>hello.nv</code>:</p>

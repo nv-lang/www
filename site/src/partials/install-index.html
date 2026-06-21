@@ -30,7 +30,7 @@
     </div>
     <div class="req-card">
       <div class="req-card__label">Build from source</div>
-      <div class="req-card__val">Rust 1.78+<br>Clang 17+ or MSVC 2022</div>
+      <div class="req-card__val">Rust 1.85+<br>Clang, MSVC, or GCC</div>
     </div>
   </div>
 
@@ -54,7 +54,7 @@
       <div class="step__num">1</div>
       <div class="step__body">
         <h3>Prerequisites</h3>
-        <p>Install <a href="https://rustup.rs">Rust</a> (stable, 1.78+) and Clang 17+ (or MSVC 2022 on Windows).</p>
+        <p>Install a stable <a href="https://rustup.rs">Rust</a> toolchain (1.85+). To compile Nova programs you also need a C toolchain — Clang, MSVC, or GCC (auto-detected).</p>
         <div class="copy-block">
           <pre><code>rustup update stable</code></pre>
           <button class="copy-btn" onclick="copyCode(this)">Copy</button>
@@ -68,11 +68,11 @@
         <h3>Clone and build</h3>
         <div class="copy-block">
           <pre><code>git clone https://github.com/nv-lang/nova
-cd nova/compiler-codegen
+cd nova/nova-cli
 cargo build --release</code></pre>
           <button class="copy-btn" onclick="copyCode(this)">Copy</button>
         </div>
-        <p style="margin-top:.5rem;">The compiler binary lands at <code>target/release/nova-codegen</code>. Add it to your PATH or symlink it as <code>nova</code>.</p>
+        <p style="margin-top:.5rem;">The CLI binary lands at <code>nova-cli/target/release/nova</code> (<code>nova.exe</code> on Windows). Add that directory to your PATH.</p>
       </div>
     </div>
 
@@ -81,10 +81,11 @@ cargo build --release</code></pre>
       <div class="step__body">
         <h3>Run the test suite (optional)</h3>
         <div class="copy-block">
-          <pre><code>cargo test --lib</code></pre>
+          <pre><code>cd ..
+nova-cli/target/release/nova test nova_tests</code></pre>
           <button class="copy-btn" onclick="copyCode(this)">Copy</button>
         </div>
-        <p style="margin-top:.5rem;">Expect ~300 tests to pass. One known-failing test (<code>fn_static_method</code>) is a pre-existing WIP.</p>
+        <p style="margin-top:.5rem;">Compiles and runs the bundled <code>.nv</code> test corpus through the compiler you just built.</p>
       </div>
     </div>
 

@@ -73,13 +73,13 @@
       <p>Nova targets the space where you need systems-level control (predictable performance, explicit resource management) but also want the safety guarantees that modern type theory enables. It is not a research language — it compiles to native code and is designed to build real software.</p>
 
       <h2 id="installation">Installation</h2>
-      <p>Nova is pre-alpha — build the compiler from source (Rust 1.78+ and Clang 17+, or MSVC 2022 on Windows):</p>
+      <p>Nova is pre-alpha — build the <code>nova</code> CLI from source (stable Rust 1.85+; a C toolchain — Clang, MSVC, or GCC — is needed to compile programs):</p>
 
       <pre><code>git clone https://github.com/nv-lang/nova
-cd nova/compiler-codegen
+cd nova/nova-cli
 cargo build --release</code></pre>
 
-      <p>The compiler lands at <code>target/release/nova-codegen</code>; add it to your <code>PATH</code> (or symlink it as <code>nova</code>). Full step-by-step on the <a href="/install/">install page</a>.</p>
+      <p>The <code>nova</code> CLI lands at <code>nova-cli/target/release/nova</code>; add it to your <code>PATH</code>. Full step-by-step on the <a href="/install/">install page</a>.</p>
 
       <p><strong>System requirements:</strong> Linux x86-64 or ARM64, macOS 12+. Windows support is planned.</p>
 

@@ -30,7 +30,7 @@
     </div>
     <div class="req-card">
       <div class="req-card__label">Сборка из исходников</div>
-      <div class="req-card__val">Rust 1.78+<br>Clang 17+ или MSVC 2022</div>
+      <div class="req-card__val">Rust 1.85+<br>Clang, MSVC или GCC</div>
     </div>
   </div>
 
@@ -54,7 +54,7 @@
       <div class="step__num">1</div>
       <div class="step__body">
         <h3>Предварительные требования</h3>
-        <p>Установите <a href="https://rustup.rs">Rust</a> (stable, 1.78+) и Clang 17+ (или MSVC 2022 на Windows).</p>
+        <p>Установите стабильный <a href="https://rustup.rs">Rust</a> (1.85+). Для компиляции программ на Nova также нужен C-тулчейн — Clang, MSVC или GCC (определяется автоматически).</p>
         <div class="copy-block">
           <pre><code>rustup update stable</code></pre>
           <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
@@ -68,11 +68,11 @@
         <h3>Клонировать и собрать</h3>
         <div class="copy-block">
           <pre><code>git clone https://github.com/nv-lang/nova
-cd nova/compiler-codegen
+cd nova/nova-cli
 cargo build --release</code></pre>
           <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
         </div>
-        <p style="margin-top:.5rem;">Бинарный файл компилятора будет в <code>target/release/nova-codegen</code>. Добавьте его в PATH или создайте симлинк с именем <code>nova</code>.</p>
+        <p style="margin-top:.5rem;">Бинарник CLI будет в <code>nova-cli/target/release/nova</code> (<code>nova.exe</code> на Windows). Добавьте этот каталог в PATH.</p>
       </div>
     </div>
 
@@ -81,10 +81,11 @@ cargo build --release</code></pre>
       <div class="step__body">
         <h3>Запустить тесты (опционально)</h3>
         <div class="copy-block">
-          <pre><code>cargo test --lib</code></pre>
+          <pre><code>cd ..
+nova-cli/target/release/nova test nova_tests</code></pre>
           <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
         </div>
-        <p style="margin-top:.5rem;">Ожидается прохождение ~300 тестов. Один известный неудачный тест (<code>fn_static_method</code>) — незавершённая работа.</p>
+        <p style="margin-top:.5rem;">Компилирует и прогоняет встроенный набор <code>.nv</code>-тестов через только что собранный компилятор.</p>
       </div>
     </div>
 
