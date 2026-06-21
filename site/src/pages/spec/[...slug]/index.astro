@@ -22,7 +22,7 @@ const ghUrl = `https://github.com/nv-lang/nova/blob/main/${doc.github}`;
   description={`${doc.title} — раздел спецификации языка Nova.`}
   canonical={`https://nv-lang.org/spec/${doc.slug}/`}
   lang="ru"
-  active="spec"
+  active={doc.slug === 'syntax' ? 'syntax' : 'spec'}
 >
   <div class="doc-layout">
     <SpecSidebar current={`spec:${doc.slug}`} />
