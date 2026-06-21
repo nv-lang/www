@@ -1,0 +1,82 @@
+---
+// Боковая навигация раздела /doc/: список гайдов + авто-оглавление
+// текущей страницы («На этой странице»). headings приходят из
+// render(entry). Подсветку активного пункта оглавления при скролле даёт
+// public/js/scroll-spy.js (по a[href^="#"] внутри .doc-sidebar).
+import { DOC_GUIDES } from '@data/docs';
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+interface Props {
+  lang: 'en' | 'ru';
+  current: string; // slug текущего гайда
+  headings: Heading[];
+}
+const { lang, current, headings } = Astro.props;
+const base = lang === 'ru' ? '/ru' : '';
+
+const t =
+  lang === 'ru'
+    ? {
+        guides: 'Гайды', onThisPage: 'На этой странице', more: 'Ещё',
+        overview: 'Документация', std: 'Стандартная библиотека',
+        spec: 'Спецификация', source: 'Источник на GitHub',
+      }
+    : {
+        guides: 'Guides', onThisPage: 'On this page', more: 'More',
+        overview: 'Documentation', std: 'Standard library',
+        spec: 'Specification', source: 'Source on GitHub',
+      };
+
+// Оглавление: разделы h2/h3 (h1 — заголовок страницы, пропускаем).
+const toc = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
+---
+
+<aside class="doc-sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-section__title">{t.guides}</div>
+    <ul>
+      {DOC_GUIDES.map((g) => (
+        <li>
+          <a
+            href={`${base}/doc/${g.slug}/`}
+            class={g.slug === current ? 'active' : undefined}
+          >
+            {g.title[lang]}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  {toc.length > 0 && (
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">{t.onThisPage}</div>
+      <ul>
+        {toc.map((h) => (
+          <li>
+            <a
+              href={`#${h.slug}`}
+              style={h.depth === 3 ? 'padding-left:1.2rem;font-size:.84rem;' : undefined}
+            >
+              {h.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+
+  <div class="sidebar-section">
+    <div class="sidebar-section__title">{t.more}</div>
+    <ul>
+      <li><a href={`${base}/doc/`}>{t.overview}</a></li>
+      <li><a href={`${base}/doc/std/`}>{t.std}</a></li>
+      <li><a href={`${base}/spec/`}>{t.spec}</a></li>
+      <li><a href="https://github.com/nv-lang/nova/tree/main/docs">{t.source} &#8599;</a></li>
+    </ul>
+  </div>
+</aside>

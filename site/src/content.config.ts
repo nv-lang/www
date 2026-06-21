@@ -54,4 +54,17 @@ const blog = defineCollection({
   }),
 });
 
-export const collections = { decisions, spec, blog };
+// Пользовательские гайды (docs/<slug>.md и <slug>.ru.md репозитория
+// nova), синхронизируются scripts/sync-decisions.mjs (prebuild).
+// Двуязычные: подпапки en/ и ru/, как у блога — чтобы id не
+// коллизились (generateId сохраняет префикс языка). Без frontmatter —
+// title/description берутся из src/data/docs.ts.
+const docs = defineCollection({
+  loader: glob({
+    pattern: '**/*.md',
+    base: './src/content/docs',
+    generateId: ({ entry }) => entry.replace(/\.md$/, ''),
+  }),
+});
+
+export const collections = { decisions, spec, blog, docs };

@@ -17,3 +17,4 @@ node_modules/
 # stays tracked.
 site/src/content/decisions/
 site/src/content/spec/
+site/src/content/docs/

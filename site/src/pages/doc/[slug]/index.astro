@@ -1,0 +1,51 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import DocSidebar from '@components/DocSidebar.astro';
+import { DOC_GUIDES } from '@data/docs';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('docs');
+  return DOC_GUIDES.filter((guide) => guide.generated).map((guide) => ({
+    params: { slug: guide.slug },
+    props: { entry: entries.find((e) => e.id === `en/${guide.slug}`)!, guide },
+  }));
+}
+
+const { entry, guide } = Astro.props;
+const { Content, headings } = await render(entry);
+const title = `${guide.title.en} — Nova`;
+const ghUrl = `https://github.com/nv-lang/nova/blob/main/${guide.github}`;
+---
+
+<BaseLayout
+  title={title}
+  description={guide.description.en}
+  canonical={`https://nv-lang.org/doc/${guide.slug}/`}
+  lang="en"
+  hreflangRu={`https://nv-lang.org/ru/doc/${guide.slug}/`}
+  hreflangEn={`https://nv-lang.org/doc/${guide.slug}/`}
+  hreflangXDefault={`https://nv-lang.org/doc/${guide.slug}/`}
+  ogType="website"
+  ogUrl={`https://nv-lang.org/doc/${guide.slug}/`}
+  ogTitle={title}
+  ogDescription={guide.description.en}
+  twitterTitle={title}
+  twitterDescription={guide.description.en}
+  langRuUrl={`/ru/doc/${guide.slug}/`}
+  langEnUrl={`/doc/${guide.slug}/`}
+  active="doc"
+>
+  <div class="doc-layout">
+    <DocSidebar lang="en" current={guide.slug} headings={headings} />
+    <main id="main-content">
+      <div class="spec-doc__meta">
+        <a href="/doc/">&#8592; Documentation</a>
+        <a href={ghUrl}>Source on GitHub &#8599;</a>
+      </div>
+      <article class="doc-content">
+        <Content />
+      </article>
+    </main>
+  </div>
+</BaseLayout>
