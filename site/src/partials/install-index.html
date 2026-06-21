@@ -36,135 +36,19 @@
 
   <!-- ── OS tabs ───────────────────────────────────────────────────────────── -->
   <h2 style="margin-bottom:1.25rem;">Installation</h2>
-  <div class="os-tabs" role="tablist" aria-label="Operating system">
-    <button class="os-tab active" role="tab" aria-selected="true"  onclick="switchTab('linux',this)">Linux</button>
-    <button class="os-tab"        role="tab" aria-selected="false" onclick="switchTab('mac',this)">macOS</button>
-    <button class="os-tab"        role="tab" aria-selected="false" onclick="switchTab('win',this)">Windows</button>
-    <button class="os-tab"        role="tab" aria-selected="false" onclick="switchTab('src',this)">From source</button>
-  </div>
+  <p style="color:var(--fg-muted);margin-bottom:1.5rem;">
+    Nova is pre-alpha — there are no pre-built packages yet. Build the compiler
+    from source; the steps below work the same on Linux, macOS, and Windows.
+  </p>
 
   <!-- Linux ──────────────────────────────────────────────────────────────── -->
-  <div id="tab-linux" class="os-panel active">
-
-    <div class="step">
-      <div class="step__num">1</div>
-      <div class="step__body">
-        <h3>Download the installer script</h3>
-        <p>The installer downloads a pre-built binary, verifies the checksum, and places <code>nova</code> in <code>~/.local/bin</code>.</p>
-        <div class="copy-block">
-          <pre><code>curl -fsSL https://nv-lang.org/install.sh | sh</code></pre>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-        <p style="margin-top:.75rem;">Or download a <a href="https://github.com/nv-lang/nova/releases">release tarball</a> and unpack manually.</p>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step__num">2</div>
-      <div class="step__body">
-        <h3>Add to PATH</h3>
-        <p>If <code>~/.local/bin</code> is not already on your PATH, add it to your shell profile:</p>
-        <div class="copy-block">
-          <pre><code>echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
-source ~/.bashrc</code></pre>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-        <p style="margin-top:.5rem;">For Zsh use <code>~/.zshrc</code> instead.</p>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step__num">3</div>
-      <div class="step__body">
-        <h3>Verify</h3>
-        <div class="copy-block">
-          <pre><code>nova --version</code></pre>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-        <div class="verify-box">
-          <h4>Expected output</h4>
-          <pre>nova 0.1.0-bootstrap (2026-05-18)</pre>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /tab-linux -->
 
   <!-- macOS ──────────────────────────────────────────────────────────────── -->
-  <div id="tab-mac" class="os-panel">
-
-    <div class="step">
-      <div class="step__num">1</div>
-      <div class="step__body">
-        <h3>Install via Homebrew</h3>
-        <div class="copy-block">
-          <pre><code>brew tap nv-lang/nova
-brew install nova</code></pre>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-        <p style="margin-top:.75rem;">Or use the installer script:</p>
-        <div class="copy-block">
-          <pre><code>curl -fsSL https://nv-lang.org/install.sh | sh</code></pre>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step__num">2</div>
-      <div class="step__body">
-        <h3>Verify</h3>
-        <div class="copy-block">
-          <pre><code>nova --version</code></pre>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-        <div class="verify-box">
-          <h4>Expected output</h4>
-          <pre>nova 0.1.0-bootstrap (2026-05-18)</pre>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /tab-mac -->
 
   <!-- Windows ────────────────────────────────────────────────────────────── -->
-  <div id="tab-win" class="os-panel">
-
-    <div class="notice">
-      <strong>Prerequisite:</strong> Install <a href="https://visualstudio.microsoft.com/vs/community/">Visual Studio 2022</a> with the "Desktop development with C++" workload, which provides the MSVC linker and CRT headers.
-    </div>
-
-    <div class="step">
-      <div class="step__num">1</div>
-      <div class="step__body">
-        <h3>Install via winget</h3>
-        <div class="copy-block">
-          <pre><code>winget install NvLang.Nova</code></pre>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-        <p style="margin-top:.75rem;">Or download the <code>.msi</code> installer from the <a href="https://github.com/nv-lang/nova/releases">GitHub Releases page</a>.</p>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step__num">2</div>
-      <div class="step__body">
-        <h3>Verify (PowerShell)</h3>
-        <div class="copy-block">
-          <pre><code>nova --version</code></pre>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-        <div class="verify-box">
-          <h4>Expected output</h4>
-          <pre>nova 0.1.0-bootstrap (2026-05-18)</pre>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /tab-win -->
 
   <!-- From source ─────────────────────────────────────────────────────────── -->
-  <div id="tab-src" class="os-panel">
+  <div>
 
     <div class="step">
       <div class="step__num">1</div>
@@ -344,14 +228,6 @@ fn main() {
 </footer>
 
 <script>
-function switchTab(id, btn) {
-  document.querySelectorAll('.os-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
-  document.querySelectorAll('.os-panel').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  btn.setAttribute('aria-selected','true');
-  document.getElementById('tab-' + id).classList.add('active');
-}
-
 function copyCode(btn) {
   const code = btn.previousElementSibling.textContent.trim();
   navigator.clipboard.writeText(code).then(() => {
@@ -360,11 +236,4 @@ function copyCode(btn) {
     setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
   });
 }
-
-// Auto-detect OS and select tab
-(function() {
-  const ua = navigator.userAgent;
-  if (/Win/.test(ua)) switchTab('win', document.querySelectorAll('.os-tab')[2]);
-  else if (/Mac/.test(ua)) switchTab('mac', document.querySelectorAll('.os-tab')[1]);
-})();
 </script>

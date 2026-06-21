@@ -155,13 +155,13 @@ fn serve_api() Net Http Log -> ()
 <!-- ── Install ────────────────────────────────────────────────────────────── -->
 <section class="install">
   <h2>Попробовать Nova</h2>
-  <p>Установить компилятор одной командой — или выберите способ для своей ОС на <a href="/ru/install/">странице установки</a>.</p>
+  <p>Nova — pre-alpha, компилятор собирается из исходников. Подробные шаги на <a href="/ru/install/">странице установки</a>.</p>
   <div class="install-cmd">
     <span class="install-cmd__prefix">$</span>
-    <code>curl -sSf https://nv-lang.org/install.sh | sh</code>
+    <code>git clone https://github.com/nv-lang/nova &amp;&amp; cd nova/compiler-codegen &amp;&amp; cargo build --release</code>
   </div>
   <p style="margin-top:1.25rem;font-size:.88rem;color:var(--fg-subtle);">
-    Или <a href="https://github.com/nv-lang/nova/releases">скачать релиз</a> &middot; <a href="https://github.com/nv-lang/nova">собрать из исходников</a>
+    Даёт <code>nova-codegen</code> &middot; <a href="/ru/install/">требования и первая программа</a>
   </p>
 </section>
 

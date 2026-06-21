@@ -73,17 +73,13 @@
       <p>Nova нацелена на область, где нужен контроль системного уровня (предсказуемая производительность, явное управление ресурсами), но также желательны гарантии безопасности, которые обеспечивает современная теория типов. Это не исследовательский язык — он компилируется в нативный код и предназначен для создания реального программного обеспечения.</p>
 
       <h2 id="installation">Установка</h2>
-      <p>Самый быстрый способ начать — скрипт установки:</p>
+      <p>Nova — pre-alpha, компилятор собирается из исходников (Rust 1.78+ и Clang 17+, либо MSVC 2022 на Windows):</p>
 
-      <pre><code>curl -sSf https://nv-lang.org/install.sh | sh</code></pre>
+      <pre><code>git clone https://github.com/nv-lang/nova
+cd nova/compiler-codegen
+cargo build --release</code></pre>
 
-      <p>Это устанавливает компилятор <code>nova</code> и пакетный менеджер <code>nv</code> в <code>~/.nova/bin</code>. Добавьте эту директорию в <code>PATH</code>:</p>
-
-      <pre><code>export PATH="$HOME/.nova/bin:$PATH"</code></pre>
-
-      <p>В качестве альтернативы скачайте готовый бинарный файл со <a href="https://github.com/nv-lang/nova/releases">страницы релизов</a> или соберите компилятор из исходников, следуя <a href="https://github.com/nv-lang/nova/blob/main/CONTRIBUTING.md">руководству для контрибьюторов</a>.</p>
-
-      <p><strong>Системные требования:</strong> Linux x86-64 или ARM64, macOS 12+. Поддержка Windows запланирована.</p>
+      <p>Компилятор будет в <code>target/release/nova-codegen</code>; добавьте его в <code>PATH</code> (или симлинк <code>nova</code>). Подробные шаги — на <a href="/ru/install/">странице установки</a>.</p>
 
       <h2 id="hello-world">Hello, World</h2>
       <p>Создайте файл <code>hello.nv</code>:</p>

@@ -36,135 +36,19 @@
 
   <!-- ── Вкладки ОС ──────────────────────────────────────────────────────────── -->
   <h2 style="margin-bottom:1.25rem;">Установка</h2>
-  <div class="os-tabs" role="tablist" aria-label="Операционная система">
-    <button class="os-tab active" role="tab" aria-selected="true"  onclick="switchTab('linux',this)">Linux</button>
-    <button class="os-tab"        role="tab" aria-selected="false" onclick="switchTab('mac',this)">macOS</button>
-    <button class="os-tab"        role="tab" aria-selected="false" onclick="switchTab('win',this)">Windows</button>
-    <button class="os-tab"        role="tab" aria-selected="false" onclick="switchTab('src',this)">Из исходников</button>
-  </div>
+  <p style="color:var(--fg-muted);margin-bottom:1.5rem;">
+    Nova — pre-alpha, готовых пакетов пока нет. Соберите компилятор из исходников;
+    шаги ниже одинаковы для Linux, macOS и Windows.
+  </p>
 
   <!-- Linux ──────────────────────────────────────────────────────────────────── -->
-  <div id="tab-linux" class="os-panel active">
-
-    <div class="step">
-      <div class="step__num">1</div>
-      <div class="step__body">
-        <h3>Скачать скрипт установки</h3>
-        <p>Скрипт загружает готовый бинарный файл, проверяет контрольную сумму и помещает <code>nova</code> в <code>~/.local/bin</code>.</p>
-        <div class="copy-block">
-          <pre><code>curl -fsSL https://nv-lang.org/install.sh | sh</code></pre>
-          <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
-        </div>
-        <p style="margin-top:.75rem;">Или скачайте <a href="https://github.com/nv-lang/nova/releases">архив релиза</a> и распакуйте вручную.</p>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step__num">2</div>
-      <div class="step__body">
-        <h3>Добавить в PATH</h3>
-        <p>Если <code>~/.local/bin</code> ещё не в PATH, добавьте его в профиль оболочки:</p>
-        <div class="copy-block">
-          <pre><code>echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
-source ~/.bashrc</code></pre>
-          <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
-        </div>
-        <p style="margin-top:.5rem;">Для Zsh используйте <code>~/.zshrc</code>.</p>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step__num">3</div>
-      <div class="step__body">
-        <h3>Проверка</h3>
-        <div class="copy-block">
-          <pre><code>nova --version</code></pre>
-          <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
-        </div>
-        <div class="verify-box">
-          <h4>Ожидаемый вывод</h4>
-          <pre>nova 0.1.0-bootstrap (2026-05-18)</pre>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /tab-linux -->
 
   <!-- macOS ──────────────────────────────────────────────────────────────────── -->
-  <div id="tab-mac" class="os-panel">
-
-    <div class="step">
-      <div class="step__num">1</div>
-      <div class="step__body">
-        <h3>Установить через Homebrew</h3>
-        <div class="copy-block">
-          <pre><code>brew tap nv-lang/nova
-brew install nova</code></pre>
-          <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
-        </div>
-        <p style="margin-top:.75rem;">Или используйте скрипт установки:</p>
-        <div class="copy-block">
-          <pre><code>curl -fsSL https://nv-lang.org/install.sh | sh</code></pre>
-          <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step__num">2</div>
-      <div class="step__body">
-        <h3>Проверка</h3>
-        <div class="copy-block">
-          <pre><code>nova --version</code></pre>
-          <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
-        </div>
-        <div class="verify-box">
-          <h4>Ожидаемый вывод</h4>
-          <pre>nova 0.1.0-bootstrap (2026-05-18)</pre>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /tab-mac -->
 
   <!-- Windows ──────────────────────────────────────────────────────────────── -->
-  <div id="tab-win" class="os-panel">
-
-    <div class="notice">
-      <strong>Предварительное требование:</strong> Установите <a href="https://visualstudio.microsoft.com/vs/community/">Visual Studio 2022</a> с нагрузкой «Разработка классических приложений на C++», которая предоставляет компоновщик MSVC и заголовки CRT.
-    </div>
-
-    <div class="step">
-      <div class="step__num">1</div>
-      <div class="step__body">
-        <h3>Установить через winget</h3>
-        <div class="copy-block">
-          <pre><code>winget install NvLang.Nova</code></pre>
-          <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
-        </div>
-        <p style="margin-top:.75rem;">Или скачайте установщик <code>.msi</code> со <a href="https://github.com/nv-lang/nova/releases">страницы релизов GitHub</a>.</p>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step__num">2</div>
-      <div class="step__body">
-        <h3>Проверка (PowerShell)</h3>
-        <div class="copy-block">
-          <pre><code>nova --version</code></pre>
-          <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
-        </div>
-        <div class="verify-box">
-          <h4>Ожидаемый вывод</h4>
-          <pre>nova 0.1.0-bootstrap (2026-05-18)</pre>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /tab-win -->
 
   <!-- Из исходников ──────────────────────────────────────────────────────────── -->
-  <div id="tab-src" class="os-panel">
+  <div>
 
     <div class="step">
       <div class="step__num">1</div>
@@ -341,14 +225,6 @@ fn main() {
 </footer>
 
 <script>
-function switchTab(id, btn) {
-  document.querySelectorAll('.os-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
-  document.querySelectorAll('.os-panel').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  btn.setAttribute('aria-selected','true');
-  document.getElementById('tab-' + id).classList.add('active');
-}
-
 function copyCode(btn) {
   const code = btn.previousElementSibling.textContent.trim();
   navigator.clipboard.writeText(code).then(() => {
@@ -357,11 +233,4 @@ function copyCode(btn) {
     setTimeout(() => { btn.textContent = 'Копировать'; btn.classList.remove('copied'); }, 1800);
   });
 }
-
-// Автоопределение ОС
-(function() {
-  const ua = navigator.userAgent;
-  if (/Win/.test(ua)) switchTab('win', document.querySelectorAll('.os-tab')[2]);
-  else if (/Mac/.test(ua)) switchTab('mac', document.querySelectorAll('.os-tab')[1]);
-})();
 </script>

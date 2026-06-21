@@ -20,8 +20,6 @@ export const SPEC_DOCS: SpecDoc[] = [
     github: 'spec/conversions.md',    group: 'guide' },
   { id: 'revolutionary',  slug: 'revolutionary',  title: 'Революционные возможности',
     github: 'spec/revolutionary.md',  group: 'guide' },
-  { id: 'paradigm',       slug: 'paradigm',       title: 'Парадигма',
-    github: 'spec/paradigm.md',       group: 'guide' },
   { id: 'open-questions', slug: 'open-questions', title: 'Открытые вопросы дизайна',
     github: 'spec/open-questions.md', group: 'guide' },
   { id: 'history/evolution', slug: 'history/evolution', title: 'Эволюция решений',

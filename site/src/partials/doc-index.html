@@ -73,15 +73,13 @@
       <p>Nova targets the space where you need systems-level control (predictable performance, explicit resource management) but also want the safety guarantees that modern type theory enables. It is not a research language — it compiles to native code and is designed to build real software.</p>
 
       <h2 id="installation">Installation</h2>
-      <p>The fastest way to get started is the installer script:</p>
+      <p>Nova is pre-alpha — build the compiler from source (Rust 1.78+ and Clang 17+, or MSVC 2022 on Windows):</p>
 
-      <pre><code>curl -sSf https://nv-lang.org/install.sh | sh</code></pre>
+      <pre><code>git clone https://github.com/nv-lang/nova
+cd nova/compiler-codegen
+cargo build --release</code></pre>
 
-      <p>This installs the <code>nova</code> compiler and the <code>nv</code> package manager to <code>~/.nova/bin</code>. Add that directory to your <code>PATH</code>:</p>
-
-      <pre><code>export PATH="$HOME/.nova/bin:$PATH"</code></pre>
-
-      <p>Alternatively, download a pre-built binary from the <a href="https://github.com/nv-lang/nova/releases">releases page</a> or build the compiler from source by following the <a href="https://github.com/nv-lang/nova/blob/main/CONTRIBUTING.md">contributor guide</a>.</p>
+      <p>The compiler lands at <code>target/release/nova-codegen</code>; add it to your <code>PATH</code> (or symlink it as <code>nova</code>). Full step-by-step on the <a href="/install/">install page</a>.</p>
 
       <p><strong>System requirements:</strong> Linux x86-64 or ARM64, macOS 12+. Windows support is planned.</p>
 

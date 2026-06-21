@@ -303,12 +303,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://nv-lang.org/spec/paradigm/</loc>
-    <lastmod>2026-05-22</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.4</priority>
-  </url>
-  <url>
     <loc>https://nv-lang.org/spec/open-questions/</loc>
     <lastmod>2026-05-22</lastmod>
     <changefreq>monthly</changefreq>

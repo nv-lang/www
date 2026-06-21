@@ -33,7 +33,7 @@ const DOC_SLUGS = new Set(['channels', 'contracts', 'nova-cli']);
 
 // Обзорные документы spec/*.md -> /spec/<name>/
 const SPEC_DOCS = new Set([
-  'overview', 'paradigm', 'revolutionary',
+  'overview', 'revolutionary',
   'syntax', 'effects', 'conversions', 'open-questions',
 ]);
 
