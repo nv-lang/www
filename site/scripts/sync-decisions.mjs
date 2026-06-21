@@ -27,14 +27,9 @@ const DOCS_OUT = new URL('../src/content/docs/', import.meta.url);
 
 // Пользовательские гайды docs/<slug>.md (+ <slug>.ru.md) -> /doc/<slug>/.
 // Только этот whitelist; прочее в docs/ (планы, идиомы, внутренние
-// заметки) на сайт не попадает. Должен совпадать с генерируемыми
-// записями (generated: true) в src/data/docs.ts.
-//
-// nova-cli намеренно НЕ здесь: его страница пока самописная (партиал
-// опережает nova/docs/nova-cli.md на таблицу Category flags, D304;
-// origin/main репо nova ещё не догнал). Вернуть сюда, когда nova-cli.md
-// будет содержать тот же контент.
-const DOC_SLUGS = new Set(['channels', 'contracts', 'nova-codegen']);
+// заметки) на сайт не попадает. Должен совпадать с DOC_GUIDES в
+// src/data/docs.ts.
+const DOC_SLUGS = new Set(['channels', 'contracts', 'nova-cli']);
 
 // Обзорные документы spec/*.md -> /spec/<name>/
 const SPEC_DOCS = new Set([

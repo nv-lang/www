@@ -162,15 +162,6 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://nv-lang.org/doc/nova-cli/"/>
   </url>
   <url>
-    <loc>https://nv-lang.org/doc/nova-codegen/</loc>
-    <lastmod>2026-05-22</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nv-lang.org/doc/nova-codegen/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://nv-lang.org/ru/doc/nova-codegen/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://nv-lang.org/doc/nova-codegen/"/>
-  </url>
-  <url>
     <loc>https://nv-lang.org/doc/std/</loc>
     <lastmod>2026-05-22</lastmod>
     <changefreq>monthly</changefreq>
@@ -417,15 +408,6 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://nv-lang.org/doc/nova-cli/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://nv-lang.org/ru/doc/nova-cli/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://nv-lang.org/doc/nova-cli/"/>
-  </url>
-  <url>
-    <loc>https://nv-lang.org/ru/doc/nova-codegen/</loc>
-    <lastmod>2026-05-22</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nv-lang.org/doc/nova-codegen/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://nv-lang.org/ru/doc/nova-codegen/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://nv-lang.org/doc/nova-codegen/"/>
   </url>
   <url>
     <loc>https://nv-lang.org/ru/doc/std/</loc>
