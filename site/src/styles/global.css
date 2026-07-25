@@ -620,9 +620,8 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
   transition: box-shadow 0.22s ease, transform 0.22s ease, border-color 0.22s ease;
 }
 .feature-card:hover {
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-md);
   border-color: var(--accent);
-  transform: translateY(-4px);
 }
 
 .feature-card__icon {
