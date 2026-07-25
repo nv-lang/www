@@ -493,6 +493,7 @@ pre.nova-block {
   background: #1f1f1f !important;
   border-color: #3c3c3c !important;
   color: #d4d4d4;
+  box-shadow: var(--shadow-md);
 }
 
 pre.nova-block code {
@@ -550,6 +551,8 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
   border: none;
   border-radius: 0;
   margin: 0;
+  /* тень несёт само окно-обёртка — вложенному pre она не нужна */
+  box-shadow: none;
 }
 
 /* Copy-кнопка на блоках кода — см. public/js/copy-code.js */
@@ -809,8 +812,10 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
   content: "";
   position: absolute;
   inset: -20% -14%;
-  background: radial-gradient(60% 55% at 62% 42%,
-              var(--accent-glow), transparent 76%);
+  /* радиусы подобраны так, чтобы градиент гас ВНУТРИ бокса (58+40≤100 и т.д.) —
+     иначе у края видна линия обрыва */
+  background: radial-gradient(40% 36% at 58% 42%,
+              var(--accent-glow), transparent 100%);
   z-index: 0;
   pointer-events: none;
 }
