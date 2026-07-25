@@ -35,6 +35,9 @@ const { lang, active, customFooter = false } = p;
 <html lang={lang}>
   <head>
     <Head {...p} />
+    <link rel="preload" href="/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
+    {lang === 'ru' && <link rel="preload" href="/fonts/manrope-cyrillic.woff2" as="font" type="font/woff2" crossorigin />}
     <slot name="head-extra" />
   </head>
   <body>

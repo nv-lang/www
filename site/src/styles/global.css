@@ -1,5 +1,6 @@
 /* nv-lang.org — production stylesheet */
-/* Zero external dependencies. System font stack only. */
+/* Zero external requests: заголовки Manrope и код JetBrains Mono — self-hosted
+   variable-woff2 в /fonts/ (CSP default-src 'self'); текст — системный стек. */
 
 /* ── Custom properties ─────────────────────────────────────────────────── */
 :root {
@@ -26,6 +27,11 @@
   --surface:      #ffffff;
   --accent-glow:  rgba(107,63,160,.22);
   --sel-bg:       rgba(107,63,160,.16);
+
+  --font-heading: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                  Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas,
+                  "Liberation Mono", "Courier New", monospace;
 
   /* Syntax token colors — light */
   --tok-kw:      #6b3fa0;
@@ -73,6 +79,40 @@
   }
 }
 
+/* ── Self-hosted шрифты (variable woff2, сабсеты latin/cyrillic) ────────── */
+@font-face {
+  font-family: "Manrope";
+  src: url("/fonts/manrope-latin.woff2") format("woff2");
+  font-weight: 200 800;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Manrope";
+  src: url("/fonts/manrope-cyrillic.woff2") format("woff2");
+  font-weight: 200 800;
+  font-display: swap;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/jetbrains-mono-latin.woff2") format("woff2");
+  font-weight: 100 800;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/jetbrains-mono-cyrillic.woff2") format("woff2");
+  font-weight: 100 800;
+  font-display: swap;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
 /* ── Reset & base ───────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -92,6 +132,7 @@ body {
 }
 
 h1, h2, h3, h4 {
+  font-family: var(--font-heading);
   line-height: 1.25;
   letter-spacing: -0.02em;
   margin-top: 0;
@@ -115,8 +156,9 @@ a:hover { text-decoration: underline; color: var(--accent-hover); }
 a:focus-visible, .btn:focus-visible { outline-offset: 3px; }
 
 code, pre, kbd {
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas,
-               "Liberation Mono", "Courier New", monospace;
+  font-family: var(--font-mono);
+  /* сайт учит синтаксису: лигатуры выключены, читатель видит `->`, а не стрелку */
+  font-feature-settings: "liga" 0, "calt" 0;
   font-size: 0.875em;
 }
 
@@ -161,6 +203,7 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] { scroll-margin-top: 72px; }
 .site-logo {
   display: flex;
   align-items: center;
+  font-family: var(--font-heading);
   font-size: 1.25rem;
   font-weight: 800;
   color: var(--fg);
@@ -278,6 +321,7 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] { scroll-margin-top: 72px; }
 }
 
 .footer-brand {
+  font-family: var(--font-heading);
   font-weight: 800;
   font-size: 1.1rem;
   color: var(--fg);
