@@ -21,9 +21,9 @@ const HIGHLIGHTER = join(HERE, '..', 'public', 'js', 'nova-highlight.js');
 // ACTIVE keywords the lexer produces. `true`/`false` are intentionally classified
 // as BUILTINS (constants) in the highlighter, so they are checked separately.
 const ACTIVE = [
-  'module', 'import', 'use', 'export', 'external',
+  'module', 'import', 'export', 'external', 'extern',
   'fn', 'type', 'effect', 'alias', 'protocol',
-  'const', 'mut', 'consume', 'ro', 'priv', 'pub', 'unsafe',
+  'const', 'mut', 'consume', 'ref', 'ro', 'uninit', 'priv', 'pub', 'unsafe',
   'if', 'else', 'match', 'for', 'while', 'loop', 'in', 'return', 'break', 'continue',
   'test', 'with', 'throw', 'as', 'is',
   'spawn', 'supervised', 'parallel', 'detach', 'blocking', 'interrupt',
@@ -31,9 +31,12 @@ const ACTIVE = [
 ];
 
 // RETIRED (let/readonly/safe) + words that are NOT keywords → must NOT be
-// highlighted as keywords.
+// highlighted as keywords. `use` was hard-keyword `KwUse` until D443 (Plan
+// 239, 2026-08-01); retracted to a contextual keyword (same class as
+// `bench`/`apply`/`measure`/`null` — D278 §3 says these must NOT be
+// highlighted, so the lexer sees a plain `Ident`, not a phantom `Kw*`).
 const PHANTOMS = [
-  'let', 'readonly', 'safe',
+  'let', 'readonly', 'safe', 'use',
   'handler', 'and', 'or', 'not', 'race', 'with_timeout', 'cancel_scope', 'region',
 ];
 
