@@ -17,11 +17,14 @@
 
   // keyword.declaration.nova + storage.modifier.nova  → tok-kw-decl  (#569cd6 blue)
   // Source-of-truth for keywords: compiler-codegen/src/lexer/mod.rs.
-  // Removed (retracted/now plain idents): let, readonly, handler.
+  // Removed (retracted/now plain idents): let, readonly, handler, use (D443,
+  // Plan 239, 2026-08-01 — `use` demoted hard keyword → contextual, same
+  // class as bench/apply/measure/null; D278 §3 says contextual words must
+  // NOT be highlighted).
   const DECL_KEYWORDS = new Set([
     'fn','type','alias','effect','protocol','const',
-    'module','import','export','as','use','test','external','lemma',
-    'mut','consume','ro','priv','pub','unsafe','is','old',
+    'module','import','export','as','extern','test','external','lemma',
+    'mut','consume','ref','ro','uninit','priv','pub','unsafe','is','old',
   ]);
 
   // support.type.primitive.nova  → tok-type  (#4ec9b0 teal)
