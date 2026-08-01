@@ -55,6 +55,7 @@
       <div class="step__body">
         <h3>Prerequisites</h3>
         <p>Install a stable <a href="https://rustup.rs">Rust</a> toolchain (1.85+). To compile Nova programs you also need a C toolchain — Clang, MSVC, or GCC (auto-detected).</p>
+        <p>The runtime also depends on the Boehm GC library, which is not bundled yet. If it is missing on your machine, <code>nova build</code> stops with platform-specific install instructions.</p>
         <div class="copy-block">
           <pre><code>rustup update stable</code></pre>
           <button class="copy-btn" onclick="copyCode(this)">Copy</button>
