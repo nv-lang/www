@@ -195,13 +195,12 @@ supervised {
       <h1 id="memory">Memory</h1>
       <p>Nova uses managed memory by default. The current runtime integrates <a href="https://www.hboehm.info/gc/">Boehm-Demers-Weiser GC</a>; a concurrent, generational GC is on the roadmap.</p>
 
-      <p>For latency-sensitive code, annotate a scope or function with <code>realtime nogc</code> to opt out of GC pauses. The compiler enforces that no GC-managed allocations occur inside such scopes.</p>
+      <p>For latency-sensitive code, mark a function <code>#realtime</code> — a callee guarantee: the compiler rejects suspension points and raw-pointer operations inside its body. A stricter <code>#realtime nogc</code> mode that additionally bans GC-managed allocations is on the roadmap.</p>
 
-      <pre><code class="language-nova">fn process_audio_frame(frame AudioFrame) Dsp -> AudioFrame {
-    realtime nogc {
-        // only stack allocation allowed here
-        frame.apply_eq()
-    }
+      <pre><code class="language-nova">// callee guarantee: no suspension points, no raw-pointer ops
+#realtime
+fn mix_sample(a f32, b f32, k f32) -> f32 {
+    a * k + b * (1.0 - k)
 }</code></pre>
 
       <hr class="divider">
