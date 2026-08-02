@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
-# Plan www-04: Revenue-страницы — /course/, /newsletter/, /support/, /sponsors/
+# Plan 04: Revenue-страницы — /course/, /newsletter/, /support/, /sponsors/
 
 > **Статус:** 📋 proposed 2026-05-24, не начат.
 > **Приоритет:** P1 (нужно для CTA пилотной статьи Habr).
 > **Трудоёмкость:** ~1 dev-day (4 страницы × EN+RU + Cloudflare Worker + nav).
 > **Репо:** `d:\Sources\nv-lang\www\`
-> **Предшественники:** [www-01](www-01-prod-hardening.md) ✅, [www-02](www-02-astro-migration.md) ✅, [www-03](www-03-design-polish.md) ✅.
+> **Предшественники:** [01](01-prod-hardening.md) ✅, [02](02-astro-migration.md) ✅, [03](03-design-polish.md) ✅.
 > **Источник:** внутренняя планировочная документация.
 
 ## Зачем
@@ -160,7 +160,7 @@ Cloudflare Worker — отдельно от www репо (приватная и�
 - Payment-инфраструктура (это Boosty/ЮKassa напрямую).
 - Tier-схема /sponsors/ (не вводим без 3+ реальных спонсоров).
 - A/B тесты (future).
-- Дизайнерская полировка лендингов до конкурентного уровня (Stripe Atlas, Maven и т.п.) — это www-06+ задача.
+- Дизайнерская полировка лендингов до конкурентного уровня (Stripe Atlas, Maven и т.п.) — это задача будущих планов (07+).
 
 ## Открытые вопросы
 
@@ -183,10 +183,10 @@ Cloudflare Worker — отдельно от www репо (приватная и�
 
 ## Связь
 
-- [www-01](www-01-prod-hardening.md) — SEO/CSP/a11y база, наследуем.
-- [www-02](www-02-astro-migration.md) — Astro инфра.
-- [www-03](www-03-design-polish.md) — дизайн polish, applies to new pages.
-- [www-05](www-05-ru-mirror-seo.md) — параллельный план: ru-RU hreflang для .ru.
+- [01](01-prod-hardening.md) — SEO/CSP/a11y база, наследуем.
+- [02](02-astro-migration.md) — Astro инфра.
+- [03](03-design-polish.md) — дизайн polish, applies to new pages.
+- [05](05-ru-mirror-seo.md) — параллельный план: ru-RU hreflang для .ru.
 - Внутренняя стратегическая документация (вне этого репо) — определяет
   контент курса / newsletter, расписание публикаций, ценовую политику.
 - Blog-посты публикуются как PR в `site/src/pages/blog/` этого же репо;

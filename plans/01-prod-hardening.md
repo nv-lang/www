@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
-# Plan www-01: Production hardening сайта nv-lang.org
+# Plan 01: Production hardening сайта nv-lang.org
 
 > **Статус:** ✅ Выполнен (2026-05-21); 🔁 повторный аудит — довод до production-grade (2026-05-22, ред. 2).
 > **Создан:** 2026-05-21. **Приоритет:** P1 (блокеры прода) → P2 (SEO/инфра) → P3 (minor).

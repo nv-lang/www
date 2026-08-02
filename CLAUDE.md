@@ -5,14 +5,14 @@ Repository for **nv-lang.org** — the Nova programming language website.
 ```
 www/
 ├── site/             ← сам сайт: Astro-проект (см. ниже)
-├── plans/            планы развития (www-01, www-02 …)
+├── plans/            планы развития (01, 02 …)
 ├── .github/workflows/  CI — сборка и деплой на GitHub Pages
 ├── CLAUDE.md  README.md  LICENSE
 ```
 
 Сайт собирается из `site/` Astro → `site/dist/` → GitHub Pages (через Actions).
 
-> Миграция со старого «голого HTML» на Astro — `plans/www-02-astro-migration.md`.
+> Миграция со старого «голого HTML» на Astro — `plans/02-astro-migration.md`.
 
 ## Команды
 

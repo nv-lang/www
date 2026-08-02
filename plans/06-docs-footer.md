@@ -1,5 +1,5 @@
 <!-- SPDX-License-Identifier: MIT OR Apache-2.0 -->
-# Plan www-06 — подвал контент-страниц (Edit/Source, Open an issue, дата источника)
+# Plan 06 — подвал контент-страниц (Edit/Source, Open an issue, дата источника)
 
 > Перенесён из nova `docs/plans/241-site-docs-footer.md` (2026-08-02, слово
 > владельца; номер скорректирован под нумерацию планов сайта). Исторические

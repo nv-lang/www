@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
-# Plan www-05: Восстановить nv-lang.ru как зеркало + SEO через ru-RU hreflang
+# Plan 05: Восстановить nv-lang.ru как зеркало + SEO через ru-RU hreflang
 
 > **Статус:** 📋 proposed 2026-05-24, rev 2 — 2026-05-25 после
 > обнаружения что `.ru` сейчас обслуживает README (sync клонирует
@@ -9,8 +9,8 @@
 > + README update + smoke test).
 > **Репо:** `d:\Sources\nv-lang\www.nv-lang.ru\` (главное);
 > опц. `d:\Sources\nv-lang\www\` (документация).
-> **Предшественники:** [www-01](www-01-prod-hardening.md) ✅,
-> [www-02](www-02-astro-migration.md) ✅ (Astro генерирует
+> **Предшественники:** [01](01-prod-hardening.md) ✅,
+> [02](02-astro-migration.md) ✅ (Astro генерирует
 > canonical/hreflang).
 > **Источник:** обсуждение mirror vs redirect 2026-05-24; ревизия
 > после WebFetch проверки 2026-05-25.
@@ -204,9 +204,9 @@ alias, не дубликат — нет SEO penalty).
 
 ## Связь
 
-- [www-01](www-01-prod-hardening.md) — hreflang base.
-- [www-02](www-02-astro-migration.md) — Astro генерирует canonical/hreflang.
-- [www-04](www-04-revenue-pages.md) — новые страницы, на которые
+- [01](01-prod-hardening.md) — hreflang base.
+- [02](02-astro-migration.md) — Astro генерирует canonical/hreflang.
+- [04](04-revenue-pages.md) — новые страницы, на которые
   ru-RU hreflang применится автоматически при следующем deploy.
 - «Отечественное ПО» / импортозамещение narrative для РФ-аудитории
   (рассматривается во внутренней стратегической документации,

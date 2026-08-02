@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
-# Plan www-02: Миграция nv-lang.org на Astro
+# Plan 02: Миграция nv-lang.org на Astro
 
 > **Статус:** ✅ ЗАКРЫТ — 2026-05-22. Миграция на Astro выполнена и
 > **задеплоена**: cutover проведён (Pages Source = GitHub Actions, деплой
@@ -9,7 +9,7 @@
 > **Создан:** 2026-05-22. **Приоритет:** P2 (инфраструктура, не блокер прода).
 > **Трудоёмкость:** ~3–4 dev-day (ядро Ф.1–Ф.6, Ф.8–Ф.9).
 > **Репо:** `d:\Sources\nv-lang\www\`
-> **Предшественник:** [www-01](www-01-prod-hardening.md) — production hardening; всё,
+> **Предшественник:** [01](01-prod-hardening.md) — production hardening; всё,
 > что в нём укреплено (SEO, hreflang, CSP, sitemap), миграция обязана сохранить.
 
 ---
@@ -86,7 +86,7 @@ Pages Source = «GitHub Actions». Кастомный домен сохраня�
 
 3. **Языковая схема** ✅ — **сохранить все URL точь-в-точь** ручным размещением
    страниц (i18n-роутинг Astro не обязателен). Текущая непоследовательность
-   (`/` = RU, но `/doc/` = EN — см. аудит [www-01](www-01-prod-hardening.md))
+   (`/` = RU, но `/doc/` = EN — см. аудит [01](01-prod-hardening.md))
    на миграцию **не трогается**; унификация — отдельное решение позже.
 
 ---
