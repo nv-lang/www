@@ -1,15 +1,19 @@
 // Синхронизация документации Nova из репозитория nv-lang/nova.
-// Тянет дерево spec/ + выбранные пользовательские гайды docs/ и
+// Тянет дерево spec/ + выбранные пользовательские гайды docs/guide/ и
 // раскладывает по контент-коллекциям сайта:
-//   spec/decisions/NN-*.md, README.md  -> src/content/decisions/
-//   spec/*.md (обзорные документы)      -> src/content/spec/
-//   spec/decisions/history/*.md         -> src/content/spec/history/
-//   docs/<slug>.md / <slug>.ru.md       -> src/content/docs/{en,ru}/<slug>.md
-//     (только гайды из DOC_SLUGS: channels, contracts, nova-cli, nova-codegen)
+//   spec/decisions/NN-*.md, README.md         -> src/content/decisions/
+//   spec/*.md (обзорные документы)             -> src/content/spec/
+//   spec/decisions/history/*.md                -> src/content/spec/history/
+//   docs/guide/<slug>.md / <slug>.ru.md         -> src/content/docs/{en,ru}/<slug>.md
+//     (только гайды из DOC_SLUGS: channels, contracts, nova-cli)
+// docs/guide/ — ПОЛЬЗОВАТЕЛЬСКИЕ гайды nova (docs-split 2026-08-02, см.
+// nova/docs/README.md). docs/dev/ (внутренние конвенции/процесс/промпты
+// для агентов) сюда НИКОГДА не попадает — ни при каком расширении
+// DOC_SLUGS путь внутри docs/dev/ добавлять нельзя.
 // Перекрёстные ссылки переписываются под URL сайта; якоря, которых нет
 // на целевой странице, отбрасываются (ссылка ведёт на саму страницу) —
 // чтобы линк-чекер не падал на неточных ссылках исходника.
-// Для гайдов docs/ дополнительно срезается дублирующий хром сайта:
+// Для гайдов docs/guide/ дополнительно срезается дублирующий хром сайта:
 // строка-переключатель языка и ручное оглавление (## Contents /
 // ## Содержание) — их заменяют header lang-switch и sidebar-TOC.
 // Запускается как prebuild/predev — часть `npm run build`.
@@ -25,10 +29,10 @@ const DEC_OUT = new URL('../src/content/decisions/', import.meta.url);
 const SPEC_OUT = new URL('../src/content/spec/', import.meta.url);
 const DOCS_OUT = new URL('../src/content/docs/', import.meta.url);
 
-// Пользовательские гайды docs/<slug>.md (+ <slug>.ru.md) -> /doc/<slug>/.
-// Только этот whitelist; прочее в docs/ (планы, идиомы, внутренние
-// заметки) на сайт не попадает. Должен совпадать с DOC_GUIDES в
-// src/data/docs.ts.
+// Пользовательские гайды docs/guide/<slug>.md (+ <slug>.ru.md) -> /doc/<slug>/.
+// Только этот whitelist; прочее в docs/ (docs/dev/ внутреннее, docs/plans/
+// планы, docs/idiom(s)/, docs/research/ и т.п.) на сайт не попадает.
+// Должен совпадать с DOC_GUIDES в src/data/docs.ts.
 const DOC_SLUGS = new Set(['channels', 'contracts', 'nova-cli']);
 
 // Обзорные документы spec/*.md -> /spec/<name>/
@@ -48,9 +52,9 @@ function pathToSite(repoPath) {
   if (m) return `/spec/history/${m[1]}/`;
   m = repoPath.match(/^spec\/([a-z][a-z-]*)\.md$/);
   if (m && SPEC_DOCS.has(m[1])) return `/spec/${m[1]}/`;
-  m = repoPath.match(/^docs\/([a-z][a-z-]*)\.ru\.md$/);
+  m = repoPath.match(/^docs\/guide\/([a-z][a-z-]*)\.ru\.md$/);
   if (m && DOC_SLUGS.has(m[1])) return `/ru/doc/${m[1]}/`;
-  m = repoPath.match(/^docs\/([a-z][a-z-]*)\.md$/);
+  m = repoPath.match(/^docs\/guide\/([a-z][a-z-]*)\.md$/);
   if (m && DOC_SLUGS.has(m[1])) return `/doc/${m[1]}/`;
   return null;
 }
@@ -92,7 +96,7 @@ function buildDMap(decFiles) {
   return map;
 }
 
-// Срезать дублирующий хром сайта из тела гайда docs/.
+// Срезать дублирующий хром сайта из тела гайда docs/guide/.
 function stripDocChrome(md) {
   // строка-переключатель языка («**English** | [Русский](x.ru.md)» либо
   // зеркально для RU) — на сайте её заменяет lang-switch в шапке.
@@ -164,11 +168,11 @@ async function main() {
   // имена нужных doc-файлов (EN + RU) для отбора из дерева репозитория
   const DOC_FILES = new Set();
   for (const s of DOC_SLUGS) {
-    DOC_FILES.add(`docs/${s}.md`);
-    DOC_FILES.add(`docs/${s}.ru.md`);
+    DOC_FILES.add(`docs/guide/${s}.md`);
+    DOC_FILES.add(`docs/guide/${s}.ru.md`);
   }
 
-  // всё дерево репозитория -> отбор spec/**/*.md + выбранных docs/*.md
+  // всё дерево репозитория -> отбор spec/**/*.md + выбранных docs/guide/*.md
   const treeUrl = `https://api.github.com/repos/${REPO}/git/trees/${BRANCH}?recursive=1`;
   const tr = await fetch(treeUrl, { headers: apiHeaders });
   if (!tr.ok) throw new Error(`GitHub API ${tr.status} — ${treeUrl}`);
@@ -176,7 +180,7 @@ async function main() {
     .filter((e) => e.type === 'blob' && e.path.endsWith('.md') &&
       (e.path.startsWith('spec/') || DOC_FILES.has(e.path)))
     .map((e) => e.path);
-  if (paths.length === 0) throw new Error('нет .md в spec/ и docs/');
+  if (paths.length === 0) throw new Error('нет .md в spec/ и docs/guide/');
 
   const files = [];
   for (const p of paths) {
@@ -198,15 +202,15 @@ async function main() {
       specFiles.push({ rel: `history/${m[1]}`, text: f.text, path: f.path });
     else if ((m = f.path.match(/^spec\/([a-z][a-z-]*)\.md$/)) && SPEC_DOCS.has(m[1]))
       specFiles.push({ rel: `${m[1]}.md`, text: f.text, path: f.path });
-    else if ((m = f.path.match(/^docs\/([a-z][a-z-]*)\.ru\.md$/)) && DOC_SLUGS.has(m[1]))
+    else if ((m = f.path.match(/^docs\/guide\/([a-z][a-z-]*)\.ru\.md$/)) && DOC_SLUGS.has(m[1]))
       docFiles.push({ slug: m[1], lang: 'ru', text: stripDocChrome(f.text), path: f.path });
-    else if ((m = f.path.match(/^docs\/([a-z][a-z-]*)\.md$/)) && DOC_SLUGS.has(m[1]))
+    else if ((m = f.path.match(/^docs\/guide\/([a-z][a-z-]*)\.md$/)) && DOC_SLUGS.has(m[1]))
       docFiles.push({ slug: m[1], lang: 'en', text: stripDocChrome(f.text), path: f.path });
   }
   if (decFiles.length === 0 || specFiles.length === 0)
     throw new Error('неожиданная структура spec/');
   if (docFiles.length === 0)
-    throw new Error('не найдены гайды docs/ (DOC_SLUGS)');
+    throw new Error('не найдены гайды docs/guide/ (DOC_SLUGS)');
 
   const dMap = buildDMap(decFiles);
   const anchors = new Map();
