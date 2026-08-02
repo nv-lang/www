@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import SpecSidebar from '@components/SpecSidebar.astro';
+import PageMeta from '@components/PageMeta.astro';
 import { TOPICS } from '@data/decisions';
 
 export async function getStaticPaths() {
@@ -14,6 +15,10 @@ export async function getStaticPaths() {
 
 const { entry, topic } = Astro.props;
 const { Content } = await render(entry);
+const sourcePath = entry.data.sourcePath;
+const sourceUrl = sourcePath
+  ? `https://github.com/nv-lang/nova/blob/main/${sourcePath}`
+  : undefined;
 ---
 
 <BaseLayout
@@ -32,6 +37,12 @@ const { Content } = await render(entry);
       <article class="doc-content">
         <Content />
       </article>
+      <PageMeta
+        lang="ru"
+        pagePath={`/spec/decisions/${topic.slug}/`}
+        sourceUrl={sourceUrl}
+        sourceDate={entry.data.sourceDate}
+      />
     </main>
   </div>
 </BaseLayout>

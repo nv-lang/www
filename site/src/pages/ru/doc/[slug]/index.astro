@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import DocSidebar from '@components/DocSidebar.astro';
+import PageMeta from '@components/PageMeta.astro';
 import { DOC_GUIDES } from '@data/docs';
 
 export async function getStaticPaths() {
@@ -16,6 +17,10 @@ const { entry, guide } = Astro.props;
 const { Content, headings } = await render(entry);
 const title = `${guide.title.ru} — Nova`;
 const ghUrl = `https://github.com/nv-lang/nova/blob/main/${guide.github.replace(/\.md$/, '.ru.md')}`;
+const sourcePath = entry.data.sourcePath;
+const editUrl = sourcePath
+  ? `https://github.com/nv-lang/nova/edit/main/${sourcePath}`
+  : undefined;
 ---
 
 <BaseLayout
@@ -46,6 +51,12 @@ const ghUrl = `https://github.com/nv-lang/nova/blob/main/${guide.github.replace(
       <article class="doc-content">
         <Content />
       </article>
+      <PageMeta
+        lang="ru"
+        pagePath={`/ru/doc/${guide.slug}/`}
+        editUrl={editUrl}
+        sourceDate={entry.data.sourceDate}
+      />
     </main>
   </div>
 </BaseLayout>

@@ -17,7 +17,7 @@
 // строка-переключатель языка и ручное оглавление (## Contents /
 // ## Содержание) — их заменяют header lang-switch и sidebar-TOC.
 // Запускается как prebuild/predev — часть `npm run build`.
-import { mkdir, writeFile, rm } from 'node:fs/promises';
+import { mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { posix } from 'node:path';
 import GithubSlugger from 'github-slugger';
 
@@ -25,9 +25,16 @@ const REPO = 'nv-lang/nova';
 const BRANCH = 'main';
 const UA = { 'User-Agent': 'nv-lang-www-build' };
 const GH_BLOB = `https://github.com/${REPO}/blob/${BRANCH}`;
+const GH_GRAPHQL = 'https://api.github.com/graphql';
 const DEC_OUT = new URL('../src/content/decisions/', import.meta.url);
 const SPEC_OUT = new URL('../src/content/spec/', import.meta.url);
 const DOCS_OUT = new URL('../src/content/docs/', import.meta.url);
+
+// Кэш дат последнего коммита источника (план 241, §1.1): site/src/data/
+// source-dates.json, обновляется при успешном синке с токеном (CI/ручные
+// волны). Локальные сборки без токена рендерят даты из кэша. CI кэш назад
+// НЕ коммитит — освежение кэша происходит в ручных волнах, это норма.
+const DATES_CACHE = new URL('../src/data/source-dates.json', import.meta.url);
 
 // Пользовательские гайды docs/guide/<slug>.md (+ <slug>.ru.md) -> /doc/<slug>/.
 // Только этот whitelist; прочее в docs/ (docs/dev/ внутреннее, docs/plans/
@@ -160,6 +167,100 @@ function rewriteLinks(md, repoPath, dMap, anchors) {
   );
 }
 
+// ── Даты последнего коммита источника (план 241, §1.1) ────────────────────
+// GraphQL-батч по всем путям (commit.history(path:) через aliases p0..pN)
+// работает только с токеном (CI). Локальная сборка без токена берёт кэш
+// source-dates.json; свежие даты попадают в кэш при успешном синке с токеном.
+// Нет даты ни в ответе, ни в кэше — поле sourceDate в frontmatter не пишется
+// и блок даты на странице не рендерится (#honest-dates: дата сборки как
+// fallback ЗАПРЕЩЕНА). Для ru-пар (*.ru.md) дата берётся от СВОЕГО файла —
+// каждый путь опрашивается отдельно.
+
+async function loadDateCache() {
+  try {
+    return JSON.parse(await readFile(DATES_CACHE, 'utf8'));
+  } catch {
+    return {};
+  }
+}
+
+async function saveDateCache(map) {
+  try {
+    await writeFile(DATES_CACHE, JSON.stringify(map, null, 2) + '\n', 'utf8');
+  } catch (e) {
+    console.warn('sync: кэш дат не записан:', e instanceof Error ? e.message : e);
+  }
+}
+
+// map path -> ISO committedDate последнего коммита пути на BRANCH.
+async function fetchDatesGraphQL(paths, token) {
+  const CHUNK = 50;
+  const out = {};
+  for (let i = 0; i < paths.length; i += CHUNK) {
+    const chunk = paths.slice(i, i + CHUNK);
+    const fields = chunk
+      .map((p, j) =>
+        `p${j}: history(first: 1, path: ${JSON.stringify(p)}) { nodes { committedDate } }`)
+      .join('\n');
+    const query =
+      'query {\n' +
+      '  repository(owner: "nv-lang", name: "nova") {\n' +
+      '    object(expression: "main") {\n' +
+      '      ... on Commit {\n' +
+      `        ${fields}\n` +
+      '      }\n' +
+      '    }\n' +
+      '  }\n' +
+      '}';
+    const res = await fetch(GH_GRAPHQL, {
+      method: 'POST',
+      headers: {
+        ...UA,
+        Accept: 'application/vnd.github+json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ query }),
+    });
+    if (!res.ok) throw new Error(`GraphQL ${res.status}`);
+    const data = await res.json();
+    if (data.errors) throw new Error('GraphQL: ' + data.errors.map((e) => e.message).join('; '));
+    const commit = data.data?.repository?.object ?? null;
+    for (let j = 0; j < chunk.length; j++) {
+      const nodes = commit?.[`p${j}`]?.nodes;
+      if (nodes?.length) out[chunk[j]] = nodes[0].committedDate;
+    }
+  }
+  return out;
+}
+
+async function sourceDates(paths) {
+  const cache = await loadDateCache();
+  if (!process.env.GITHUB_TOKEN) {
+    console.log(`sync: даты источников — из кэша (${Object.keys(cache).length} путей), токена нет`);
+    return cache; // локально — кэш; GraphQL без токена недоступен
+  }
+  try {
+    const fresh = await fetchDatesGraphQL(paths, process.env.GITHUB_TOKEN);
+    const merged = { ...cache, ...fresh };
+    await saveDateCache(merged);
+    console.log(`sync: даты источников — GraphQL, ${Object.keys(fresh).length} путей`);
+    return merged;
+  } catch (e) {
+    console.warn('sync: GraphQL дат не сработал, рендер из кэша:',
+      e instanceof Error ? e.message : e);
+    return cache;
+  }
+}
+
+// frontmatter сгенерированной страницы: путь источника + дата коммита.
+function frontmatter(repoPath, date) {
+  const lines = ['---', `sourcePath: ${JSON.stringify(repoPath)}`];
+  if (date) lines.push(`sourceDate: ${JSON.stringify(date.slice(0, 10))}`);
+  lines.push('---');
+  return lines.join('\n') + '\n\n';
+}
+
 async function main() {
   const apiHeaders = { ...UA, Accept: 'application/vnd.github+json' };
   if (process.env.GITHUB_TOKEN)
@@ -219,6 +320,8 @@ async function main() {
     if (url) anchors.set(url, anchorsOf(f.text));
   }
 
+  const dates = await sourceDates(files.map((f) => f.path));
+
   await rm(DEC_OUT, { recursive: true, force: true });
   await rm(SPEC_OUT, { recursive: true, force: true });
   await rm(DOCS_OUT, { recursive: true, force: true });
@@ -228,13 +331,13 @@ async function main() {
   await mkdir(new URL('ru/', DOCS_OUT), { recursive: true });
   for (const f of decFiles)
     await writeFile(new URL(f.name, DEC_OUT),
-      rewriteLinks(f.text, f.path, dMap, anchors), 'utf8');
+      frontmatter(f.path, dates[f.path]) + rewriteLinks(f.text, f.path, dMap, anchors), 'utf8');
   for (const f of specFiles)
     await writeFile(new URL(f.rel, SPEC_OUT),
-      rewriteLinks(f.text, f.path, dMap, anchors), 'utf8');
+      frontmatter(f.path, dates[f.path]) + rewriteLinks(f.text, f.path, dMap, anchors), 'utf8');
   for (const f of docFiles)
     await writeFile(new URL(`${f.lang}/${f.slug}.md`, DOCS_OUT),
-      rewriteLinks(f.text, f.path, dMap, anchors), 'utf8');
+      frontmatter(f.path, dates[f.path]) + rewriteLinks(f.text, f.path, dMap, anchors), 'utf8');
 
   console.log(
     `sync: ${decFiles.length} файлов решений + ${specFiles.length} spec-документов + ` +

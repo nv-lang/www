@@ -44,6 +44,7 @@ const { lang, active, customFooter = false } = p;
     <a href="#main-content" class="skip-link">Skip to main content</a>
     <Header lang={lang} active={active} langRuUrl={p.langRuUrl} langEnUrl={p.langEnUrl} />
     <div data-pagefind-body><slot /></div>
+    <slot name="page-meta" />
     {!customFooter && <Footer lang={lang} />}
     <script src="/js/nova-highlight.js" is:inline></script>
     <script src="/js/copy-code.js" is:inline></script>

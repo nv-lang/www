@@ -23,6 +23,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Полная история нужна для дат «last updated» рукописных страниц
+          # (git log -1 по партиалу): при depth=1 всем партиалам ляжет дата
+          # последнего пуша — ложные даты, #honest-dates (план 241).
+          fetch-depth: 0
       - name: Build with Astro
         uses: withastro/action@v3
         with:

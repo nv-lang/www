@@ -1,6 +1,9 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
+import PageMeta from '@components/PageMeta.astro';
 import body from '@partials/index.html?raw';
+import { partialDate } from '@data/sourceMeta';
+const updated = partialDate('index.html');
 const meta = {
   title: "Nova — язык с эффектами, контрактами и M:N рантаймом",
   description: "Nova — язык системного уровня на основе алгебраических эффектов, статических контрактов и M:N рантайма. Каждый побочный эффект объявлен. Каждый инвариант проверяется.",
@@ -22,4 +25,10 @@ const meta = {
 
 <BaseLayout {...meta} active="home" jsonLd={true}>
   <Fragment set:html={body} />
+  <PageMeta
+    lang="ru"
+    pagePath="/ru/"
+    partialUrl="https://github.com/nv-lang/www/blob/main/site/src/partials/index.html"
+    sourceDate={updated}
+  />
 </BaseLayout>
