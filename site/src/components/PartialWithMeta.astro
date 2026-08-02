@@ -1,9 +1,10 @@
 ---
-// PartialWithMeta — рендер рукописного партиала с PageMeta ВНУТРИ <main>
-// (план 241, полировка 2026-08-02): у рукописных страниц футер зашит в сам
-// партиал, поэтому слот page-meta после body оказывался ПОД футером сайта.
-// Здесь блок вставляется перед закрывающим </main> — над футером, в ширину
-// контентной колонки. Партиал без </main> рендерится как раньше (блок после).
+// PartialWithMeta — рендер рукописного партиала с PageMeta между <main> и
+// футером (план www-06, полировка 2026-08-02): у рукописных страниц футер
+// зашит в сам партиал, поэтому слот page-meta после body оказывался ПОД
+// футером сайта. Блок вставляется перед <footer> партиала, впритык к нему
+// (стыковка — .page-meta-outer + .site-footer в global.css). Партиал без
+// <footer> получает блок в конце, как раньше.
 import PageMeta from './PageMeta.astro';
 
 interface Props {
@@ -17,16 +18,13 @@ interface Props {
 }
 
 const { body, ...metaProps } = Astro.props;
-const idx = body.lastIndexOf('</main>');
+const idx = body.lastIndexOf('<footer');
 const before = idx >= 0 ? body.slice(0, idx) : body;
 const after = idx >= 0 ? body.slice(idx) : '';
 ---
 
 <Fragment set:html={before} />
-{idx >= 0 ? (
-  <div class="container--narrow">
-    <PageMeta {...metaProps} />
-  </div>
-) : null}
+<div class="container--narrow page-meta-outer">
+  <PageMeta {...metaProps} />
+</div>
 <Fragment set:html={after} />
-{idx < 0 ? <PageMeta {...metaProps} /> : null}
