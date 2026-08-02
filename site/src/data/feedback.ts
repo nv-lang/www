@@ -19,11 +19,16 @@ export const FEEDBACK = {
   category: 'general',
 };
 
-// Ссылка обратной связи с предзаполненным заголовком = путь страницы.
+// Публичный origin сайта — для заголовка/тела обратной связи.
+export const SITE_ORIGIN = 'https://nv-lang.org';
+
+// Ссылка обратной связи: заголовок = домен + путь страницы (читабельно в
+// списке задач), тело — предзаполнено полным URL.
 export function feedbackUrl(pagePath: string): string {
   const q = new URLSearchParams();
   if (FEEDBACK.base.endsWith('/discussions/new'))
     q.set('category', FEEDBACK.category);
-  q.set('title', pagePath);
+  q.set('title', `nv-lang.org${pagePath}`);
+  q.set('body', `Page: ${SITE_ORIGIN}${pagePath}\n\n`);
   return `${FEEDBACK.base}?${q.toString()}`;
 }

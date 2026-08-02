@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
-import PageMeta from '@components/PageMeta.astro';
+import PartialWithMeta from '@components/PartialWithMeta.astro';
 import body from '@partials/spec-index.html?raw';
 import { partialDate } from '@data/sourceMeta';
 const updated = partialDate('spec-index.html');
@@ -24,8 +24,8 @@ const meta = {
 ---
 
 <BaseLayout {...meta} active="spec">
-  <Fragment set:html={body} />
-  <PageMeta
+  <PartialWithMeta
+    body={body}
     lang="en"
     pagePath="/spec/"
     partialUrl="https://github.com/nv-lang/www/blob/main/site/src/partials/spec-index.html"

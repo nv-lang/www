@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
-import PageMeta from '@components/PageMeta.astro';
+import PartialWithMeta from '@components/PartialWithMeta.astro';
 import body from '@partials/ru-install-index.html?raw';
 import headExtra from '@partials/ru-install-index-head.html?raw';
 import { partialDate } from '@data/sourceMeta';
@@ -26,8 +26,8 @@ const meta = {
 
 <BaseLayout {...meta} active="install" customFooter={true}>
   <Fragment slot="head-extra" set:html={headExtra} />
-  <Fragment set:html={body} />
-  <PageMeta
+  <PartialWithMeta
+    body={body}
     lang="ru"
     pagePath="/ru/install/"
     partialUrl="https://github.com/nv-lang/www/blob/main/site/src/partials/ru-install-index.html"

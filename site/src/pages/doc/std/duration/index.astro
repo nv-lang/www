@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
-import PageMeta from '@components/PageMeta.astro';
+import PartialWithMeta from '@components/PartialWithMeta.astro';
 import body from '@partials/doc-std-duration-index.html?raw';
 import { partialDate } from '@data/sourceMeta';
 const updated = partialDate('doc-std-duration-index.html');
@@ -24,8 +24,8 @@ const meta = {
 ---
 
 <BaseLayout {...meta} active="doc">
-  <Fragment set:html={body} />
-  <PageMeta
+  <PartialWithMeta
+    body={body}
     lang="en"
     pagePath="/doc/std/duration/"
     partialUrl="https://github.com/nv-lang/www/blob/main/site/src/partials/doc-std-duration-index.html"
