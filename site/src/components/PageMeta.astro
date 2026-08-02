@@ -1,0 +1,61 @@
+---
+// PageMeta — подвал контент-страницы (план 241): ссылка на источник
+// (Edit/Source/партиал) + обратная связь + дата последнего коммита
+// источника. Подключается на страницах через BaseLayout (слот page-meta).
+// Дата — только дата коммита ИСТОЧНИКА (#honest-dates): нет даты — блок
+// не рендерится.
+import { feedbackUrl } from '../data/feedback';
+
+interface Props {
+  lang: 'ru' | 'en';
+  pagePath: string;
+  // guide: «Edit this page» → …/edit/main/docs/guide/<f>.md
+  editUrl?: string;
+  // spec/decisions: «Source on GitHub» → …/blob/main/<путь>
+  sourceUrl?: string;
+  // рукописные: ссылка на партиал в репе www
+  partialUrl?: string;
+  // ISO-дата последнего коммита источника (YYYY-MM-DD)
+  sourceDate?: string;
+}
+
+const { lang, pagePath, editUrl, sourceUrl, partialUrl, sourceDate } = Astro.props;
+const ru = lang === 'ru';
+
+const MONTHS = ru
+  ? ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']
+  : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+function fmtDate(iso: string): string {
+  const d = new Date(/^\d{4}-\d{2}-\d{2}$/.test(iso) ? iso + 'T00:00:00Z' : iso);
+  if (Number.isNaN(d.getTime())) return '';
+  const day = d.getUTCDate();
+  const mon = MONTHS[d.getUTCMonth()];
+  const year = d.getUTCFullYear();
+  return ru ? `${day} ${mon} ${year}` : `${mon} ${day}, ${year}`;
+}
+
+const href = editUrl ?? sourceUrl ?? partialUrl;
+const label = editUrl
+  ? (ru ? 'Править эту страницу' : 'Edit this page')
+  : sourceUrl
+    ? (ru ? 'Источник на GitHub' : 'Source on GitHub')
+    : partialUrl
+      ? (ru ? 'Исходник страницы' : 'Page source')
+      : '';
+const dateText = sourceDate ? fmtDate(sourceDate) : '';
+---
+
+<div class="page-meta">
+  <div class="page-meta__links">
+    {href && <a href={href}>{label} &#8599;</a>}
+    <a href={feedbackUrl(pagePath)}>
+      {ru ? 'Сообщить о проблеме' : 'Report a problem'} &#8599;
+    </a>
+  </div>
+  {dateText && (
+    <div class="page-meta__date">
+      {ru ? 'Обновлено' : 'Last updated'} {dateText}
+    </div>
+  )}
+</div>

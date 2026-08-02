@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import SpecSidebar from '@components/SpecSidebar.astro';
+import PageMeta from '@components/PageMeta.astro';
 import { SPEC_DOCS } from '@data/spec';
 
 export async function getStaticPaths() {
@@ -15,6 +16,10 @@ export async function getStaticPaths() {
 const { entry, doc } = Astro.props;
 const { Content } = await render(entry);
 const ghUrl = `https://github.com/nv-lang/nova/blob/main/${doc.github}`;
+const sourcePath = entry.data.sourcePath;
+const sourceUrl = sourcePath
+  ? `https://github.com/nv-lang/nova/blob/main/${sourcePath}`
+  : ghUrl;
 ---
 
 <BaseLayout
@@ -34,6 +39,12 @@ const ghUrl = `https://github.com/nv-lang/nova/blob/main/${doc.github}`;
       <article class="doc-content">
         <Content />
       </article>
+      <PageMeta
+        lang="ru"
+        pagePath={`/spec/${doc.slug}/`}
+        sourceUrl={sourceUrl}
+        sourceDate={entry.data.sourceDate}
+      />
     </main>
   </div>
 </BaseLayout>

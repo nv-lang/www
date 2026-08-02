@@ -1,6 +1,9 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
+import PageMeta from '@components/PageMeta.astro';
 import body from '@partials/en-index.html?raw';
+import { partialDate } from '@data/sourceMeta';
+const updated = partialDate('en-index.html');
 const meta = {
   title: "Nova — a systems language with effects, contracts, and M:N runtime",
   description: "Nova is a general-purpose systems language built around algebraic effects, static contracts, and an M:N concurrency runtime. Designed for correctness and clarity.",
@@ -22,4 +25,10 @@ const meta = {
 
 <BaseLayout {...meta} active="home" jsonLd={true}>
   <Fragment set:html={body} />
+  <PageMeta
+    lang="en"
+    pagePath="/"
+    partialUrl="https://github.com/nv-lang/www/blob/main/site/src/partials/en-index.html"
+    sourceDate={updated}
+  />
 </BaseLayout>

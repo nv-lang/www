@@ -366,6 +366,30 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] { scroll-margin-top: 72px; }
   justify-content: space-between;
 }
 
+/* ── PageMeta — подвал контент-страницы (план 241) ─────────────────────── */
+.page-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1.25rem;
+  margin-top: 2.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-soft);
+  font-size: 0.85rem;
+  color: var(--fg-subtle);
+}
+.page-meta__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+}
+.page-meta__links a {
+  color: var(--fg-muted);
+  text-decoration: none;
+}
+.page-meta__links a:hover { color: var(--accent); }
+.page-meta__date { margin-left: auto; }
+
 /* ── Buttons ─────────────────────────────────────────────────────────────── */
 .btn {
   display: inline-flex;

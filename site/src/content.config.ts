@@ -8,11 +8,22 @@ import { glob } from 'astro/loaders';
 // D-блоки: spec/decisions/*.md
 const decisions = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/decisions' }),
+  // sourcePath/sourceDate прокидывает sync-decisions.mjs в frontmatter
+  // каждой сгенерированной страницы (план 241): путь источника в репе nova
+  // и дата последнего коммита источника (для #honest-dates).
+  schema: z.object({
+    sourcePath: z.string().optional(),
+    sourceDate: z.string().optional(),
+  }),
 });
 
 // Обзорные документы спецификации: spec/*.md и spec/decisions/history/*.md
 const spec = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/spec' }),
+  schema: z.object({
+    sourcePath: z.string().optional(),
+    sourceDate: z.string().optional(),
+  }),
 });
 
 // Блог. Файлы вида `<дата>-<слаг>.<lang>.md`, например
@@ -64,6 +75,10 @@ const docs = defineCollection({
     pattern: '**/*.md',
     base: './src/content/docs',
     generateId: ({ entry }) => entry.replace(/\.md$/, ''),
+  }),
+  schema: z.object({
+    sourcePath: z.string().optional(),
+    sourceDate: z.string().optional(),
   }),
 });
 
