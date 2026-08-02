@@ -1,6 +1,9 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
+import PageMeta from '@components/PageMeta.astro';
 import body from '@partials/doc-index.html?raw';
+import { partialDate } from '@data/sourceMeta';
+const updated = partialDate('doc-index.html');
 const meta = {
   title: "Documentation — Nova",
   description: "Nova language documentation: getting started guide, language reference, standard library, and specification.",
@@ -22,4 +25,10 @@ const meta = {
 
 <BaseLayout {...meta} active="doc">
   <Fragment set:html={body} />
+  <PageMeta
+    lang="en"
+    pagePath="/doc/"
+    partialUrl="https://github.com/nv-lang/www/blob/main/site/src/partials/doc-index.html"
+    sourceDate={updated}
+  />
 </BaseLayout>

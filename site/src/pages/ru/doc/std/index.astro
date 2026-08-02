@@ -1,6 +1,9 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
+import PageMeta from '@components/PageMeta.astro';
 import body from '@partials/ru-doc-std-index.html?raw';
+import { partialDate } from '@data/sourceMeta';
+const updated = partialDate('ru-doc-std-index.html');
 const meta = {
   title: "Стандартная библиотека — Nova",
   description: "Справочник стандартной библиотеки Nova: collections, encoding, time и другие модули. Документация сгенерирована через nova doc.",
@@ -22,4 +25,10 @@ const meta = {
 
 <BaseLayout {...meta} active="doc">
   <Fragment set:html={body} />
+  <PageMeta
+    lang="ru"
+    pagePath="/ru/doc/std/"
+    partialUrl="https://github.com/nv-lang/www/blob/main/site/src/partials/ru-doc-std-index.html"
+    sourceDate={updated}
+  />
 </BaseLayout>

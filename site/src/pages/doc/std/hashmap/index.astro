@@ -1,6 +1,9 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
+import PageMeta from '@components/PageMeta.astro';
 import body from '@partials/doc-std-hashmap-index.html?raw';
+import { partialDate } from '@data/sourceMeta';
+const updated = partialDate('doc-std-hashmap-index.html');
 const meta = {
   title: "collections.hashmap — Standard Library — Nova",
   description: "Nova standard library: collections.hashmap — hash map with open addressing, linear probing, and map-literal syntax.",
@@ -22,4 +25,10 @@ const meta = {
 
 <BaseLayout {...meta} active="doc">
   <Fragment set:html={body} />
+  <PageMeta
+    lang="en"
+    pagePath="/doc/std/hashmap/"
+    partialUrl="https://github.com/nv-lang/www/blob/main/site/src/partials/doc-std-hashmap-index.html"
+    sourceDate={updated}
+  />
 </BaseLayout>

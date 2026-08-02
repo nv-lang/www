@@ -1,6 +1,9 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
+import PageMeta from '@components/PageMeta.astro';
 import body from '@partials/doc-std-duration-index.html?raw';
+import { partialDate } from '@data/sourceMeta';
+const updated = partialDate('doc-std-duration-index.html');
 const meta = {
   title: "time.duration — Standard Library — Nova",
   description: "Nova standard library: time.duration — Duration, Timestamp, and Monotonic with nanosecond precision and ergonomic integer extensions.",
@@ -22,4 +25,10 @@ const meta = {
 
 <BaseLayout {...meta} active="doc">
   <Fragment set:html={body} />
+  <PageMeta
+    lang="en"
+    pagePath="/doc/std/duration/"
+    partialUrl="https://github.com/nv-lang/www/blob/main/site/src/partials/doc-std-duration-index.html"
+    sourceDate={updated}
+  />
 </BaseLayout>

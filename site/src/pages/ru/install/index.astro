@@ -1,7 +1,10 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
+import PageMeta from '@components/PageMeta.astro';
 import body from '@partials/ru-install-index.html?raw';
 import headExtra from '@partials/ru-install-index-head.html?raw';
+import { partialDate } from '@data/sourceMeta';
+const updated = partialDate('ru-install-index.html');
 const meta = {
   title: "Установка Nova",
   description: "Установите Nova и напишите первую программу за несколько минут. Поддерживаются Linux, macOS и Windows.",
@@ -24,4 +27,10 @@ const meta = {
 <BaseLayout {...meta} active="install" customFooter={true}>
   <Fragment slot="head-extra" set:html={headExtra} />
   <Fragment set:html={body} />
+  <PageMeta
+    lang="ru"
+    pagePath="/ru/install/"
+    partialUrl="https://github.com/nv-lang/www/blob/main/site/src/partials/ru-install-index.html"
+    sourceDate={updated}
+  />
 </BaseLayout>

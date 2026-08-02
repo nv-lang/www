@@ -1,6 +1,9 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
+import PageMeta from '@components/PageMeta.astro';
 import body from '@partials/doc-std-json-index.html?raw';
+import { partialDate } from '@data/sourceMeta';
+const updated = partialDate('doc-std-json-index.html');
 const meta = {
   title: "encoding.json — Standard Library — Nova",
   description: "Nova standard library: encoding.json — JSON parser and serializer (RFC 8259). JsonValue type, parse, as_*, into, pretty.",
@@ -22,4 +25,10 @@ const meta = {
 
 <BaseLayout {...meta} active="doc">
   <Fragment set:html={body} />
+  <PageMeta
+    lang="en"
+    pagePath="/doc/std/json/"
+    partialUrl="https://github.com/nv-lang/www/blob/main/site/src/partials/doc-std-json-index.html"
+    sourceDate={updated}
+  />
 </BaseLayout>

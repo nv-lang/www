@@ -1,6 +1,9 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
+import PageMeta from '@components/PageMeta.astro';
 import body from '@partials/ru-spec-index.html?raw';
+import { partialDate } from '@data/sourceMeta';
+const updated = partialDate('ru-spec-index.html');
 const meta = {
   title: "Спецификация языка — Nova",
   description: "Спецификация языка Nova: эффекты, контракты, система типов, семантика рантайма и грамматика.",
@@ -22,4 +25,10 @@ const meta = {
 
 <BaseLayout {...meta} active="spec">
   <Fragment set:html={body} />
+  <PageMeta
+    lang="ru"
+    pagePath="/ru/spec/"
+    partialUrl="https://github.com/nv-lang/www/blob/main/site/src/partials/ru-spec-index.html"
+    sourceDate={updated}
+  />
 </BaseLayout>

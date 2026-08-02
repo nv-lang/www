@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import SpecSidebar from '@components/SpecSidebar.astro';
+import PageMeta from '@components/PageMeta.astro';
 import { TOPICS, parseDBlocks } from '@data/decisions';
 
 const entries = await getCollection('decisions');
@@ -10,6 +11,13 @@ const sections = TOPICS.map((t) => {
   return { topic: t, blocks: entry ? parseDBlocks(entry.body ?? '') : [] };
 });
 const total = sections.reduce((n, s) => n + s.blocks.length, 0);
+// Дата «Обновлено» = последний коммит любого файла решений (страница
+// агрегирует все D-блоки; #honest-dates — только даты коммитов источника).
+const updated = sections
+  .map((s) => entries.find((e) => e.id === s.topic.file)?.data.sourceDate)
+  .filter((d): d is string => !!d)
+  .sort()
+  .at(-1);
 ---
 
 <BaseLayout
@@ -48,6 +56,12 @@ const total = sections.reduce((n, s) => n + s.blocks.length, 0);
           </section>
         ))}
       </article>
+      <PageMeta
+        lang="ru"
+        pagePath="/spec/decisions/"
+        sourceUrl="https://github.com/nv-lang/nova/tree/main/spec/decisions"
+        sourceDate={updated}
+      />
     </main>
   </div>
 </BaseLayout>
