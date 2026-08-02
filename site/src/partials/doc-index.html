@@ -150,7 +150,7 @@ fn get_profile(user_id u64) Cache Db -> Profile
         <li><code>invariant &lt;expr&gt;</code> — type invariant; must hold for every value of a type</li>
       </ul>
 
-      <p>The compiler checks contracts via an SMT solver at compile time — proven contracts are erased in release builds at zero runtime cost. If the solver cannot decide, the contract automatically falls back to a runtime assertion in debug builds. The <code>#must_verify</code> attribute on a function requires static proof — compilation fails if the solver cannot prove it.</p>
+      <p>The compiler checks contracts via an SMT solver at compile time — proven contracts are erased at zero runtime cost. If the solver cannot decide, the contract remains a fail-fast runtime check in both debug and release builds; it can be lifted only explicitly (<code>#unchecked</code> on the function, or <code>--contracts=off</code> for the build). The <code>#verify</code> attribute on a function requires static proof — compilation fails if the solver cannot prove it.</p>
 
       <pre><code class="language-nova">fn sqrt(x f64) -> f64
     requires x >= 0.0
