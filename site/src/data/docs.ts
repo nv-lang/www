@@ -1,5 +1,7 @@
-// Пользовательские гайды Nova (файлы docs/<slug>.md и <slug>.ru.md
-// репозитория nova). Синхронизируются в коллекцию `docs` скриптом
+// Пользовательские гайды Nova (файлы docs/guide/<slug>.md и <slug>.ru.md
+// репозитория nova — docs-split 2026-08-02, см. nova/docs/README.md;
+// docs/dev/ репы nova сюда никогда не попадает). Синхронизируются в
+// коллекцию `docs` скриптом
 // scripts/sync-decisions.mjs; страницы — src/pages/doc/[slug]/index.astro
 // (EN) и src/pages/ru/doc/[slug]/index.astro (RU). Список slug'ов должен
 // совпадать с DOC_SLUGS в sync-decisions.mjs.
@@ -17,7 +19,7 @@ export interface DocGuide {
 export const DOC_GUIDES: DocGuide[] = [
   {
     slug: 'channels',
-    github: 'docs/channels.md',
+    github: 'docs/guide/channels.md',
     title: { en: 'Channels and select', ru: 'Каналы и select' },
     description: {
       en: 'Nova channels and select reference: Channel[T], ChanWriter, ChanReader, select arms, timeout, supervised cancel, idioms.',
@@ -26,7 +28,7 @@ export const DOC_GUIDES: DocGuide[] = [
   },
   {
     slug: 'contracts',
-    github: 'docs/contracts.md',
+    github: 'docs/guide/contracts.md',
     title: { en: 'Contracts and formal verification', ru: 'Контракты и формальная верификация' },
     description: {
       en: 'Nova contract system: requires, ensures, #verify, #pure, #opaque, reveal, calc blocks, loop invariants, lemmas, Z3 backend.',
@@ -35,7 +37,7 @@ export const DOC_GUIDES: DocGuide[] = [
   },
   {
     slug: 'nova-cli',
-    github: 'docs/nova-cli.md',
+    github: 'docs/guide/nova-cli.md',
     title: { en: 'nova CLI', ru: 'nova CLI' },
     description: {
       en: 'Nova CLI reference: nova check, run, build, test, doc, doc-query, doc-mcp, contracts, bench — all subcommands, flags, and environment variables.',
