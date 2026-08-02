@@ -193,13 +193,12 @@ supervised {
       <h1 id="memory">Память</h1>
       <p>Nova использует управляемую память по умолчанию. Текущий рантайм интегрирует <a href="https://www.hboehm.info/gc/">Boehm-Demers-Weiser GC</a>; конкурентный, поколенческий GC запланирован на будущее.</p>
 
-      <p>Для кода, чувствительного к задержкам, аннотируйте область или функцию с помощью <code>realtime nogc</code>, чтобы исключить паузы GC. Компилятор проверяет, что внутри таких областей не происходит выделений памяти под управлением GC.</p>
+      <p>Для кода, чувствительного к задержкам, пометьте функцию атрибутом <code>#realtime</code> — это гарантия вызываемой стороны: компилятор отклоняет точки приостановки и операции с сырыми указателями внутри её тела. Более строгий режим <code>#realtime nogc</code>, дополнительно запрещающий GC-аллокации, — в планах.</p>
 
-      <pre><code class="language-nova">fn process_audio_frame(frame AudioFrame) Dsp -> AudioFrame {
-    realtime nogc {
-        // здесь разрешено только размещение в стеке
-        frame.apply_eq()
-    }
+      <pre><code class="language-nova">// callee guarantee: no suspension points, no raw-pointer ops
+#realtime
+fn mix_sample(a f32, b f32, k f32) -> f32 {
+    a * k + b * (1.0 - k)
 }</code></pre>
 
       <hr class="divider">
