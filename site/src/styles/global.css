@@ -389,6 +389,14 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] { scroll-margin-top: 72px; }
 }
 .page-meta__links a:hover { color: var(--accent); }
 .page-meta__date { margin-left: auto; }
+/* Рукописные страницы: блок стоит между <main> (padding-bottom 5rem) и
+   футером — свой верхний отступ не нужен, а футер стыкуем без его 5rem.
+   Футер бывает соседом обёртки (партиалы со своим футером, install) или
+   соседом pagefind-обёртки (общий Footer из BaseLayout) — оба случая. */
+.page-meta-outer { margin-bottom: 2.25rem; }
+.page-meta-outer .page-meta { margin-top: 0; }
+.page-meta-outer + .site-footer { margin-top: 0; }
+[data-pagefind-body]:has(> .page-meta-outer:last-child) + .site-footer { margin-top: 0; }
 
 /* ── Buttons ─────────────────────────────────────────────────────────────── */
 .btn {
@@ -1034,6 +1042,14 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
 .doc-content blockquote p:last-child { margin-bottom: 0; }
 
 /* Метаполоса spec-документа: «назад» + ссылка на источник GitHub */
+/* Пометка для en-читателя: спека пока только по-русски (2026-08-02) */
+.spec-lang-note {
+  font-size: 0.8rem;
+  color: var(--fg-subtle);
+  font-style: italic;
+  margin: 0 0 1.25rem;
+}
+
 .spec-doc__meta {
   display: flex;
   justify-content: space-between;
