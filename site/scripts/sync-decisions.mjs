@@ -73,19 +73,19 @@ const topicSlug = (decFile) => decFile.replace(/^\d+-/, '').replace(/\.md$/, '')
 function pathToSite(repoPath) {
   let m = repoPath.match(/^spec\/decisions\/(\d\d-[a-z]+)\.md$/);
   if (m) return `/spec/decisions/${topicSlug(m[1])}/`;
-  m = repoPath.match(/^spec\/decisions\/history\/([a-z][a-z-]*)\.md$/);
+  m = repoPath.match(/^spec\/decisions\/history\/([a-z][a-z0-9-]*)\.md$/);
   if (m) return `/spec/history/${m[1]}/`;
   // 241 Ф.2: русский файл спеки живёт на /ru/spec/<slug>/ (там же его
   // русские якоря), английский перевод — на /spec/<slug>/. Ссылки из
   // русских источников обязаны вести на русскую страницу, иначе якорь
   // не находится (поймано check-links при вводе двуязычия).
-  m = repoPath.match(/^spec\/([a-z][a-z-]*)\.en\.md$/);
+  m = repoPath.match(/^spec\/([a-z][a-z0-9-]*)\.en\.md$/);
   if (m && SPEC_DOCS.has(m[1])) return `/spec/${m[1]}/`;
-  m = repoPath.match(/^spec\/([a-z][a-z-]*)\.md$/);
+  m = repoPath.match(/^spec\/([a-z][a-z0-9-]*)\.md$/);
   if (m && SPEC_DOCS.has(m[1])) return `/ru/spec/${m[1]}/`;
-  m = repoPath.match(/^docs\/guide\/([a-z][a-z-]*)\.ru\.md$/);
+  m = repoPath.match(/^docs\/guide\/([a-z][a-z0-9-]*)\.ru\.md$/);
   if (m && DOC_SLUGS.has(m[1])) return `/ru/doc/${m[1]}/`;
-  m = repoPath.match(/^docs\/guide\/([a-z][a-z-]*)\.md$/);
+  m = repoPath.match(/^docs\/guide\/([a-z][a-z0-9-]*)\.md$/);
   if (m && DOC_SLUGS.has(m[1])) return `/doc/${m[1]}/`;
   return null;
 }
@@ -278,6 +278,20 @@ async function sourceDates(paths) {
 }
 
 // frontmatter сгенерированной страницы: путь источника + дата коммита.
+// Исходники в nova могут нести СВОЙ frontmatter (spec/*.en.md — source_rev/
+// source_date перевода). Его нужно срезать, иначе он попадёт в тело страницы
+// вторым блоком «---» и отрисуется как текст (поймано на /spec/syntax/).
+function stripSourceFrontmatter(text) {
+  const t = text.replace(/^\uFEFF/, "");
+  if (!t.startsWith("---")) return text;
+  const nl = String.fromCharCode(10);
+  const end = t.indexOf(nl + "---", 3);
+  if (end < 0) return text;
+  const after = t.slice(end + 4);
+  const cut = after.indexOf(nl);
+  return (cut < 0 ? "" : after.slice(cut + 1)).replace(/^\s*\n/, "");
+}
+
 function frontmatter(repoPath, date) {
   const lines = ['---', `sourcePath: ${JSON.stringify(repoPath)}`];
   if (date) lines.push(`sourceDate: ${JSON.stringify(date.slice(0, 10))}`);
@@ -326,18 +340,18 @@ async function main() {
     let m;
     if ((m = f.path.match(/^spec\/decisions\/(\d\d-[a-z]+\.md|README\.md)$/)))
       decFiles.push({ name: m[1], text: f.text, path: f.path });
-    else if ((m = f.path.match(/^spec\/decisions\/history\/([a-z][a-z-]*\.md)$/)))
+    else if ((m = f.path.match(/^spec\/decisions\/history\/([a-z][a-z0-9-]*\.md)$/)))
       specFiles.push({ rel: `history/${m[1]}`, text: f.text, path: f.path });
     // 241 Ф.2: английские переводы читательской спеки — отдельной веткой,
     // ложатся в подкаталог en/ коллекции. Русский файл остаётся нормативом
     // и адресуется прежним id (без префикса).
-    else if ((m = f.path.match(/^spec\/([a-z][a-z-]*)\.en\.md$/)) && SPEC_DOCS.has(m[1]))
+    else if ((m = f.path.match(/^spec\/([a-z][a-z0-9-]*)\.en\.md$/)) && SPEC_DOCS.has(m[1]))
       specFiles.push({ rel: `en/${m[1]}.md`, text: f.text, path: f.path });
-    else if ((m = f.path.match(/^spec\/([a-z][a-z-]*)\.md$/)) && SPEC_DOCS.has(m[1]))
+    else if ((m = f.path.match(/^spec\/([a-z][a-z0-9-]*)\.md$/)) && SPEC_DOCS.has(m[1]))
       specFiles.push({ rel: `${m[1]}.md`, text: f.text, path: f.path });
-    else if ((m = f.path.match(/^docs\/guide\/([a-z][a-z-]*)\.ru\.md$/)) && DOC_SLUGS.has(m[1]))
+    else if ((m = f.path.match(/^docs\/guide\/([a-z][a-z0-9-]*)\.ru\.md$/)) && DOC_SLUGS.has(m[1]))
       docFiles.push({ slug: m[1], lang: 'ru', text: stripDocChrome(f.text), path: f.path });
-    else if ((m = f.path.match(/^docs\/guide\/([a-z][a-z-]*)\.md$/)) && DOC_SLUGS.has(m[1]))
+    else if ((m = f.path.match(/^docs\/guide\/([a-z][a-z0-9-]*)\.md$/)) && DOC_SLUGS.has(m[1]))
       docFiles.push({ slug: m[1], lang: 'en', text: stripDocChrome(f.text), path: f.path });
   }
   if (decFiles.length === 0 || specFiles.length === 0)
@@ -364,13 +378,13 @@ async function main() {
   await mkdir(new URL('ru/', DOCS_OUT), { recursive: true });
   for (const f of decFiles)
     await writeFile(new URL(f.name, DEC_OUT),
-      frontmatter(f.path, dates[f.path]) + rewriteLinks(f.text, f.path, dMap, anchors), 'utf8');
+      frontmatter(f.path, dates[f.path]) + rewriteLinks(stripSourceFrontmatter(f.text), f.path, dMap, anchors), 'utf8');
   for (const f of specFiles)
     await writeFile(new URL(f.rel, SPEC_OUT),
-      frontmatter(f.path, dates[f.path]) + rewriteLinks(f.text, f.path, dMap, anchors), 'utf8');
+      frontmatter(f.path, dates[f.path]) + rewriteLinks(stripSourceFrontmatter(f.text), f.path, dMap, anchors), 'utf8');
   for (const f of docFiles)
     await writeFile(new URL(`${f.lang}/${f.slug}.md`, DOCS_OUT),
-      frontmatter(f.path, dates[f.path]) + rewriteLinks(f.text, f.path, dMap, anchors), 'utf8');
+      frontmatter(f.path, dates[f.path]) + rewriteLinks(stripSourceFrontmatter(f.text), f.path, dMap, anchors), 'utf8');
 
   // №307: навигация и мета-теги страниц гайдов — ИЗ МАНИФЕСТА, а не из
   // ручной таблицы. Заголовок берём из H1 файла, описание — из первого

@@ -24,27 +24,23 @@ const sourceUrl = sourcePath
 <BaseLayout
   title={`${topic.title} — решения по дизайну — Nova`}
   description={`D-блоки спецификации Nova по разделу «${topic.title}».`}
-  canonical={`https://nv-lang.org/spec/decisions/${topic.slug}/`}
-  hreflangRu={`https://nv-lang.org/ru/spec/decisions/${topic.slug}/`}
-  hreflangEn={`https://nv-lang.org/spec/decisions/${topic.slug}/`}
-  langRuUrl={`/ru/spec/decisions/${topic.slug}/`}
-  langEnUrl={`/spec/decisions/${topic.slug}/`}
+  canonical={`https://nv-lang.org/ru/spec/decisions/${topic.slug}/`}
   lang="ru"
   active="spec"
 >
   <div class="doc-layout">
-    <SpecSidebar lang="en" current={`dec:${topic.slug}`} />
+    <SpecSidebar current={`dec:${topic.slug}`} />
     <main id="main-content">
       <p style="font-size:.85rem;color:var(--fg-muted);margin-bottom:1rem;">
-        <a href="/spec/decisions/">← Все решения</a>
+        <a href="/ru/spec/decisions/">← Все решения</a>
       </p>
-      <p class="spec-lang-note">Design decisions are maintained in Russian only — this page shows the normative text. Russian route: <a href={`/ru/spec/decisions/${topic.slug}/`}>/ru/spec/decisions/</a>.</p>
+      <p class="spec-lang-note">Нормативные решения по дизайну языка (D-блоки).</p>
       <article class="doc-content">
         <Content />
       </article>
       <PageMeta
         lang="ru"
-        pagePath={`/spec/decisions/${topic.slug}/`}
+        pagePath={`/ru/spec/decisions/${topic.slug}/`}
         sourceUrl={sourceUrl}
         sourceDate={entry.data.sourceDate}
       />
