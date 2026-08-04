@@ -1,0 +1,54 @@
+---
+// Корневая страница пакета: /doc/<pkg>/ — README или обзорная страница.
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PageMeta from '@components/PageMeta.astro';
+import { PACKAGE_DOCS } from '@data/packages.generated';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('packages');
+  const out = [];
+  for (const p of PACKAGE_DOCS) {
+    const entry = entries.find((e) => e.id === `${p.pkg}/en/index`);
+    if (entry) out.push({ params: { pkg: p.pkg }, props: { entry, p } });
+  }
+  return out;
+}
+
+const { entry, p } = Astro.props;
+const { Content } = await render(entry);
+const repo = entry.data.sourceRepo ?? p.repo;
+const path = entry.data.sourcePath ?? 'README.md';
+const editUrl = `https://github.com/${repo}/edit/main/${path}`;
+const others = p.slugs.filter((s) => s !== 'index');
+---
+
+<BaseLayout
+  title={`${p.title.en} — Nova`}
+  description={`${p.title.en}: package documentation.`}
+  canonical={`https://nv-lang.org/doc/${p.pkg}/`}
+  hreflangRu={`https://nv-lang.org/ru/doc/${p.pkg}/`}
+  hreflangEn={`https://nv-lang.org/doc/${p.pkg}/`}
+  langRuUrl={`/ru/doc/${p.pkg}/`}
+  langEnUrl={`/doc/${p.pkg}/`}
+  lang="en"
+  active="doc"
+>
+  <main id="main-content" class="container--narrow" style="padding:2.5rem 0 4rem;">
+    <p style="font-size:.85rem;color:var(--fg-muted);margin-bottom:1rem;">
+      <a href="/doc/">&#8592; Documentation</a> · <a href={`https://github.com/${repo}`}>{repo}</a>
+    </p>
+    <article class="doc-content">
+      <Content />
+    </article>
+    {others.length > 0 && (
+      <nav style="margin-top:2rem;">
+        <h2 style="font-size:1rem;">Pages</h2>
+        <ul>
+          {others.map((s) => <li><a href={`/doc/${p.pkg}/${s}/`}>{s}</a></li>)}
+        </ul>
+      </nav>
+    )}
+    <PageMeta lang="en" pagePath={`/doc/${p.pkg}/`} editUrl={editUrl} />
+  </main>
+</BaseLayout>
