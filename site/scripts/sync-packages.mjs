@@ -7,6 +7,22 @@ import { mkdir, writeFile, rm } from 'node:fs/promises';
 
 const BRANCH = 'main';
 const UA = { 'User-Agent': 'nv-lang-www-build' };
+
+// Разовая 5xx от GitHub роняла ВЕСЬ деплой (прецедент 2026-08-04: fetch 500 на
+// одном файле из 70). Сеть — не повод считать сборку красной: три попытки с
+// нарастающей паузой, и только потом падаем.
+async function fetchRetry(url, init, tries = 3) {
+  let last;
+  for (let i = 0; i < tries; i++) {
+    try {
+      const r = await fetch(url, init);
+      if (r.ok || (r.status >= 400 && r.status < 500)) return r;
+      last = new Error(`HTTP ${r.status}`);
+    } catch (e) { last = e; }
+    if (i < tries - 1) await new Promise((res) => setTimeout(res, 800 * (i + 1)));
+  }
+  throw last ?? new Error('fetch failed');
+}
 const OUT = new URL('../src/content/packages/', import.meta.url);
 
 // repo — путь на github; docsDir — где лежат страницы (null = только README)
@@ -24,7 +40,7 @@ export const PACKAGES = [
 ];
 
 async function raw(repo, path) {
-  const r = await fetch(`https://raw.githubusercontent.com/${repo}/${BRANCH}/${path}`, { headers: UA });
+  const r = await fetchRetry(`https://raw.githubusercontent.com/${repo}/${BRANCH}/${path}`, { headers: UA });
   return r.ok ? await r.text() : null;
 }
 
