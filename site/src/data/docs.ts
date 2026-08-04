@@ -16,7 +16,7 @@ export interface DocGuide {
   description: { en: string; ru: string };
 }
 
-export const DOC_GUIDES: DocGuide[] = [
+export const DOC_GUIDES_CURATED: DocGuide[] = [
   {
     slug: 'channels',
     github: 'docs/guide/channels.md',
@@ -45,3 +45,17 @@ export const DOC_GUIDES: DocGuide[] = [
     },
   },
 ];
+
+
+// №307: итоговый список — сгенерированный из манифеста, поверх него ложатся
+// курируемые SEO-тексты (title/description) для страниц, где формулировка
+// важнее автоматики. Новый гайд появляется на сайте фактом попадания в
+// PUBLISHED.list, без правки этого файла.
+import { DOC_GUIDES_GENERATED } from './docs.generated';
+
+const CURATED = new Map(DOC_GUIDES_CURATED.map((g) => [g.slug, g]));
+
+export const DOC_GUIDES: DocGuide[] = DOC_GUIDES_GENERATED.map((g) => {
+  const c = CURATED.get(g.slug);
+  return c ? { ...g, title: c.title, description: c.description } : g;
+});
