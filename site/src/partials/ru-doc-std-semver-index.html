@@ -1,0 +1,221 @@
+<div class="page-header">
+  <div class="container--narrow">
+    <p style="font-size:.85rem;color:var(--fg-muted);margin-bottom:.4rem;"><a href="/ru/doc/std/">Стандартная библиотека</a></p>
+    <h1>data.semver</h1>
+    <p>Semantic Versioning 2.0.0 — разбор, сравнение и сериализация строк версий.</p>
+  </div>
+</div>
+
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Типы</div>
+      <ul>
+        <li><a href="#type-version">Version</a></li>
+        <li><a href="#type-parse-error">ParseVersionError</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Конструкторы</div>
+      <ul>
+        <li><a href="#from">Version.from</a></li>
+        <li><a href="#new">Version.new</a></li>
+        <li><a href="#full">Version.full</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Проверка состояния</div>
+      <ul>
+        <li><a href="#is-prerelease">is_prerelease</a></li>
+        <li><a href="#is-stable">is_stable</a></li>
+        <li><a href="#has-build">has_build</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Сравнение</div>
+      <ul>
+        <li><a href="#lt">lt / gt / le / ge</a></li>
+        <li><a href="#eq">eq / eq_precedence</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Сериализация</div>
+      <ul>
+        <li><a href="#into">into</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Ещё</div>
+      <ul>
+        <li><a href="/ru/doc/std/">&#8592; Стандартная библиотека</a></li>
+        <li><a href="https://github.com/nv-lang/nova/blob/main/std/data/semver.nv">Исходник &#8599;</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main id="main-content">
+    <article class="prose">
+
+      <p>Независимая реализация <a href="https://semver.org/spec/v2.0.0.html">semver.org 2.0.0</a>. Поддерживает полные строки версий, включая идентификаторы pre-release и метаданные сборки. Сравнение следует правилам приоритета §&nbsp;11 (метаданные сборки игнорируются).</p>
+
+      <pre><code class="language-nova">let v = Version.from("1.2.3-alpha.1+exp.sha.5114f85")
+assert(v.major == 1 && v.is_prerelease())
+
+let a = Version.from("1.0.0-alpha")
+let b = Version.from("1.0.0")
+assert(a < b)   // pre-release < release</code></pre>
+
+      <hr class="divider">
+
+      <h2 id="types" style="margin-bottom:1.5rem;">Типы</h2>
+
+      <div id="type-version" style="margin-bottom:2.5rem;">
+        <h3 style="margin-bottom:.3rem;">Version</h3>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">стабильно с 0.1</span>
+        <pre><code class="language-nova">export type Version {
+    readonly major u64
+    readonly minor u64
+    readonly patch u64
+    readonly pre   []str
+    readonly build []str
+}</code></pre>
+        <p>Версия SemVer (<a href="https://semver.org">semver.org</a> 2.0.0). Все поля <code>readonly</code> — <code>Version</code> неизменяем; операции возвращают новое значение. <code>pre</code> хранит идентификаторы pre-release, разбитые по <code>.</code> (например, <code>"alpha.1"</code> → <code>["alpha", "1"]</code>). <code>build</code> хранит идентификаторы метаданных сборки; они не учитываются при сравнении приоритета.</p>
+      </div>
+
+      <div id="type-parse-error" style="margin-bottom:2.5rem;">
+        <h3 style="margin-bottom:.3rem;">ParseVersionError</h3>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">стабильно с 0.1</span>
+        <pre><code class="language-nova">export type ParseVersionError
+    | EmptyInput
+    | MissingMinor
+    | MissingPatch
+    | LeadingZero       { component str; value str }
+    | InvalidComponent  { component str; value str }
+    | EmptyIdentifier   { section str }
+    | InvalidIdentifier { section str; value str }</code></pre>
+        <p>Варианты ошибок, возвращаемые <code>Version.from</code>. Каждый несёт позиционную информацию (<code>component</code> / <code>section</code> + <code>value</code>) для диагностических сообщений.</p>
+      </div>
+
+      <hr class="divider">
+
+      <h2 id="constructors" style="margin-bottom:1.5rem;">Конструкторы</h2>
+
+      <div id="from" style="margin-bottom:2.5rem;">
+        <h3 style="margin-bottom:.3rem;">Version.from</h3>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">стабильно с 0.1</span>
+        <pre><code class="language-nova">fn Version.from(s str) Fail[ParseVersionError] -> Self</code></pre>
+        <p>Разбирает строку semver по грамматике §&nbsp;9–10. Бросает <code>Fail[ParseVersionError]</code> при любой ошибке. Обрабатывайте блоком <code>with Fail[ParseVersionError]</code>.</p>
+        <h4>Примеры</h4>
+        <pre><code class="language-nova">let v = Version.from("2.5.1")
+assert(v.major == 2 && v.minor == 5 && v.patch == 1)
+
+let v2 = Version.from("1.0.0-beta+exp.sha.5114f85")
+assert(v2.pre[0] == "beta")</code></pre>
+      </div>
+
+      <div id="new" style="margin-bottom:2.5rem;">
+        <h3 style="margin-bottom:.3rem;">Version.new</h3>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">стабильно с 0.1</span>
+        <pre><code class="language-nova">fn Version.new(major u64, minor u64, patch u64) -> Self</code></pre>
+        <p>Простой конструктор без pre-release и метаданных сборки. Наиболее частый случай.</p>
+        <h4>Примеры</h4>
+        <pre><code class="language-nova">let v = Version.new(1, 2, 3)
+assert(v.into() == "1.2.3")</code></pre>
+      </div>
+
+      <div id="full" style="margin-bottom:2.5rem;">
+        <h3 style="margin-bottom:.3rem;">Version.full</h3>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">стабильно с 0.1</span>
+        <pre><code class="language-nova">fn Version.full(major u64, minor u64, patch u64, pre []str, build []str) -> Self</code></pre>
+        <p>Полный конструктор с явными массивами pre-release и метаданных сборки.</p>
+      </div>
+
+      <hr class="divider">
+
+      <h2 id="inspection" style="margin-bottom:1.5rem;">Проверка состояния</h2>
+
+      <div id="is-prerelease" style="margin-bottom:2.5rem;">
+        <h3 style="margin-bottom:.3rem;">is_prerelease</h3>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">стабильно с 0.1</span>
+        <pre><code class="language-nova">fn Version @is_prerelease() -> bool</code></pre>
+        <p>Возвращает <code>true</code>, если версия имеет хотя бы один идентификатор pre-release.</p>
+      </div>
+
+      <div id="is-stable" style="margin-bottom:2.5rem;">
+        <h3 style="margin-bottom:.3rem;">is_stable</h3>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">стабильно с 0.1</span>
+        <pre><code class="language-nova">fn Version @is_stable() -> bool</code></pre>
+        <p>Возвращает <code>true</code>, если <code>major &gt; 0</code> и нет идентификатора pre-release (стабильный релиз по соглашению semver).</p>
+        <h4>Примеры</h4>
+        <pre><code class="language-nova">assert(Version.from("1.0.0").is_stable())
+assert(!Version.from("0.9.0").is_stable())      // 0.x.y — unstable
+assert(!Version.from("1.0.0-alpha").is_stable()) // pre-release</code></pre>
+      </div>
+
+      <div id="has-build" style="margin-bottom:2.5rem;">
+        <h3 style="margin-bottom:.3rem;">has_build</h3>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">стабильно с 0.1</span>
+        <pre><code class="language-nova">fn Version @has_build() -> bool</code></pre>
+        <p>Возвращает <code>true</code>, если присутствуют метаданные сборки.</p>
+      </div>
+
+      <hr class="divider">
+
+      <h2 id="comparison" style="margin-bottom:1.5rem;">Сравнение</h2>
+
+      <p>Все сравнения реализуют приоритет §&nbsp;11: <code>major</code> &gt; <code>minor</code> &gt; <code>patch</code> &gt; pre-release. Метаданные сборки игнорируются. Версии pre-release имеют более низкий приоритет, чем релиз (<code>1.0.0-alpha &lt; 1.0.0</code>).</p>
+
+      <p>Перегрузка операторов (<a href="/ru/spec/decisions/syntax/#d46">D46</a>) означает, что <code>v1 &lt; v2</code>, <code>v1 == v2</code>, <code>v1 != v2</code> работают напрямую.</p>
+
+      <div id="lt" style="margin-bottom:2.5rem;">
+        <h3 style="margin-bottom:.3rem;">lt / gt / le / ge</h3>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">стабильно с 0.1</span>
+        <pre><code class="language-nova">fn Version @lt(other Version) -> bool   // <
+fn Version @le(other Version) -> bool   // <=
+fn Version @gt(other Version) -> bool   // >
+fn Version @ge(other Version) -> bool   // >=</code></pre>
+        <h4>Примеры</h4>
+        <pre><code class="language-nova">// semver.org §11 chain example
+let chain = [
+    Version.from("1.0.0-alpha"),
+    Version.from("1.0.0-alpha.1"),
+    Version.from("1.0.0-beta"),
+    Version.from("1.0.0-rc.1"),
+    Version.from("1.0.0"),
+]
+for i in 0..chain.len() - 1 {
+    assert(chain[i] < chain[i + 1])
+}</code></pre>
+      </div>
+
+      <div id="eq" style="margin-bottom:2.5rem;">
+        <h3 style="margin-bottom:.3rem;">eq / eq_precedence</h3>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">стабильно с 0.1</span>
+        <pre><code class="language-nova">fn Version @eq(other Version) -> bool            // structural (includes build)
+fn Version @eq_precedence(other Version) -> bool  // semver §10 (ignores build)</code></pre>
+        <p><code>eq</code> — структурное сравнение: сравнивает все поля, включая <code>build</code>. <code>eq_precedence</code> следует §&nbsp;10 и игнорирует метаданные сборки.</p>
+        <h4>Примеры</h4>
+        <pre><code class="language-nova">let a = Version.from("1.0.0+build.1")
+let b = Version.from("1.0.0+build.2")
+assert(a.eq_precedence(b))   // same precedence
+assert(!a.eq(b))              // different build metadata</code></pre>
+      </div>
+
+      <hr class="divider">
+
+      <h2 id="serialization" style="margin-bottom:1.5rem;">Сериализация</h2>
+
+      <div id="into" style="margin-bottom:2.5rem;">
+        <h3 style="margin-bottom:.3rem;">into</h3>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">стабильно с 0.1</span>
+        <pre><code class="language-nova">fn Version @into() -> str</code></pre>
+        <p>Сериализует в <code>MAJOR.MINOR.PATCH[-PRE][+BUILD]</code>. Round-trip: <code>Version.from(v.into()).eq(v)</code> выполняется для любого корректного <code>Version</code>.</p>
+        <h4>Примеры</h4>
+        <pre><code class="language-nova">let v = Version.new(1, 2, 3)
+let s str = v.into()
+assert(s == "1.2.3")</code></pre>
+      </div>
+
+    </article>
+  </main>
+</div>
