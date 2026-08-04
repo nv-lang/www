@@ -4,6 +4,7 @@
 // невидимы для поисковиков (найдено аудитом 2026-08-04).
 import { readdir, writeFile, stat } from 'node:fs/promises';
 import { join, relative, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const DIST = new URL('../dist/', import.meta.url);
 const SITE = 'https://nv-lang.org';
@@ -20,8 +21,9 @@ async function walk(dir) {
   return out;
 }
 
-const root = new URL('.', DIST).pathname.replace(/^\//, '');
-const distDir = decodeURIComponent(new URL('../dist', import.meta.url).pathname.replace(/^\//, ''));
+// fileURLToPath — единственный переносимый способ: ручное срезание ведущего
+// слэша ломает путь на Linux (было: ENOENT 'home/runner/...' в CI).
+const distDir = fileURLToPath(new URL('../dist', import.meta.url));
 const files = await walk(distDir);
 const urls = files
   .map((f) => '/' + relative(distDir, f).split(sep).slice(0, -1).join('/'))
