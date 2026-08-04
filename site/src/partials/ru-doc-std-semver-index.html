@@ -58,11 +58,11 @@
 
       <p>Независимая реализация <a href="https://semver.org/spec/v2.0.0.html">semver.org 2.0.0</a>. Поддерживает полные строки версий, включая идентификаторы pre-release и метаданные сборки. Сравнение следует правилам приоритета §&nbsp;11 (метаданные сборки игнорируются).</p>
 
-      <pre><code class="language-nova">let v = Version.from("1.2.3-alpha.1+exp.sha.5114f85")
+      <pre><code class="language-nova">ro v = Version.from("1.2.3-alpha.1+exp.sha.5114f85")
 assert(v.major == 1 && v.is_prerelease())
 
-let a = Version.from("1.0.0-alpha")
-let b = Version.from("1.0.0")
+ro a = Version.from("1.0.0-alpha")
+ro b = Version.from("1.0.0")
 assert(a < b)   // pre-release < release</code></pre>
 
       <hr class="divider">
@@ -73,13 +73,13 @@ assert(a < b)   // pre-release < release</code></pre>
         <h3 style="margin-bottom:.3rem;">Version</h3>
         <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">стабильно с 0.1</span>
         <pre><code class="language-nova">export type Version {
-    readonly major u64
-    readonly minor u64
-    readonly patch u64
-    readonly pre   []str
-    readonly build []str
+    ro major u64
+    ro minor u64
+    ro patch u64
+    ro pre   []str
+    ro build []str
 }</code></pre>
-        <p>Версия SemVer (<a href="https://semver.org">semver.org</a> 2.0.0). Все поля <code>readonly</code> — <code>Version</code> неизменяем; операции возвращают новое значение. <code>pre</code> хранит идентификаторы pre-release, разбитые по <code>.</code> (например, <code>"alpha.1"</code> → <code>["alpha", "1"]</code>). <code>build</code> хранит идентификаторы метаданных сборки; они не учитываются при сравнении приоритета.</p>
+        <p>Версия SemVer (<a href="https://semver.org">semver.org</a> 2.0.0). Все поля <code>ro</code> — <code>Version</code> неизменяем; операции возвращают новое значение. <code>pre</code> хранит идентификаторы pre-release, разбитые по <code>.</code> (например, <code>"alpha.1"</code> → <code>["alpha", "1"]</code>). <code>build</code> хранит идентификаторы метаданных сборки; они не учитываются при сравнении приоритета.</p>
       </div>
 
       <div id="type-parse-error" style="margin-bottom:2.5rem;">
@@ -106,10 +106,10 @@ assert(a < b)   // pre-release < release</code></pre>
         <pre><code class="language-nova">fn Version.from(s str) Fail[ParseVersionError] -> Self</code></pre>
         <p>Разбирает строку semver по грамматике §&nbsp;9–10. Бросает <code>Fail[ParseVersionError]</code> при любой ошибке. Обрабатывайте блоком <code>with Fail[ParseVersionError]</code>.</p>
         <h4>Примеры</h4>
-        <pre><code class="language-nova">let v = Version.from("2.5.1")
+        <pre><code class="language-nova">ro v = Version.from("2.5.1")
 assert(v.major == 2 && v.minor == 5 && v.patch == 1)
 
-let v2 = Version.from("1.0.0-beta+exp.sha.5114f85")
+ro v2 = Version.from("1.0.0-beta+exp.sha.5114f85")
 assert(v2.pre[0] == "beta")</code></pre>
       </div>
 
@@ -119,7 +119,7 @@ assert(v2.pre[0] == "beta")</code></pre>
         <pre><code class="language-nova">fn Version.new(major u64, minor u64, patch u64) -> Self</code></pre>
         <p>Простой конструктор без pre-release и метаданных сборки. Наиболее частый случай.</p>
         <h4>Примеры</h4>
-        <pre><code class="language-nova">let v = Version.new(1, 2, 3)
+        <pre><code class="language-nova">ro v = Version.new(1, 2, 3)
 assert(v.into() == "1.2.3")</code></pre>
       </div>
 
@@ -176,7 +176,7 @@ fn Version @gt(other Version) -> bool   // >
 fn Version @ge(other Version) -> bool   // >=</code></pre>
         <h4>Примеры</h4>
         <pre><code class="language-nova">// semver.org §11 chain example
-let chain = [
+ro chain = [
     Version.from("1.0.0-alpha"),
     Version.from("1.0.0-alpha.1"),
     Version.from("1.0.0-beta"),
@@ -195,8 +195,8 @@ for i in 0..chain.len() - 1 {
 fn Version @eq_precedence(other Version) -> bool  // semver §10 (ignores build)</code></pre>
         <p><code>eq</code> — структурное сравнение: сравнивает все поля, включая <code>build</code>. <code>eq_precedence</code> следует §&nbsp;10 и игнорирует метаданные сборки.</p>
         <h4>Примеры</h4>
-        <pre><code class="language-nova">let a = Version.from("1.0.0+build.1")
-let b = Version.from("1.0.0+build.2")
+        <pre><code class="language-nova">ro a = Version.from("1.0.0+build.1")
+ro b = Version.from("1.0.0+build.2")
 assert(a.eq_precedence(b))   // same precedence
 assert(!a.eq(b))              // different build metadata</code></pre>
       </div>
@@ -211,8 +211,8 @@ assert(!a.eq(b))              // different build metadata</code></pre>
         <pre><code class="language-nova">fn Version @into() -> str</code></pre>
         <p>Сериализует в <code>MAJOR.MINOR.PATCH[-PRE][+BUILD]</code>. Round-trip: <code>Version.from(v.into()).eq(v)</code> выполняется для любого корректного <code>Version</code>.</p>
         <h4>Примеры</h4>
-        <pre><code class="language-nova">let v = Version.new(1, 2, 3)
-let s str = v.into()
+        <pre><code class="language-nova">ro v = Version.new(1, 2, 3)
+ro s str = v.into()
 assert(s == "1.2.3")</code></pre>
       </div>
 

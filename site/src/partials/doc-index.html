@@ -145,12 +145,12 @@ cargo build --release</code></pre>
 // Cache and Db effects are looked up from the active with-scope.
 fn get_profile(user_id u64) Cache Db -> Profile
 {
-    let key = "profile:${user_id}"
-    if let Some(raw) = Cache.get(key) {
+    ro key = "profile:${user_id}"
+    if Some(raw) = Cache.get(key) {
         return Profile.decode(raw)
     }
-    let rows = Db.query(sql`SELECT * FROM profiles WHERE id = ${user_id}`)
-    let p = Profile.from_row(rows[0])
+    ro rows = Db.query(sql`SELECT * FROM profiles WHERE id = ${user_id}`)
+    ro p = Profile.from_row(rows[0])
     Cache.set(key, p.encode())
     p
 }</code></pre>
@@ -195,11 +195,11 @@ fn get_profile(user_id u64) Cache Db -> Profile
       <p>Nova's runtime multiplexes <em>fibers</em> — lightweight threads scheduled by the runtime — across OS threads using a work-stealing scheduler. You spawn a fiber with <code>spawn</code> and communicate over channels:</p>
 
       <pre><code class="language-nova">// parallel for runs each iteration as a fiber, collects results
-let squares = parallel for i in 0..8 { i * i }
+ro squares = parallel for i in 0..8 { i * i }
 // squares == [0, 1, 4, 9, 16, 25, 36, 49]
 
 // spawn for fire-and-forget work; supervised waits for all fibers
-let mut count = 0
+mut count = 0
 supervised {
     spawn { count = count + 1 }
     spawn { count = count + 1 }

@@ -142,7 +142,7 @@ fn fetch_user(id u64) Db Log -> Result[User, NotFound]
       <pre><code class="language-nova">// HTTP-сервер — эффекты видны в сигнатуре
 fn serve_api() Net Http Log -> ()
 {
-    let router = Router.new()
+    ro router = Router.new()
         .route(Get,  "/users/:id", get_user)
         .route(Post, "/users",    create_user)
 

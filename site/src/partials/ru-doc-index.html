@@ -143,12 +143,12 @@ cargo build --release</code></pre>
 // Эффекты Cache и Db берутся из активной with-области.
 fn get_profile(user_id u64) Cache Db -> Profile
 {
-    let key = "profile:${user_id}"
-    if let Some(raw) = Cache.get(key) {
+    ro key = "profile:${user_id}"
+    if Some(raw) = Cache.get(key) {
         return Profile.decode(raw)
     }
-    let rows = Db.query(sql`SELECT * FROM profiles WHERE id = ${user_id}`)
-    let p = Profile.from_row(rows[0])
+    ro rows = Db.query(sql`SELECT * FROM profiles WHERE id = ${user_id}`)
+    ro p = Profile.from_row(rows[0])
     Cache.set(key, p.encode())
     p
 }</code></pre>
@@ -193,11 +193,11 @@ fn get_profile(user_id u64) Cache Db -> Profile
       <p>Рантайм Nova распределяет <em>файберы</em> — лёгкие потоки, которыми управляет сам рантайм — поверх потоков ОС с помощью планировщика с перехватом задач. Файбер порождается командой <code>spawn</code>, общается через каналы:</p>
 
       <pre><code class="language-nova">// parallel for запускает каждую итерацию как файбер и собирает результаты
-let squares = parallel for i in 0..8 { i * i }
+ro squares = parallel for i in 0..8 { i * i }
 // squares == [0, 1, 4, 9, 16, 25, 36, 49]
 
 // spawn — запустить и не ждать; supervised дождётся всех файберов
-let mut count = 0
+mut count = 0
 supervised {
     spawn { count = count + 1 }
     spawn { count = count + 1 }

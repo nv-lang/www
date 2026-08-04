@@ -34,10 +34,10 @@
 
       <p><code>[]T</code> — встроенный динамический массив Nova (синтаксис <a href="/ru/spec/decisions/syntax/#d27">D27</a>, представление <a href="/ru/spec/decisions/types/#d32">D32</a> <code>(ptr, len, cap)</code>). Встроенный API — <code>len</code>, <code>cap</code>, <code>push</code>, <code>pop</code>, <code>with_capacity</code>, <code>[i]</code> — предоставляется компилятором. Этот модуль добавляет функциональные комбинаторы через обобщённые параметры получателя (<a href="/ru/spec/decisions/syntax/#d35">D35</a>).</p>
 
-      <pre><code class="language-nova">let nums []int = [1, 2, 3, 4, 5]
-let squared = nums.map(|x| x * x)
-let evens   = nums.filter(|x| x % 2 == 0)
-let total   = nums.fold(0, |acc, x| acc + x)
+      <pre><code class="language-nova">ro nums []int = [1, 2, 3, 4, 5]
+ro squared = nums.map(|x| x * x)
+ro evens   = nums.filter(|x| x % 2 == 0)
+ro total   = nums.fold(0, |acc, x| acc + x)
 assert(total == 15)</code></pre>
 
       <hr class="divider">
@@ -48,7 +48,7 @@ assert(total == 15)</code></pre>
         <pre><code class="language-nova">fn []T @map[U](f fn(T) -> U) -> []U</code></pre>
         <p>Применяет <code>f</code> к каждому элементу и возвращает новый массив <code>[]U</code>. Метод-уровневый обобщённый параметр <code>[U]</code> (<a href="/ru/spec/decisions/types/#d42">D42</a>) позволяет одному методу <code>[]T</code> возвращать любой целевой тип.</p>
         <h4>Примеры</h4>
-        <pre><code class="language-nova">let v []int = [1, 2, 3]
+        <pre><code class="language-nova">ro v []int = [1, 2, 3]
 assert(v.map(|x| x * 2) == [2, 4, 6])</code></pre>
       </div>
 
@@ -60,7 +60,7 @@ assert(v.map(|x| x * 2) == [2, 4, 6])</code></pre>
         <pre><code class="language-nova">fn []T @filter(pred fn(T) -> bool) -> []T</code></pre>
         <p>Возвращает новый массив, содержащий только элементы, для которых <code>pred(x)</code> равен <code>true</code>. Сохраняет порядок. Исходный массив не изменяется.</p>
         <h4>Примеры</h4>
-        <pre><code class="language-nova">let v []int = [1, 2, 3, 4, 5]
+        <pre><code class="language-nova">ro v []int = [1, 2, 3, 4, 5]
 assert(v.filter(|x| x % 2 == 0) == [2, 4])</code></pre>
       </div>
 
@@ -72,7 +72,7 @@ assert(v.filter(|x| x % 2 == 0) == [2, 4])</code></pre>
         <pre><code class="language-nova">fn []T @fold[Acc](init Acc, f fn(Acc, T) -> Acc) -> Acc</code></pre>
         <p>Левая свёртка (reduce). Начинает с аккумулятора <code>init</code> и применяет <code>f(acc, x)</code> для каждого элемента. Метод-уровневый обобщённый параметр <code>[Acc]</code> не зависит от <code>T</code>, поэтому можно свернуть <code>[]int</code> в <code>str</code> и так далее.</p>
         <h4>Примеры</h4>
-        <pre><code class="language-nova">let v []int = [1, 2, 3, 4]
+        <pre><code class="language-nova">ro v []int = [1, 2, 3, 4]
 assert(v.fold(0, |acc, x| acc + x) == 10)</code></pre>
       </div>
 
@@ -84,7 +84,7 @@ assert(v.fold(0, |acc, x| acc + x) == 10)</code></pre>
         <pre><code class="language-nova">fn []T @any(pred fn(T) -> bool) -> bool</code></pre>
         <p>Возвращает <code>true</code>, если хотя бы один элемент удовлетворяет <code>pred</code>. Останавливается на первом совпадении. На пустом массиве возвращает <code>false</code>.</p>
         <h4>Примеры</h4>
-        <pre><code class="language-nova">let v []int = [1, 2, 3]
+        <pre><code class="language-nova">ro v []int = [1, 2, 3]
 assert(v.any(|x| x > 2))
 assert(!v.any(|x| x > 10))</code></pre>
       </div>
@@ -97,7 +97,7 @@ assert(!v.any(|x| x > 10))</code></pre>
         <pre><code class="language-nova">fn []T @all(pred fn(T) -> bool) -> bool</code></pre>
         <p>Возвращает <code>true</code>, если каждый элемент удовлетворяет <code>pred</code>. Останавливается на первом несовпадении. Пустая истинность: на пустом массиве возвращает <code>true</code>.</p>
         <h4>Примеры</h4>
-        <pre><code class="language-nova">let v []int = [2, 4, 6]
+        <pre><code class="language-nova">ro v []int = [2, 4, 6]
 assert(v.all(|x| x % 2 == 0))</code></pre>
       </div>
 
@@ -109,7 +109,7 @@ assert(v.all(|x| x % 2 == 0))</code></pre>
         <pre><code class="language-nova">fn []T @first() -> Option[T]</code></pre>
         <p>Возвращает первый элемент, обёрнутый в <code>Some(T)</code>, либо <code>None</code>, если массив пуст.</p>
         <h4>Примеры</h4>
-        <pre><code class="language-nova">let v []int = [10, 20, 30]
+        <pre><code class="language-nova">ro v []int = [10, 20, 30]
 assert(v.first() == Some(10))
 assert([]int.new().first() == None)</code></pre>
       </div>
@@ -122,7 +122,7 @@ assert([]int.new().first() == None)</code></pre>
         <pre><code class="language-nova">fn []T @last() -> Option[T]</code></pre>
         <p>Возвращает последний элемент, обёрнутый в <code>Some(T)</code>, либо <code>None</code>, если массив пуст.</p>
         <h4>Примеры</h4>
-        <pre><code class="language-nova">let v []int = [10, 20, 30]
+        <pre><code class="language-nova">ro v []int = [10, 20, 30]
 assert(v.last() == Some(30))
 assert([]int.new().last() == None)</code></pre>
       </div>
