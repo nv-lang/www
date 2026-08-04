@@ -86,7 +86,14 @@ for (const file of files) {
     if (link.startsWith('//')) continue; // protocol-relative — внешнее
     if (link.startsWith(ORIGIN)) link = link.slice(ORIGIN.length) || '/';
     else if (/^https?:\/\//i.test(link)) continue; // чужой домен
-    if (!link.startsWith('/') && !link.startsWith('#')) continue;
+    // Относительная ссылка на .md («overview.md», «./routing.md») — след
+    // импортированной доки: на сайте такого адреса нет, читатель ловит 404.
+    // Прежде такие ссылки молча пропускались (прецедент: страницы полариса).
+    if (!link.startsWith('/') && !link.startsWith('#')) {
+      if (/\.md($|[#?])/i.test(link))
+        errors.push(`${rel}: относительная ссылка на .md (на сайте нет такого адреса) → ${raw}`);
+      continue;
+    }
 
     let [path, anchor] = link.split('#');
     path = path.split('?')[0];

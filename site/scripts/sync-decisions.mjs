@@ -167,6 +167,22 @@ const isLink = (t) =>
 // Переписать ссылки markdown под структуру сайта.
 function rewriteLinks(md, repoPath, dMap, anchors) {
   const dir = posix.dirname(repoPath);
+  // Reference-стиль markdown: строка вида «[D58]: ../spec/decisions/03-syntax.md».
+  // Инлайновый перезаписчик ниже такие не видел, и ссылка уезжала на сайт как
+  // есть — 404 (найдено проверкой относительных .md, 2026-08-04).
+  md = md.replace(/^(\[[^\]]+\]:\s*)([^\s#]+\.md)(#[^\s]*)?\s*$/gm,
+    (full, label, rawPath, hash) => {
+      let resolved = posix.normalize(posix.join(dir, rawPath));
+      let site = pathToSite(resolved);
+      if (!site) {                      // путь мог быть записан от корня репы
+        const fromRoot = posix.normalize(rawPath.replace(/^(\.\.\/)+/, ''));
+        site = pathToSite(fromRoot);
+        if (site) resolved = fromRoot;
+      }
+      return site ? `${label}${site}${hash ?? ''}`
+                  : `${label}${GH_BLOB}/${resolved}${hash ?? ''}`;
+    });
+
   const selfUrl = pathToSite(repoPath);
   return md.replace(
     /\]\(\s*([^)\s]+)(?:\s+"[^"]*")?\s*\)/g,

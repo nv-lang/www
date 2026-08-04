@@ -1,0 +1,33 @@
+---
+// Боковое меню пакета: список его страниц. Раньше страницы пакетов шли без
+// навигации и выглядели чужеродно рядом с разделом /doc/ (замечание владельца).
+import { PACKAGE_DOCS } from '@data/packages.generated';
+interface Props { pkg: string; slug?: string; lang?: 'ru' | 'en'; }
+const { pkg, slug = 'index', lang = 'en' } = Astro.props;
+const ru = lang === 'ru';
+const base = ru ? `/ru/doc/${pkg}` : `/doc/${pkg}`;
+const p = PACKAGE_DOCS.find((x) => x.pkg === pkg)!;
+const title = ru ? p.title.ru : p.title.en;
+const pages = p.pages.filter((x) => x.slug !== 'index');
+---
+
+<aside class="doc-sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-section__title">{title.split(' — ')[0]}</div>
+    <ul>
+      <li><a href={`${base}/`} class={slug === 'index' ? 'active' : undefined}>
+        {ru ? 'Обзор пакета' : 'Package overview'}</a></li>
+      {pages.map((x) => (
+        <li><a href={`${base}/${x.slug}/`} class={slug === x.slug ? 'active' : undefined}>
+          {(ru ? x.title.ru : x.title.en).split(':')[0].split(' — ')[0]}</a></li>
+      ))}
+    </ul>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section__title">{ru ? 'Ещё' : 'More'}</div>
+    <ul>
+      <li><a href={ru ? '/ru/doc/' : '/doc/'}>{ru ? 'Документация' : 'Documentation'}</a></li>
+      <li><a href={`https://github.com/${p.repo}`}>{p.repo}</a></li>
+    </ul>
+  </div>
+</aside>
