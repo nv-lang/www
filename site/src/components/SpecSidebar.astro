@@ -7,8 +7,14 @@ import { SPEC_DOCS } from '@data/spec';
 
 interface Props {
   current?: string;
+  lang?: 'ru' | 'en';
 }
-const { current } = Astro.props;
+// 241 Ф.2: на английских страницах спеки меню обязано быть английским, а
+// ссылки — вести в английские маршруты; русская сторона живёт под /ru/.
+const { current, lang = 'ru' } = Astro.props;
+const ru = lang === 'ru';
+const base = ru ? '/ru/spec' : '/spec';
+const t = (o: { title: string; titleEn?: string }) => (ru ? o.title : (o.titleEn ?? o.title));
 
 const guide = SPEC_DOCS.filter((d) => d.group === 'guide' && d.slug !== 'open-questions');
 const extra = SPEC_DOCS.filter((d) => d.group === 'history' || d.slug === 'open-questions');
@@ -16,15 +22,15 @@ const extra = SPEC_DOCS.filter((d) => d.group === 'history' || d.slug === 'open-
 
 <aside class="doc-sidebar">
   <div class="sidebar-section">
-    <div class="sidebar-section__title">Спецификация</div>
+    <div class="sidebar-section__title">{ru ? 'Спецификация' : 'Specification'}</div>
     <ul>
       <li>
-        <a href="/spec/" class={current === 'index' ? 'active' : undefined}>Обзор раздела</a>
+        <a href={`${base}/`} class={current === 'index' ? 'active' : undefined}>{ru ? 'Обзор раздела' : 'Section overview'}</a>
       </li>
       {guide.map((d) => (
         <li>
-          <a href={`/spec/${d.slug}/`} class={current === `spec:${d.slug}` ? 'active' : undefined}>
-            {d.title}
+          <a href={`${base}/${d.slug}/`} class={current === `spec:${d.slug}` ? 'active' : undefined}>
+            {t(d)}
           </a>
         </li>
       ))}
@@ -32,17 +38,17 @@ const extra = SPEC_DOCS.filter((d) => d.group === 'history' || d.slug === 'open-
   </div>
 
   <div class="sidebar-section">
-    <div class="sidebar-section__title">Решения (D-блоки)</div>
+    <div class="sidebar-section__title">{ru ? 'Решения (D-блоки)' : 'Design decisions'}</div>
     <ul>
       <li>
-        <a href="/spec/decisions/" class={current === 'dec:index' ? 'active' : undefined}>
-          Все D-блоки
+        <a href={`${base}/decisions/`} class={current === 'dec:index' ? 'active' : undefined}>
+          {ru ? 'Все D-блоки' : 'All D-blocks'}
         </a>
       </li>
-      {TOPICS.map((t) => (
+      {TOPICS.map((topic) => (
         <li>
-          <a href={`/spec/decisions/${t.slug}/`} class={current === `dec:${t.slug}` ? 'active' : undefined}>
-            {t.title}
+          <a href={`${base}/decisions/${topic.slug}/`} class={current === `dec:${topic.slug}` ? 'active' : undefined}>
+            {t(topic)}
           </a>
         </li>
       ))}
@@ -50,12 +56,12 @@ const extra = SPEC_DOCS.filter((d) => d.group === 'history' || d.slug === 'open-
   </div>
 
   <div class="sidebar-section">
-    <div class="sidebar-section__title">Ещё</div>
+    <div class="sidebar-section__title">{ru ? 'Ещё' : 'More'}</div>
     <ul>
       {extra.map((d) => (
         <li>
-          <a href={`/spec/${d.slug}/`} class={current === `spec:${d.slug}` ? 'active' : undefined}>
-            {d.title}
+          <a href={`${base}/${d.slug}/`} class={current === `spec:${d.slug}` ? 'active' : undefined}>
+            {t(d)}
           </a>
         </li>
       ))}
