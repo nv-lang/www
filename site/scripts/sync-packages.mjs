@@ -55,6 +55,25 @@ function stripFm(text) {
   return (cut < 0 ? '' : after.slice(cut + 1)).replace(/^\s*\n/, '');
 }
 
+
+// Ссылки внутри доки пакета указывают на СОСЕДНИЕ .md-файлы («overview.md»,
+// «./routing.md»). На сайте таких адресов нет — их надо переписать в маршруты,
+// иначе читатель упирается в 404 (найдено владельцем 2026-08-04).
+function rewritePkgLinks(text, pkg, lang, repo) {
+  const base = lang === 'ru' ? `/ru/doc/${pkg}` : `/doc/${pkg}`;
+  // «../README.md» — корень репы пакета: на сайте это его обзорная страница.
+  // «../examples/...» и прочее вне docs/ — на сайте не публикуется, ведём в
+  // репозиторий-источник (иначе 404).
+  text = text.replace(/\]\(\.\.\/README(\.ru)?\.md(#[^)]*)?\)/g, `](${base}/`.replace(/\/$/, '/') + ')');
+  text = text.replace(/\]\(\.\.\/([A-Za-z0-9._\/-]+\.md)(#[^)]*)?\)/g,
+    (m, rel, hash) => `](https://github.com/${repo}/blob/main/${rel}${hash ?? ''})`);
+  return text.replace(/\]\(\.?\/?([A-Za-z0-9._-]+)\.md(#[^)]*)?\)/g, (m, name, hash) => {
+    const slug = name.replace(/\.ru$/, '');
+    const route = (slug === 'README' || slug === 'readme') ? `${base}/` : `${base}/${slug}/`;
+    return `](${route}${hash ?? ''})`;
+  });
+}
+
 function fm(repo, path) {
   return ['---', `sourceRepo: ${JSON.stringify(repo)}`,
     `sourcePath: ${JSON.stringify(path)}`, '---', '', ''].join('\n');
@@ -88,9 +107,9 @@ export async function syncPackages() {
     await mkdir(new URL(`${p.pkg}/ru/`, OUT), { recursive: true });
     for (const page of pages) {
       await writeFile(new URL(`${p.pkg}/en/${page.slug}.md`, OUT),
-        fm(p.repo, page.pathEn) + stripFm(page.en), 'utf8');
+        fm(p.repo, page.pathEn) + rewritePkgLinks(stripFm(page.en), p.pkg, 'en', p.repo), 'utf8');
       await writeFile(new URL(`${p.pkg}/ru/${page.slug}.md`, OUT),
-        fm(p.repo, page.pathEn.replace(/\.md$/, '.ru.md')) + stripFm(page.ru), 'utf8');
+        fm(p.repo, page.pathEn.replace(/\.md$/, '.ru.md')) + rewritePkgLinks(stripFm(page.ru), p.pkg, 'ru', p.repo), 'utf8');
     }
     // Заголовок КАЖДОЙ страницы — из её H1 (иначе все 13 страниц пакета
     // получают один <title>, что портит и навигацию, и выдачу поиска).

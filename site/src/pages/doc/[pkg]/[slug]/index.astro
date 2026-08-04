@@ -4,6 +4,7 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import PageMeta from '@components/PageMeta.astro';
+import PackageSidebar from '@components/PackageSidebar.astro';
 import { PACKAGE_DOCS } from '@data/packages.generated';
 
 export async function getStaticPaths() {
@@ -39,7 +40,9 @@ const editUrl = `https://github.com/${repo}/edit/main/${path}`;
   lang="en"
   active="doc"
 >
-  <main id="main-content" class="container--narrow" style="padding:2.5rem 0 4rem;">
+  <div class="doc-layout">
+    <PackageSidebar pkg={p.pkg} slug={slug} lang="en" />
+    <main id="main-content">
     <p style="font-size:.85rem;color:var(--fg-muted);margin-bottom:1rem;">
       <a href="/doc/">&#8592; Documentation</a> · <a href={`https://github.com/${repo}`}>{repo}</a>
     </p>
@@ -47,5 +50,6 @@ const editUrl = `https://github.com/${repo}/edit/main/${path}`;
       <Content />
     </article>
     <PageMeta lang="en" pagePath={`/doc/${p.pkg}/${slug}/`} editUrl={editUrl} />
-  </main>
+    </main>
+  </div>
 </BaseLayout>
