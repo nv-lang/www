@@ -75,8 +75,14 @@ function pathToSite(repoPath) {
   if (m) return `/spec/decisions/${topicSlug(m[1])}/`;
   m = repoPath.match(/^spec\/decisions\/history\/([a-z][a-z-]*)\.md$/);
   if (m) return `/spec/history/${m[1]}/`;
-  m = repoPath.match(/^spec\/([a-z][a-z-]*)\.md$/);
+  // 241 Ф.2: русский файл спеки живёт на /ru/spec/<slug>/ (там же его
+  // русские якоря), английский перевод — на /spec/<slug>/. Ссылки из
+  // русских источников обязаны вести на русскую страницу, иначе якорь
+  // не находится (поймано check-links при вводе двуязычия).
+  m = repoPath.match(/^spec\/([a-z][a-z-]*)\.en\.md$/);
   if (m && SPEC_DOCS.has(m[1])) return `/spec/${m[1]}/`;
+  m = repoPath.match(/^spec\/([a-z][a-z-]*)\.md$/);
+  if (m && SPEC_DOCS.has(m[1])) return `/ru/spec/${m[1]}/`;
   m = repoPath.match(/^docs\/guide\/([a-z][a-z-]*)\.ru\.md$/);
   if (m && DOC_SLUGS.has(m[1])) return `/ru/doc/${m[1]}/`;
   m = repoPath.match(/^docs\/guide\/([a-z][a-z-]*)\.md$/);
@@ -322,6 +328,11 @@ async function main() {
       decFiles.push({ name: m[1], text: f.text, path: f.path });
     else if ((m = f.path.match(/^spec\/decisions\/history\/([a-z][a-z-]*\.md)$/)))
       specFiles.push({ rel: `history/${m[1]}`, text: f.text, path: f.path });
+    // 241 Ф.2: английские переводы читательской спеки — отдельной веткой,
+    // ложатся в подкаталог en/ коллекции. Русский файл остаётся нормативом
+    // и адресуется прежним id (без префикса).
+    else if ((m = f.path.match(/^spec\/([a-z][a-z-]*)\.en\.md$/)) && SPEC_DOCS.has(m[1]))
+      specFiles.push({ rel: `en/${m[1]}.md`, text: f.text, path: f.path });
     else if ((m = f.path.match(/^spec\/([a-z][a-z-]*)\.md$/)) && SPEC_DOCS.has(m[1]))
       specFiles.push({ rel: `${m[1]}.md`, text: f.text, path: f.path });
     else if ((m = f.path.match(/^docs\/guide\/([a-z][a-z-]*)\.ru\.md$/)) && DOC_SLUGS.has(m[1]))
@@ -348,6 +359,7 @@ async function main() {
   await rm(DOCS_OUT, { recursive: true, force: true });
   await mkdir(DEC_OUT, { recursive: true });
   await mkdir(new URL('history/', SPEC_OUT), { recursive: true });
+  await mkdir(new URL('en/', SPEC_OUT), { recursive: true });
   await mkdir(new URL('en/', DOCS_OUT), { recursive: true });
   await mkdir(new URL('ru/', DOCS_OUT), { recursive: true });
   for (const f of decFiles)
