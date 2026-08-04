@@ -5,7 +5,7 @@
 //   spec/*.md (обзорные документы)             -> src/content/spec/
 //   spec/decisions/history/*.md                -> src/content/spec/history/
 //   docs/guide/<slug>.md / <slug>.ru.md         -> src/content/docs/{en,ru}/<slug>.md
-//     (только гайды из DOC_SLUGS: channels, contracts, nova-cli)
+//     (состав гайдов — из docs/guide/PUBLISHED.list репы nova, №307)
 // docs/guide/ — ПОЛЬЗОВАТЕЛЬСКИЕ гайды nova (docs-split 2026-08-02, см.
 // nova/docs/README.md). docs/dev/ (внутренние конвенции/процесс/промпты
 // для агентов) сюда НИКОГДА не попадает — ни при каком расширении
@@ -40,7 +40,25 @@ const DATES_CACHE = new URL('../src/data/source-dates.json', import.meta.url);
 // Только этот whitelist; прочее в docs/ (docs/dev/ внутреннее, docs/plans/
 // планы, docs/idiom(s)/, docs/research/ и т.п.) на сайт не попадает.
 // Должен совпадать с DOC_GUIDES в src/data/docs.ts.
-const DOC_SLUGS = new Set(['channels', 'contracts', 'nova-cli']);
+// №307: список публикуемых гайдов больше НЕ зашит здесь. Канон — файл
+// docs/guide/PUBLISHED.list в репозитории nova (план 241 Ф.1b): один slug в
+// строке, `#` — комментарий. Тот же файл читает страж doc-conventions, так
+// что зеркал-констант в репе сайта не остаётся.
+const PUBLISHED_LIST_PATH = 'docs/guide/PUBLISHED.list';
+let DOC_SLUGS = new Set();   // заполняется из манифеста до синка
+async function fetchPublishedSlugs() {
+  const url = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${PUBLISHED_LIST_PATH}`;
+  const r = await fetch(url, { headers: UA });
+  if (!r.ok) throw new Error(
+    `не прочитан манифест публикации ${PUBLISHED_LIST_PATH} (${r.status}) — ` +
+    `он канон состава гайдов, молча падать на старый список нельзя`);
+  const slugs = (await r.text())
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter((l) => l && !l.startsWith('#'));
+  if (!slugs.length) throw new Error(`манифест ${PUBLISHED_LIST_PATH} пуст`);
+  return new Set(slugs);
+}
 
 // Обзорные документы spec/*.md -> /spec/<name>/
 const SPEC_DOCS = new Set([
@@ -266,6 +284,9 @@ async function main() {
   if (process.env.GITHUB_TOKEN)
     apiHeaders.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
 
+  // состав гайдов — из манифеста репы nova (№307), не из зашитого списка
+  DOC_SLUGS = await fetchPublishedSlugs();
+
   // имена нужных doc-файлов (EN + RU) для отбора из дерева репозитория
   const DOC_FILES = new Set();
   for (const s of DOC_SLUGS) {
@@ -338,6 +359,44 @@ async function main() {
   for (const f of docFiles)
     await writeFile(new URL(`${f.lang}/${f.slug}.md`, DOCS_OUT),
       frontmatter(f.path, dates[f.path]) + rewriteLinks(f.text, f.path, dMap, anchors), 'utf8');
+
+  // №307: навигация и мета-теги страниц гайдов — ИЗ МАНИФЕСТА, а не из
+  // ручной таблицы. Заголовок берём из H1 файла, описание — из первого
+  // содержательного абзаца. Курируемые SEO-тексты остаются в docs.ts и
+  // перекрывают сгенерированное (см. CURATED там же).
+  const meta = new Map();
+  for (const f of docFiles) {
+    const lines = f.text.split(/\r?\n/);
+    const h1 = (lines.find((l) => /^#\s+/.test(l)) || '').replace(/^#\s+/, '').trim();
+    let desc = '';
+    for (const l of lines) {
+      const t = l.trim();
+      if (!t || t.startsWith('#') || t.startsWith('>') || t.startsWith('`')
+          || t.startsWith('|') || t.startsWith('-') || t.startsWith('*')
+          || t.startsWith('[') || t.startsWith('<')) continue;
+      desc = t.replace(/[*`_]/g, '');
+      break;
+    }
+    if (desc.length > 200) desc = desc.slice(0, 197).replace(/\s+\S*$/, '') + '…';
+    const e = meta.get(f.slug) || { slug: f.slug };
+    e[f.lang] = { title: h1, description: desc };
+    meta.set(f.slug, e);
+  }
+  const generated = [...meta.values()]
+    .filter((e) => e.en && e.ru)
+    .sort((a, b) => a.slug.localeCompare(b.slug))
+    .map((e) => ({
+      slug: e.slug,
+      github: `docs/guide/${e.slug}.md`,
+      title: { en: e.en.title, ru: e.ru.title },
+      description: { en: e.en.description, ru: e.ru.description },
+    }));
+  await writeFile(new URL('../src/data/docs.generated.ts', import.meta.url),
+    '// СГЕНЕРИРОВАНО scripts/sync-decisions.mjs из docs/guide/PUBLISHED.list\n' +
+    '// репозитория nova (№307). Руками не править — правь источник в nova.\n' +
+    "import type { DocGuide } from './docs';\n\n" +
+    'export const DOC_GUIDES_GENERATED: DocGuide[] = ' +
+    JSON.stringify(generated, null, 2) + ';\n', 'utf8');
 
   console.log(
     `sync: ${decFiles.length} файлов решений + ${specFiles.length} spec-документов + ` +
