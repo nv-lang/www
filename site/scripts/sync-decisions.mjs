@@ -24,6 +24,22 @@ import GithubSlugger from 'github-slugger';
 const REPO = 'nv-lang/nova';
 const BRANCH = 'main';
 const UA = { 'User-Agent': 'nv-lang-www-build' };
+
+// Разовая 5xx от GitHub роняла ВЕСЬ деплой (прецедент 2026-08-04: fetch 500 на
+// одном файле из 70). Сеть — не повод считать сборку красной: три попытки с
+// нарастающей паузой, и только потом падаем.
+async function fetchRetry(url, init, tries = 3) {
+  let last;
+  for (let i = 0; i < tries; i++) {
+    try {
+      const r = await fetch(url, init);
+      if (r.ok || (r.status >= 400 && r.status < 500)) return r;
+      last = new Error(`HTTP ${r.status}`);
+    } catch (e) { last = e; }
+    if (i < tries - 1) await new Promise((res) => setTimeout(res, 800 * (i + 1)));
+  }
+  throw last ?? new Error('fetch failed');
+}
 const GH_BLOB = `https://github.com/${REPO}/blob/${BRANCH}`;
 const GH_GRAPHQL = 'https://api.github.com/graphql';
 const DEC_OUT = new URL('../src/content/decisions/', import.meta.url);
@@ -48,7 +64,7 @@ const PUBLISHED_LIST_PATH = 'docs/guide/PUBLISHED.list';
 let DOC_SLUGS = new Set();   // заполняется из манифеста до синка
 async function fetchPublishedSlugs() {
   const url = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${PUBLISHED_LIST_PATH}`;
-  const r = await fetch(url, { headers: UA });
+  const r = await fetchRetry(url, { headers: UA });
   if (!r.ok) throw new Error(
     `не прочитан манифест публикации ${PUBLISHED_LIST_PATH} (${r.status}) — ` +
     `он канон состава гайдов, молча падать на старый список нельзя`);
@@ -316,7 +332,7 @@ async function main() {
 
   // всё дерево репозитория -> отбор spec/**/*.md + выбранных docs/guide/*.md
   const treeUrl = `https://api.github.com/repos/${REPO}/git/trees/${BRANCH}?recursive=1`;
-  const tr = await fetch(treeUrl, { headers: apiHeaders });
+  const tr = await fetchRetry(treeUrl, { headers: apiHeaders });
   if (!tr.ok) throw new Error(`GitHub API ${tr.status} — ${treeUrl}`);
   const paths = (await tr.json()).tree
     .filter((e) => e.type === 'blob' && e.path.endsWith('.md') &&
@@ -326,7 +342,7 @@ async function main() {
 
   const files = [];
   for (const p of paths) {
-    const r = await fetch(
+    const r = await fetchRetry(
       `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${p}`, { headers: UA });
     if (!r.ok) throw new Error(`fetch ${r.status} — ${p}`);
     files.push({ path: p, text: await r.text() });
