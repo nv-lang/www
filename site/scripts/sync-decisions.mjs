@@ -426,15 +426,39 @@ async function main() {
   for (const f of docFiles) {
     const lines = f.text.split(/\r?\n/);
     const h1 = (lines.find((l) => /^#\s+/.test(l)) || '').replace(/^#\s+/, '').trim();
+    // Описание — ПЕРВЫЙ СОДЕРЖАТЕЛЬНЫЙ абзац. Служебное в описание не пускаем:
+    // frontmatter источника (source_rev/source_date), SPDX-строки, переключатель
+    // языка, код-блоки. Иначе в выдаче поиска у 13 страниц одинаковое
+    // «sourcerev: 07df7d2c9…» (найдено аудитом 2026-08-04).
+    // Описание — первый содержательный АБЗАЦ целиком (а не первая строка:
+    // строка может оказаться продолжением предложения или пунктом списка).
+    // Пропускаем frontmatter, SPDX, переключатель языка, код-блоки, списки.
     let desc = '';
-    for (const l of lines) {
-      const t = l.trim();
-      if (!t || t.startsWith('#') || t.startsWith('>') || t.startsWith('`')
-          || t.startsWith('|') || t.startsWith('-') || t.startsWith('*')
-          || t.startsWith('[') || t.startsWith('<')) continue;
-      desc = t.replace(/[*`_]/g, '');
-      break;
+    let inFence = false;
+    let inFm = lines[0]?.trim() === '---';
+    let para = [];
+    const skip = (t) => !t || t.startsWith('#') || t.startsWith('>')
+      || t.startsWith('|') || t.startsWith('-') || t.startsWith('*')
+      || t.startsWith('[') || t.startsWith('<') || /^\d+[.)]\s/.test(t)
+      || /^(source_rev|source_date|sourcePath|sourceDate)\s*:/i.test(t)
+      || /SPDX-License-Identifier/i.test(t)
+      || /^\*\*(English|Русский)\*\*/.test(t);
+    for (let i = inFm ? 1 : 0; i < lines.length; i++) {
+      const t = lines[i].trim();
+      if (inFm) { if (t === '---') inFm = false; continue; }
+      if (t.startsWith('```')) { inFence = !inFence; para = []; continue; }
+      if (inFence) continue;
+      if (!t) { if (para.length) break; continue; }
+      if (!para.length && skip(t)) continue;   // ищем НАЧАЛО абзаца
+      if (para.length && skip(t)) break;
+      para.push(t);
     }
+    // абзац обязан начинаться как предложение; если первый абзац файла —
+    // огрызок (продолжение или список), берём заголовок как запасной вариант,
+    // но НИКОГДА не служебные строки.
+    const joined = para.join(' ').replace(/[*`_]/g, '').trim();
+    desc = /^[A-ZА-ЯЁ0-9«"']/.test(joined) ? joined : '';
+    if (!desc && h1) desc = h1;
     if (desc.length > 200) desc = desc.slice(0, 197).replace(/\s+\S*$/, '') + '…';
     const e = meta.get(f.slug) || { slug: f.slug };
     e[f.lang] = { title: h1, description: desc };
