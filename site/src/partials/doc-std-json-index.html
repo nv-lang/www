@@ -55,7 +55,7 @@
 
       <p>Independent implementation of <a href="https://www.rfc-editor.org/rfc/rfc8259">RFC 8259</a>. Covers all JSON value types including full escape-sequence handling (surrogate pairs, <code>\uXXXX</code>). Does not support comments, trailing commas, or single-quoted strings by design. Round-trip property: <code>Json.parse(v.into()) == v</code> for any valid <code>JsonValue</code>.</p>
 
-      <pre><code class="language-nova">let v = Json.parse("{\"name\": \"alice\", \"age\": 30}")
+      <pre><code class="language-nova">ro v = Json.parse("{\"name\": \"alice\", \"age\": 30}")
 match v.as_object() {
     Some(m) => {
         assert(m.get("name") == Some(Str("alice")))
@@ -105,10 +105,10 @@ match v.as_object() {
         <pre><code class="language-nova">fn Json.parse(s str) Fail[ParseJsonError] -> JsonValue</code></pre>
         <p>Parses a JSON string. Throws <code>Fail[ParseJsonError]</code> on any lexical or syntactic error. Use a <code>with Fail[ParseJsonError]</code> block to handle errors.</p>
         <h4>Examples</h4>
-        <pre><code class="language-nova">let arr = Json.parse("[1, 2, 3]")
+        <pre><code class="language-nova">ro arr = Json.parse("[1, 2, 3]")
 assert(arr.is_array())
 
-let obj = Json.parse("{\"x\": true}")
+ro obj = Json.parse("{\"x\": true}")
 match obj.as_object() {
     Some(m) => assert(m.get("x") == Some(Bool(true)))
     None    => assert(false)
@@ -138,9 +138,9 @@ fn JsonValue @as_str()    -> Option[str]
 fn JsonValue @as_array()  -> Option[[]JsonValue]
 fn JsonValue @as_object() -> Option[HashMap[str, JsonValue]]</code></pre>
 
-      <p>Each returns <code>None</code> if the variant doesn't match. Combine with <code>match</code> or <code>if let Some</code>:</p>
+      <p>Each returns <code>None</code> if the variant doesn't match. Combine with <code>match</code> or <code>if Some</code>:</p>
 
-      <pre><code class="language-nova">let v = Json.parse("42")
+      <pre><code class="language-nova">ro v = Json.parse("42")
 assert(v.as_num() == Some(42.0))
 assert(v.as_str() == None)</code></pre>
 
@@ -162,8 +162,8 @@ fn JsonValue @is_object() -> bool</code></pre>
         <pre><code class="language-nova">fn JsonValue @into() -> str</code></pre>
         <p>Serializes to compact JSON (single line, no extra whitespace). This is the <a href="/spec/decisions/runtime/#d73">D73</a> <code>Into[str]</code> implementation, so <code>str.from(v)</code> works too. Round-trip: <code>Json.parse(v.into()) == v</code>.</p>
         <h4>Examples</h4>
-        <pre><code class="language-nova">let v = Array([Num(1.0), Str("a")])
-let s str = v.into()
+        <pre><code class="language-nova">ro v = Array([Num(1.0), Str("a")])
+ro s str = v.into()
 assert(s == "[1,\"a\"]")</code></pre>
       </div>
 
@@ -173,9 +173,9 @@ assert(s == "[1,\"a\"]")</code></pre>
         <pre><code class="language-nova">fn pretty(v JsonValue) -> str</code></pre>
         <p>Pretty-prints with 2-space indentation. Not part of <code>Into[str]</code> — call explicitly when human-readable output is needed (logs, debug output). Use <code>into()</code> for compact canonical output.</p>
         <h4>Examples</h4>
-        <pre><code class="language-nova">let mut m = HashMap[str, JsonValue].new()
+        <pre><code class="language-nova">mut m = HashMap[str, JsonValue].new()
 m.insert("name", Str("alice"))
-let s = pretty(Object(m))
+ro s = pretty(Object(m))
 assert(s.contains("\n"))  // multi-line</code></pre>
       </div>
 
