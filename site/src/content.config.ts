@@ -82,4 +82,18 @@ const docs = defineCollection({
   }),
 });
 
-export const collections = { decisions, spec, blog, docs };
+// Документация пакетных реп (план 241 Ф.2b): polaris — свои страницы,
+// остальные пакеты — README. Наполняется scripts/sync-packages.mjs.
+const packages = defineCollection({
+  loader: glob({
+    pattern: '**/*.md',
+    base: './src/content/packages',
+    generateId: ({ entry }) => entry.replace(/\.md$/, ''),
+  }),
+  schema: z.object({
+    sourceRepo: z.string().optional(),
+    sourcePath: z.string().optional(),
+  }),
+});
+
+export const collections = { decisions, spec, blog, docs, packages };
