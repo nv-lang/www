@@ -1,0 +1,34 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PartialWithMeta from '@components/PartialWithMeta.astro';
+import body from '@partials/ru-doc-std-semver-index.html?raw';
+import { partialDate } from '@data/sourceMeta';
+const updated = partialDate('ru-doc-std-semver-index.html');
+const meta = {
+  title: "data.semver — Стандартная библиотека — Nova",
+  description: "Стандартная библиотека Nova: data.semver — парсер, компаратор и сериализатор Semantic Versioning 2.0.0.",
+  canonical: "https://nv-lang.org/ru/doc/std/semver/",
+  lang: "ru" as const,
+  hreflangRu: "https://nv-lang.org/ru/doc/std/semver/",
+  hreflangEn: "https://nv-lang.org/doc/std/semver/",
+  hreflangXDefault: "https://nv-lang.org/doc/std/semver/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/ru/doc/std/semver/",
+  ogTitle: "data.semver — Стандартная библиотека — Nova",
+  ogDescription: "Стандартная библиотека Nova: data.semver — парсер, компаратор и сериализатор Semantic Versioning 2.0.0.",
+  twitterTitle: "data.semver — Стандартная библиотека — Nova",
+  twitterDescription: "Стандартная библиотека Nova: data.semver — парсер, компаратор и сериализатор Semantic Versioning 2.0.0.",
+  langRuUrl: "/ru/doc/std/semver/",
+  langEnUrl: "/doc/std/semver/",
+};
+---
+
+<BaseLayout {...meta} active="doc">
+  <PartialWithMeta
+    body={body}
+    lang="ru"
+    pagePath="/ru/doc/std/semver/"
+    partialUrl="https://github.com/nv-lang/www/blob/main/site/src/partials/ru-doc-std-semver-index.html"
+    sourceDate={updated}
+  />
+</BaseLayout>

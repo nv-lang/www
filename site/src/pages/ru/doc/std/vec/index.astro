@@ -1,0 +1,34 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PartialWithMeta from '@components/PartialWithMeta.astro';
+import body from '@partials/ru-doc-std-vec-index.html?raw';
+import { partialDate } from '@data/sourceMeta';
+const updated = partialDate('ru-doc-std-vec-index.html');
+const meta = {
+  title: "collections.vec — Стандартная библиотека — Nova",
+  description: "Стандартная библиотека Nova: collections.vec — функциональные комбинаторы для массивов: map, filter, fold, any, all, first, last.",
+  canonical: "https://nv-lang.org/ru/doc/std/vec/",
+  lang: "ru" as const,
+  hreflangRu: "https://nv-lang.org/ru/doc/std/vec/",
+  hreflangEn: "https://nv-lang.org/doc/std/vec/",
+  hreflangXDefault: "https://nv-lang.org/doc/std/vec/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/ru/doc/std/vec/",
+  ogTitle: "collections.vec — Стандартная библиотека — Nova",
+  ogDescription: "Стандартная библиотека Nova: collections.vec — функциональные комбинаторы для массивов: map, filter, fold, any, all, first, last.",
+  twitterTitle: "collections.vec — Стандартная библиотека — Nova",
+  twitterDescription: "Стандартная библиотека Nova: collections.vec — функциональные комбинаторы для массивов: map, filter, fold, any, all, first, last.",
+  langRuUrl: "/ru/doc/std/vec/",
+  langEnUrl: "/doc/std/vec/",
+};
+---
+
+<BaseLayout {...meta} active="doc">
+  <PartialWithMeta
+    body={body}
+    lang="ru"
+    pagePath="/ru/doc/std/vec/"
+    partialUrl="https://github.com/nv-lang/www/blob/main/site/src/partials/ru-doc-std-vec-index.html"
+    sourceDate={updated}
+  />
+</BaseLayout>

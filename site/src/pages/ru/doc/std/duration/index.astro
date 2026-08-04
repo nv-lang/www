@@ -1,0 +1,34 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PartialWithMeta from '@components/PartialWithMeta.astro';
+import body from '@partials/ru-doc-std-duration-index.html?raw';
+import { partialDate } from '@data/sourceMeta';
+const updated = partialDate('ru-doc-std-duration-index.html');
+const meta = {
+  title: "time.duration — Стандартная библиотека — Nova",
+  description: "Стандартная библиотека Nova: time.duration — Duration, Timestamp и Monotonic с наносекундной точностью и эргономичными расширениями для целых чисел.",
+  canonical: "https://nv-lang.org/ru/doc/std/duration/",
+  lang: "ru" as const,
+  hreflangRu: "https://nv-lang.org/ru/doc/std/duration/",
+  hreflangEn: "https://nv-lang.org/doc/std/duration/",
+  hreflangXDefault: "https://nv-lang.org/doc/std/duration/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/ru/doc/std/duration/",
+  ogTitle: "time.duration — Стандартная библиотека — Nova",
+  ogDescription: "Стандартная библиотека Nova: time.duration — Duration, Timestamp и Monotonic с наносекундной точностью и эргономичными расширениями для целых чисел.",
+  twitterTitle: "time.duration — Стандартная библиотека — Nova",
+  twitterDescription: "Стандартная библиотека Nova: time.duration — Duration, Timestamp и Monotonic с наносекундной точностью и эргономичными расширениями для целых чисел.",
+  langRuUrl: "/ru/doc/std/duration/",
+  langEnUrl: "/doc/std/duration/",
+};
+---
+
+<BaseLayout {...meta} active="doc">
+  <PartialWithMeta
+    body={body}
+    lang="ru"
+    pagePath="/ru/doc/std/duration/"
+    partialUrl="https://github.com/nv-lang/www/blob/main/site/src/partials/ru-doc-std-duration-index.html"
+    sourceDate={updated}
+  />
+</BaseLayout>

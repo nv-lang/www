@@ -1,0 +1,34 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PartialWithMeta from '@components/PartialWithMeta.astro';
+import body from '@partials/ru-doc-std-json-index.html?raw';
+import { partialDate } from '@data/sourceMeta';
+const updated = partialDate('ru-doc-std-json-index.html');
+const meta = {
+  title: "encoding.json — Стандартная библиотека — Nova",
+  description: "Стандартная библиотека Nova: encoding.json — парсер и сериализатор JSON (RFC 8259). Тип JsonValue, parse, as_*, into, pretty.",
+  canonical: "https://nv-lang.org/ru/doc/std/json/",
+  lang: "ru" as const,
+  hreflangRu: "https://nv-lang.org/ru/doc/std/json/",
+  hreflangEn: "https://nv-lang.org/doc/std/json/",
+  hreflangXDefault: "https://nv-lang.org/doc/std/json/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/ru/doc/std/json/",
+  ogTitle: "encoding.json — Стандартная библиотека — Nova",
+  ogDescription: "Стандартная библиотека Nova: encoding.json — парсер и сериализатор JSON (RFC 8259). Тип JsonValue, parse, as_*, into, pretty.",
+  twitterTitle: "encoding.json — Стандартная библиотека — Nova",
+  twitterDescription: "Стандартная библиотека Nova: encoding.json — парсер и сериализатор JSON (RFC 8259). Тип JsonValue, parse, as_*, into, pretty.",
+  langRuUrl: "/ru/doc/std/json/",
+  langEnUrl: "/doc/std/json/",
+};
+---
+
+<BaseLayout {...meta} active="doc">
+  <PartialWithMeta
+    body={body}
+    lang="ru"
+    pagePath="/ru/doc/std/json/"
+    partialUrl="https://github.com/nv-lang/www/blob/main/site/src/partials/ru-doc-std-json-index.html"
+    sourceDate={updated}
+  />
+</BaseLayout>

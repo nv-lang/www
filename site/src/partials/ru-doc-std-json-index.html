@@ -1,0 +1,184 @@
+<div class="page-header">
+  <div class="container--narrow">
+    <p style="font-size:.85rem;color:var(--fg-muted);margin-bottom:.4rem;"><a href="/ru/doc/std/">Стандартная библиотека</a></p>
+    <h1>encoding.json</h1>
+    <p>Парсер и сериализатор JSON (RFC 8259). Полная поддержка типов, гарантия round-trip.</p>
+  </div>
+</div>
+
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Типы</div>
+      <ul>
+        <li><a href="#jsonvalue">JsonValue</a></li>
+        <li><a href="#parse-error">ParseJsonError</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Разбор</div>
+      <ul>
+        <li><a href="#parse">Json.parse</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Конструкторы</div>
+      <ul>
+        <li><a href="#constructors">null, bool, num, str, array, object</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Аксессоры</div>
+      <ul>
+        <li><a href="#accessors">as_bool, as_num, as_str, as_array, as_object</a></li>
+        <li><a href="#guards">is_null, is_bool, …</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Сериализация</div>
+      <ul>
+        <li><a href="#into">into (компактно)</a></li>
+        <li><a href="#pretty">pretty</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section__title">Ещё</div>
+      <ul>
+        <li><a href="/ru/doc/std/">&#8592; Стандартная библиотека</a></li>
+        <li><a href="https://github.com/nv-lang/nova/blob/main/std/encoding/json.nv">Исходник &#8599;</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main id="main-content">
+    <article class="prose">
+
+      <p>Независимая реализация <a href="https://www.rfc-editor.org/rfc/rfc8259">RFC 8259</a>. Покрывает все типы значений JSON, включая полную обработку escape-последовательностей (суррогатные пары, <code>\uXXXX</code>). По замыслу не поддерживает комментарии, висячие запятые и строки в одинарных кавычках. Свойство round-trip: <code>Json.parse(v.into()) == v</code> для любого корректного <code>JsonValue</code>.</p>
+
+      <pre><code class="language-nova">let v = Json.parse("{\"name\": \"alice\", \"age\": 30}")
+match v.as_object() {
+    Some(m) => {
+        assert(m.get("name") == Some(Str("alice")))
+        assert(m.get("age")  == Some(Num(30.0)))
+    }
+    None => assert(false)
+}</code></pre>
+
+      <hr class="divider">
+
+      <h2 id="types" style="margin-bottom:1.5rem;">Типы</h2>
+
+      <div id="jsonvalue" style="margin-bottom:2.5rem;">
+        <h3 style="margin-bottom:.3rem;">JsonValue</h3>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">стабильно с 0.1</span>
+        <pre><code class="language-nova">export type JsonValue
+    | Null
+    | Bool(bool)
+    | Num(f64)
+    | Str(str)
+    | Array([]JsonValue)
+    | Object(HashMap[str, JsonValue])</code></pre>
+        <p>Рекурсивный тип-сумма для произвольных документов JSON. Поддерживается структурное равенство — <code>v1 == v2</code> работает для глубокого сравнения, включая вложенные массивы и объекты.</p>
+      </div>
+
+      <div id="parse-error" style="margin-bottom:2.5rem;">
+        <h3 style="margin-bottom:.3rem;">ParseJsonError</h3>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">стабильно с 0.1</span>
+        <pre><code class="language-nova">export type ParseJsonError
+    | UnexpectedChar  { line int; col int; found char }
+    | UnexpectedEof   { line int; col int }
+    | InvalidEscape   { line int; col int; seq str }
+    | InvalidUnicode  { line int; col int; hex str }
+    | InvalidNumber   { line int; col int; text str }
+    | DuplicateKey    { line int; col int; key str }
+    | TrailingContent { line int; col int }</code></pre>
+        <p>Все варианты несут 1-based <code>line</code> и <code>col</code> для диагностических сообщений.</p>
+      </div>
+
+      <hr class="divider">
+
+      <h2 id="parsing" style="margin-bottom:1.5rem;">Разбор</h2>
+
+      <div id="parse" style="margin-bottom:2.5rem;">
+        <h3 style="margin-bottom:.3rem;">Json.parse</h3>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">стабильно с 0.1</span>
+        <pre><code class="language-nova">fn Json.parse(s str) Fail[ParseJsonError] -> JsonValue</code></pre>
+        <p>Разбирает строку JSON. Бросает <code>Fail[ParseJsonError]</code> при любой лексической или синтаксической ошибке. Используйте блок <code>with Fail[ParseJsonError]</code> для обработки ошибок.</p>
+        <h4>Примеры</h4>
+        <pre><code class="language-nova">let arr = Json.parse("[1, 2, 3]")
+assert(arr.is_array())
+
+let obj = Json.parse("{\"x\": true}")
+match obj.as_object() {
+    Some(m) => assert(m.get("x") == Some(Bool(true)))
+    None    => assert(false)
+}</code></pre>
+      </div>
+
+      <hr class="divider">
+
+      <h2 id="constructors" style="margin-bottom:1.5rem;">Конструкторы</h2>
+
+      <p>Удобные статические конструкторы для программного построения <code>JsonValue</code>:</p>
+
+      <pre><code class="language-nova">fn JsonValue.null()                                  -> Self  // Null
+fn JsonValue.bool(b bool)                            -> Self  // Bool(b)
+fn JsonValue.num(n f64)                              -> Self  // Num(n)
+fn JsonValue.str(s str)                              -> Self  // Str(s)
+fn JsonValue.array(items []JsonValue)                -> Self  // Array(items)
+fn JsonValue.object(fields HashMap[str, JsonValue])  -> Self  // Object(fields)</code></pre>
+
+      <hr class="divider">
+
+      <h2 id="accessors" style="margin-bottom:1.5rem;">Аксессоры</h2>
+
+      <pre><code class="language-nova">fn JsonValue @as_bool()   -> Option[bool]
+fn JsonValue @as_num()    -> Option[f64]
+fn JsonValue @as_str()    -> Option[str]
+fn JsonValue @as_array()  -> Option[[]JsonValue]
+fn JsonValue @as_object() -> Option[HashMap[str, JsonValue]]</code></pre>
+
+      <p>Каждый метод возвращает <code>None</code>, если вариант не совпадает. Комбинируйте с <code>match</code> или <code>if let Some</code>:</p>
+
+      <pre><code class="language-nova">let v = Json.parse("42")
+assert(v.as_num() == Some(42.0))
+assert(v.as_str() == None)</code></pre>
+
+      <h3 id="guards" style="margin-bottom:.3rem;margin-top:1.5rem;">Проверки типа</h3>
+      <pre><code class="language-nova">fn JsonValue @is_null()   -> bool
+fn JsonValue @is_bool()   -> bool
+fn JsonValue @is_num()    -> bool
+fn JsonValue @is_str()    -> bool
+fn JsonValue @is_array()  -> bool
+fn JsonValue @is_object() -> bool</code></pre>
+
+      <hr class="divider">
+
+      <h2 id="serialization" style="margin-bottom:1.5rem;">Сериализация</h2>
+
+      <div id="into" style="margin-bottom:2.5rem;">
+        <h3 style="margin-bottom:.3rem;">into — компактно</h3>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">стабильно с 0.1</span>
+        <pre><code class="language-nova">fn JsonValue @into() -> str</code></pre>
+        <p>Сериализует в компактный JSON (одна строка, без лишних пробелов). Это реализация <a href="/ru/spec/decisions/runtime/#d73">D73</a> <code>Into[str]</code>, поэтому <code>str.from(v)</code> тоже работает. Round-trip: <code>Json.parse(v.into()) == v</code>.</p>
+        <h4>Примеры</h4>
+        <pre><code class="language-nova">let v = Array([Num(1.0), Str("a")])
+let s str = v.into()
+assert(s == "[1,\"a\"]")</code></pre>
+      </div>
+
+      <div id="pretty" style="margin-bottom:2.5rem;">
+        <h3 style="margin-bottom:.3rem;">pretty</h3>
+        <span style="display:inline-block;font-size:.73rem;background:rgba(78,201,176,.12);color:#4ec9b0;border:1px solid rgba(78,201,176,.25);border-radius:3px;padding:.1rem .4rem;margin-bottom:.9rem;">стабильно с 0.1</span>
+        <pre><code class="language-nova">fn pretty(v JsonValue) -> str</code></pre>
+        <p>Печатает с отступом в 2 пробела. Не входит в <code>Into[str]</code> — вызывайте явно, когда нужен человекочитаемый вывод (логи, отладка). Для компактного канонического вывода используйте <code>into()</code>.</p>
+        <h4>Примеры</h4>
+        <pre><code class="language-nova">let mut m = HashMap[str, JsonValue].new()
+m.insert("name", Str("alice"))
+let s = pretty(Object(m))
+assert(s.contains("\n"))  // multi-line</code></pre>
+      </div>
+
+    </article>
+  </main>
+</div>
