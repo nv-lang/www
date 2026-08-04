@@ -79,7 +79,7 @@
 
       <p>The map-literal syntax <code>["key": value, ...]</code> (<a href="/spec/decisions/syntax/#d108">D108</a>) desugars to <code>HashMap</code>, and a record literal <code>{field: val}</code> coerces to <code>HashMap[str, V]</code> (<a href="/spec/decisions/types/#d55">D55</a>).</p>
 
-      <pre><code class="language-nova">let mut m = HashMap[str, int].new()
+      <pre><code class="language-nova">mut m = HashMap[str, int].new()
 m.insert("alice", 1)
 m.insert("bob", 2)
 assert(m.get("alice") == Some(1))
@@ -115,7 +115,7 @@ for (k, v) in m.iter() {
         <pre><code class="language-nova">fn HashMap.new() -> HashMap[K, V]</code></pre>
         <p>Create an empty <code>HashMap</code> with an initial capacity of 16.</p>
         <h4>Examples</h4>
-        <pre><code class="language-nova">let mut m = HashMap[str, int].new()
+        <pre><code class="language-nova">mut m = HashMap[str, int].new()
 assert(m.is_empty())</code></pre>
       </div>
 
@@ -127,7 +127,7 @@ assert(m.is_empty())</code></pre>
         <pre><code class="language-nova">fn HashMap.with_capacity(min_capacity int) -> HashMap[K, V]</code></pre>
         <p>Create an empty <code>HashMap</code> sized to hold at least <code>min_capacity</code> entries without a rehash. The argument is an entry count, not a bucket count. Use this when the final size is known in advance.</p>
         <h4>Examples</h4>
-        <pre><code class="language-nova">let mut m = HashMap[str, int].with_capacity(100)
+        <pre><code class="language-nova">mut m = HashMap[str, int].with_capacity(100)
 for i in 0..100 { m.insert("k" + str.from(i), i) }
 assert(m.len() == 100)</code></pre>
       </div>
@@ -140,7 +140,7 @@ assert(m.len() == 100)</code></pre>
         <pre><code class="language-nova">fn HashMap.from(pairs [](K, V)) -> Self</code></pre>
         <p>Build a <code>HashMap</code> from an array of <code>(key, value)</code> pairs. Duplicate keys: last write wins.</p>
         <h4>Examples</h4>
-        <pre><code class="language-nova">let m = HashMap[str, int].from([("a", 1), ("b", 2)])
+        <pre><code class="language-nova">ro m = HashMap[str, int].from([("a", 1), ("b", 2)])
 assert(m.get("a") == Some(1))
 assert(m.len() == 2)</code></pre>
       </div>
@@ -155,7 +155,7 @@ assert(m.len() == 2)</code></pre>
         <pre><code class="language-nova">fn HashMap @get(key K) -> Option[V]</code></pre>
         <p>Look up <code>key</code>. Returns <code>Some(value)</code> if found, <code>None</code> otherwise.</p>
         <h4>Examples</h4>
-        <pre><code class="language-nova">let mut m = HashMap[str, int].new()
+        <pre><code class="language-nova">mut m = HashMap[str, int].new()
 m.insert("x", 10)
 assert(m.get("x") == Some(10))
 assert(m.get("y") == None)</code></pre>
@@ -178,8 +178,8 @@ assert(m.get("y") == None)</code></pre>
         <pre><code class="language-nova">fn HashMap mut @get_or_insert(key K, fallback fn() -> V) -> V</code></pre>
         <p>Return the value for <code>key</code> if it exists. Otherwise call <code>fallback()</code>, insert the result, and return it. The fallback is lazy — it is only called on a cache miss.</p>
         <h4>Examples</h4>
-        <pre><code class="language-nova">let mut counts = HashMap[str, int].new()
-let prev = counts.get_or_insert("foo", || 0)
+        <pre><code class="language-nova">mut counts = HashMap[str, int].new()
+ro prev = counts.get_or_insert("foo", || 0)
 counts.insert("foo", prev + 1)
 assert(counts.get("foo") == Some(1))</code></pre>
       </div>
@@ -194,7 +194,7 @@ assert(counts.get("foo") == Some(1))</code></pre>
         <pre><code class="language-nova">fn HashMap mut @insert(key K, value V) -> Option[V]</code></pre>
         <p>Insert <code>(key, value)</code>. If the key already exists, overwrites it and returns <code>Some(old_value)</code>. Otherwise inserts and returns <code>None</code>. May trigger a rehash.</p>
         <h4>Examples</h4>
-        <pre><code class="language-nova">let mut m = HashMap[str, int].new()
+        <pre><code class="language-nova">mut m = HashMap[str, int].new()
 assert(m.insert("a", 1) == None)
 assert(m.insert("a", 2) == Some(1))
 assert(m.get("a") == Some(2))</code></pre>
@@ -208,7 +208,7 @@ assert(m.get("a") == Some(2))</code></pre>
         <pre><code class="language-nova">fn HashMap mut @remove(key K) -> Option[V]</code></pre>
         <p>Delete the entry for <code>key</code>. Returns <code>Some(old_value)</code> if the key existed, <code>None</code> otherwise. Leaves a tombstone slot — the internal array does not shrink.</p>
         <h4>Examples</h4>
-        <pre><code class="language-nova">let mut m = HashMap[str, int].from([("a", 1)])
+        <pre><code class="language-nova">mut m = HashMap[str, int].from([("a", 1)])
 assert(m.remove("a") == Some(1))
 assert(m.remove("a") == None)</code></pre>
       </div>
@@ -230,8 +230,8 @@ assert(m.remove("a") == None)</code></pre>
         <pre><code class="language-nova">fn HashMap mut @merge_from(other HashMap[K, V]) -> ()</code></pre>
         <p>Merge all entries from <code>other</code> into <code>self</code>. Override semantics: existing keys are overwritten.</p>
         <h4>Examples</h4>
-        <pre><code class="language-nova">let mut a = HashMap[str, int].from([("x", 1)])
-let b = HashMap[str, int].from([("x", 99), ("y", 2)])
+        <pre><code class="language-nova">mut a = HashMap[str, int].from([("x", 1)])
+ro b = HashMap[str, int].from([("x", 99), ("y", 2)])
 a.merge_from(b)
 assert(a.get("x") == Some(99))
 assert(a.get("y") == Some(2))</code></pre>
@@ -276,7 +276,7 @@ assert(a.get("y") == Some(2))</code></pre>
         <pre><code class="language-nova">fn HashMap @iter() -> HashMapIter[K, V]</code></pre>
         <p>Iterator over <code>(key, value)</code> pairs in unspecified order.</p>
         <h4>Examples</h4>
-        <pre><code class="language-nova">let m = HashMap[str, int].from([("a", 1), ("b", 2)])
+        <pre><code class="language-nova">ro m = HashMap[str, int].from([("a", 1), ("b", 2)])
 for (k, v) in m.iter() {
     assert(v > 0)
 }</code></pre>
@@ -310,8 +310,8 @@ for (k, v) in m.iter() {
         <pre><code class="language-nova">fn HashMap @filter(pred fn(K, V) -> bool) -> HashMap[K, V]</code></pre>
         <p>Return a new <code>HashMap</code> containing only the pairs for which <code>pred(k, v)</code> is <code>true</code>. Does not mutate the original.</p>
         <h4>Examples</h4>
-        <pre><code class="language-nova">let m = HashMap[str, int].from([("a", 1), ("b", 2), ("c", 3)])
-let big = m.filter(|_, v| v > 1)
+        <pre><code class="language-nova">ro m = HashMap[str, int].from([("a", 1), ("b", 2), ("c", 3)])
+ro big = m.filter(|_, v| v > 1)
 assert(big.len() == 2)</code></pre>
       </div>
 
@@ -323,8 +323,8 @@ assert(big.len() == 2)</code></pre>
         <pre><code class="language-nova">fn HashMap @clone() -> HashMap[K, V]</code></pre>
         <p>Create an independent deep copy of the map. Mutations to the clone do not affect the original.</p>
         <h4>Examples</h4>
-        <pre><code class="language-nova">let m = HashMap[str, int].from([("a", 1)])
-let m2 = m.clone()
+        <pre><code class="language-nova">ro m = HashMap[str, int].from([("a", 1)])
+ro m2 = m.clone()
 assert(m2.get("a") == Some(1))</code></pre>
       </div>
 

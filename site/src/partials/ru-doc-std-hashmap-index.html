@@ -79,7 +79,7 @@
 
       <p>Синтаксис map-literal <code>["key": value, ...]</code> (<a href="/ru/spec/decisions/syntax/#d108">D108</a>) разворачивается в <code>HashMap</code>, а литерал записи <code>{field: val}</code> приводится к <code>HashMap[str, V]</code> (<a href="/ru/spec/decisions/types/#d55">D55</a>).</p>
 
-      <pre><code class="language-nova">let mut m = HashMap[str, int].new()
+      <pre><code class="language-nova">mut m = HashMap[str, int].new()
 m.insert("alice", 1)
 m.insert("bob", 2)
 assert(m.get("alice") == Some(1))
@@ -115,7 +115,7 @@ for (k, v) in m.iter() {
         <pre><code class="language-nova">fn HashMap.new() -> HashMap[K, V]</code></pre>
         <p>Создаёт пустой <code>HashMap</code> с начальной ёмкостью 16.</p>
         <h4>Примеры</h4>
-        <pre><code class="language-nova">let mut m = HashMap[str, int].new()
+        <pre><code class="language-nova">mut m = HashMap[str, int].new()
 assert(m.is_empty())</code></pre>
       </div>
 
@@ -127,7 +127,7 @@ assert(m.is_empty())</code></pre>
         <pre><code class="language-nova">fn HashMap.with_capacity(min_capacity int) -> HashMap[K, V]</code></pre>
         <p>Создаёт пустой <code>HashMap</code>, вмещающий не менее <code>min_capacity</code> записей без рехеширования. Аргумент — это число записей, а не число бакетов. Используйте, когда конечный размер известен заранее.</p>
         <h4>Примеры</h4>
-        <pre><code class="language-nova">let mut m = HashMap[str, int].with_capacity(100)
+        <pre><code class="language-nova">mut m = HashMap[str, int].with_capacity(100)
 for i in 0..100 { m.insert("k" + str.from(i), i) }
 assert(m.len() == 100)</code></pre>
       </div>
@@ -140,7 +140,7 @@ assert(m.len() == 100)</code></pre>
         <pre><code class="language-nova">fn HashMap.from(pairs [](K, V)) -> Self</code></pre>
         <p>Строит <code>HashMap</code> из массива пар <code>(key, value)</code>. При дублировании ключей побеждает последняя запись.</p>
         <h4>Примеры</h4>
-        <pre><code class="language-nova">let m = HashMap[str, int].from([("a", 1), ("b", 2)])
+        <pre><code class="language-nova">ro m = HashMap[str, int].from([("a", 1), ("b", 2)])
 assert(m.get("a") == Some(1))
 assert(m.len() == 2)</code></pre>
       </div>
@@ -155,7 +155,7 @@ assert(m.len() == 2)</code></pre>
         <pre><code class="language-nova">fn HashMap @get(key K) -> Option[V]</code></pre>
         <p>Ищет <code>key</code>. Возвращает <code>Some(value)</code>, если найден, иначе <code>None</code>.</p>
         <h4>Примеры</h4>
-        <pre><code class="language-nova">let mut m = HashMap[str, int].new()
+        <pre><code class="language-nova">mut m = HashMap[str, int].new()
 m.insert("x", 10)
 assert(m.get("x") == Some(10))
 assert(m.get("y") == None)</code></pre>
@@ -178,8 +178,8 @@ assert(m.get("y") == None)</code></pre>
         <pre><code class="language-nova">fn HashMap mut @get_or_insert(key K, fallback fn() -> V) -> V</code></pre>
         <p>Возвращает значение для <code>key</code>, если оно существует. Иначе вызывает <code>fallback()</code>, вставляет результат и возвращает его. Fallback ленив — вызывается только при промахе кеша.</p>
         <h4>Примеры</h4>
-        <pre><code class="language-nova">let mut counts = HashMap[str, int].new()
-let prev = counts.get_or_insert("foo", || 0)
+        <pre><code class="language-nova">mut counts = HashMap[str, int].new()
+ro prev = counts.get_or_insert("foo", || 0)
 counts.insert("foo", prev + 1)
 assert(counts.get("foo") == Some(1))</code></pre>
       </div>
@@ -194,7 +194,7 @@ assert(counts.get("foo") == Some(1))</code></pre>
         <pre><code class="language-nova">fn HashMap mut @insert(key K, value V) -> Option[V]</code></pre>
         <p>Вставляет <code>(key, value)</code>. Если ключ уже существует, перезаписывает его и возвращает <code>Some(old_value)</code>. Иначе вставляет и возвращает <code>None</code>. Может вызвать рехеширование.</p>
         <h4>Примеры</h4>
-        <pre><code class="language-nova">let mut m = HashMap[str, int].new()
+        <pre><code class="language-nova">mut m = HashMap[str, int].new()
 assert(m.insert("a", 1) == None)
 assert(m.insert("a", 2) == Some(1))
 assert(m.get("a") == Some(2))</code></pre>
@@ -208,7 +208,7 @@ assert(m.get("a") == Some(2))</code></pre>
         <pre><code class="language-nova">fn HashMap mut @remove(key K) -> Option[V]</code></pre>
         <p>Удаляет запись для <code>key</code>. Возвращает <code>Some(old_value)</code>, если ключ существовал, иначе <code>None</code>. Оставляет tombstone-слот — внутренний массив не сжимается.</p>
         <h4>Примеры</h4>
-        <pre><code class="language-nova">let mut m = HashMap[str, int].from([("a", 1)])
+        <pre><code class="language-nova">mut m = HashMap[str, int].from([("a", 1)])
 assert(m.remove("a") == Some(1))
 assert(m.remove("a") == None)</code></pre>
       </div>
@@ -230,8 +230,8 @@ assert(m.remove("a") == None)</code></pre>
         <pre><code class="language-nova">fn HashMap mut @merge_from(other HashMap[K, V]) -> ()</code></pre>
         <p>Сливает все записи из <code>other</code> в <code>self</code>. Семантика перезаписи: существующие ключи перезаписываются.</p>
         <h4>Примеры</h4>
-        <pre><code class="language-nova">let mut a = HashMap[str, int].from([("x", 1)])
-let b = HashMap[str, int].from([("x", 99), ("y", 2)])
+        <pre><code class="language-nova">mut a = HashMap[str, int].from([("x", 1)])
+ro b = HashMap[str, int].from([("x", 99), ("y", 2)])
 a.merge_from(b)
 assert(a.get("x") == Some(99))
 assert(a.get("y") == Some(2))</code></pre>
@@ -276,7 +276,7 @@ assert(a.get("y") == Some(2))</code></pre>
         <pre><code class="language-nova">fn HashMap @iter() -> HashMapIter[K, V]</code></pre>
         <p>Итератор по парам <code>(key, value)</code> в неопределённом порядке.</p>
         <h4>Примеры</h4>
-        <pre><code class="language-nova">let m = HashMap[str, int].from([("a", 1), ("b", 2)])
+        <pre><code class="language-nova">ro m = HashMap[str, int].from([("a", 1), ("b", 2)])
 for (k, v) in m.iter() {
     assert(v > 0)
 }</code></pre>
@@ -310,8 +310,8 @@ for (k, v) in m.iter() {
         <pre><code class="language-nova">fn HashMap @filter(pred fn(K, V) -> bool) -> HashMap[K, V]</code></pre>
         <p>Возвращает новый <code>HashMap</code>, содержащий только пары, для которых <code>pred(k, v)</code> равен <code>true</code>. Исходный не изменяется.</p>
         <h4>Примеры</h4>
-        <pre><code class="language-nova">let m = HashMap[str, int].from([("a", 1), ("b", 2), ("c", 3)])
-let big = m.filter(|_, v| v > 1)
+        <pre><code class="language-nova">ro m = HashMap[str, int].from([("a", 1), ("b", 2), ("c", 3)])
+ro big = m.filter(|_, v| v > 1)
 assert(big.len() == 2)</code></pre>
       </div>
 
@@ -323,8 +323,8 @@ assert(big.len() == 2)</code></pre>
         <pre><code class="language-nova">fn HashMap @clone() -> HashMap[K, V]</code></pre>
         <p>Создаёт независимую глубокую копию таблицы. Изменения копии не влияют на оригинал.</p>
         <h4>Примеры</h4>
-        <pre><code class="language-nova">let m = HashMap[str, int].from([("a", 1)])
-let m2 = m.clone()
+        <pre><code class="language-nova">ro m = HashMap[str, int].from([("a", 1)])
+ro m2 = m.clone()
 assert(m2.get("a") == Some(1))</code></pre>
       </div>
 
