@@ -23,11 +23,7 @@ const updated = sections
 <BaseLayout
   title="Решения по дизайну (D-блоки) — Nova"
   description="Все решения по дизайну языка Nova — D-блоки спецификации, сгруппированные по разделам."
-  canonical="https://nv-lang.org/spec/decisions/"
-  hreflangRu="https://nv-lang.org/ru/spec/decisions/"
-  hreflangEn="https://nv-lang.org/spec/decisions/"
-  langRuUrl="/ru/spec/decisions/"
-  langEnUrl="/spec/decisions/"
+  canonical="https://nv-lang.org/ru/spec/decisions/"
   lang="ru"
   active="spec"
 >
@@ -51,7 +47,7 @@ const updated = sections
             <ul>
               {s.blocks.map((b) => (
                 <li>
-                  <a href={`/spec/decisions/${s.topic.slug}/#${b.anchor}`}>
+                  <a href={`/ru/spec/decisions/${s.topic.slug}/#${b.anchor}`}>
                     <strong>D{b.num}</strong> — {b.title}
                   </a>
                 </li>
@@ -62,7 +58,7 @@ const updated = sections
       </article>
       <PageMeta
         lang="ru"
-        pagePath="/spec/decisions/"
+        pagePath="/ru/spec/decisions/"
         sourceUrl="https://github.com/nv-lang/nova/tree/main/spec/decisions"
         sourceDate={updated}
       />
