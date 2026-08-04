@@ -55,10 +55,10 @@
 
       <p>Three types cover Nova's time model: <code>Duration</code> (signed interval), <code>Timestamp</code> (Unix epoch moment), and <code>Monotonic</code> (process-local monotonic clock). All store nanoseconds in a single <code>i64</code> field. Integer and float extension methods let you write <code>5.seconds()</code>, <code>1.hour()</code>, <code>500.millis()</code> directly.</p>
 
-      <pre><code class="language-nova">let timeout = 30.seconds()
-let deadline = Timestamp.from_unix_secs(1_700_000_000) + timeout
+      <pre><code class="language-nova">ro timeout = 30.seconds()
+ro deadline = Timestamp.from_unix_secs(1_700_000_000) + timeout
 
-let d = Duration.from_secs(3661)  // 1h 1min 1s
+ro d = Duration.from_secs(3661)  // 1h 1min 1s
 assert(d.into_human().contains("1h"))</code></pre>
 
       <hr class="divider">
@@ -85,9 +85,9 @@ assert(d.into_human().contains("1h"))</code></pre>
         <pre><code class="language-nova">export type Monotonic { nanos i64 }</code></pre>
         <p>A point on the process-local monotonic clock. Immune to NTP / DST / manual clock adjustments. Use for timer deadlines, profiling intervals, and retry budgets. Cannot be serialized or compared across processes.</p>
         <h4>Examples</h4>
-        <pre><code class="language-nova">let start = Monotonic.now()
+        <pre><code class="language-nova">ro start = Monotonic.now()
 // ... work ...
-let elapsed = Monotonic.now().elapsed_since(start)</code></pre>
+ro elapsed = Monotonic.now().elapsed_since(start)</code></pre>
       </div>
 
       <hr class="divider">
@@ -161,8 +161,8 @@ fn Duration @into_human()   -> str  // decomposed: "1d 2h 30min 45s"
 fn Duration @parts()        -> DurationParts</code></pre>
 
       <h4>Examples</h4>
-      <pre><code class="language-nova">let d = Duration.from_secs(3661)  // 1h 1min 1s
-let p = d.parts()
+      <pre><code class="language-nova">ro d = Duration.from_secs(3661)  // 1h 1min 1s
+ro p = d.parts()
 assert(p.hours == 1 && p.minutes == 1 && p.seconds == 1)
 
 assert(2.hours().into() == "2h")
@@ -211,8 +211,8 @@ fn Timestamp @minus(d Duration)         -> Timestamp   // shift back
 fn Timestamp @minus(other Timestamp)    -> Duration    // elapsed (signed)</code></pre>
 
       <h4>Examples</h4>
-      <pre><code class="language-nova">let start    = Timestamp.from_unix_secs(1000)
-let deadline = start + 30.seconds()
+      <pre><code class="language-nova">ro start    = Timestamp.from_unix_secs(1000)
+ro deadline = start + 30.seconds()
 assert(deadline.as_unix_secs() == 1030)
 assert((deadline - start) == 30.seconds())</code></pre>
 
@@ -229,10 +229,10 @@ fn deadline_in(d Duration)  Time -> Timestamp // now() + d</code></pre>
 
       <h4>Examples</h4>
       <pre><code class="language-nova">with Time = th.fixed_ms(10_000) {
-    let deadline = Timestamp.from_unix_secs(5)
+    ro deadline = Timestamp.from_unix_secs(5)
     assert(deadline.is_past())
 
-    let (result, elapsed) = measure(|| 42)
+    ro (result, elapsed) = measure(|| 42)
     assert(result == 42)
     assert(elapsed == Duration.ZERO)  // fixed clock doesn't advance
 }</code></pre>
