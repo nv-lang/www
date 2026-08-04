@@ -1,0 +1,34 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PartialWithMeta from '@components/PartialWithMeta.astro';
+import body from '@partials/ru-doc-std-hashmap-index.html?raw';
+import { partialDate } from '@data/sourceMeta';
+const updated = partialDate('ru-doc-std-hashmap-index.html');
+const meta = {
+  title: "collections.hashmap — Стандартная библиотека — Nova",
+  description: "Стандартная библиотека Nova: collections.hashmap — хеш-таблица с открытой адресацией, линейным пробированием и синтаксисом map-literal.",
+  canonical: "https://nv-lang.org/ru/doc/std/hashmap/",
+  lang: "ru" as const,
+  hreflangRu: "https://nv-lang.org/ru/doc/std/hashmap/",
+  hreflangEn: "https://nv-lang.org/doc/std/hashmap/",
+  hreflangXDefault: "https://nv-lang.org/doc/std/hashmap/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/ru/doc/std/hashmap/",
+  ogTitle: "collections.hashmap — Стандартная библиотека — Nova",
+  ogDescription: "Стандартная библиотека Nova: collections.hashmap — хеш-таблица с открытой адресацией, линейным пробированием и синтаксисом map-literal.",
+  twitterTitle: "collections.hashmap — Стандартная библиотека — Nova",
+  twitterDescription: "Стандартная библиотека Nova: collections.hashmap — хеш-таблица с открытой адресацией, линейным пробированием и синтаксисом map-literal.",
+  langRuUrl: "/ru/doc/std/hashmap/",
+  langEnUrl: "/doc/std/hashmap/",
+};
+---
+
+<BaseLayout {...meta} active="doc">
+  <PartialWithMeta
+    body={body}
+    lang="ru"
+    pagePath="/ru/doc/std/hashmap/"
+    partialUrl="https://github.com/nv-lang/www/blob/main/site/src/partials/ru-doc-std-hashmap-index.html"
+    sourceDate={updated}
+  />
+</BaseLayout>
