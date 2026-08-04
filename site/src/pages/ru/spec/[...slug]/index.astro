@@ -10,18 +10,15 @@ export async function getStaticPaths() {
   // 241 Ф.2: английская страница берёт перевод spec/<slug>.en.md, если он
   // есть; иначе — fallback на русский норматив с честной пометкой (страница
   // не должна исчезать из-за отсутствия перевода).
-  return SPEC_DOCS.map((doc) => {
-    const en = entries.find((e) => e.id === `en/${doc.id}`);
-    const ru = entries.find((e) => e.id === doc.id)!;
-    return {
-      params: { slug: doc.slug },
-      props: { entry: en ?? ru, doc, translated: Boolean(en) },
-    };
-  });
+  // Русская сторона: ВСЕГДА нормативный текст, без fallback.
+  return SPEC_DOCS.map((doc) => ({
+    params: { slug: doc.slug },
+    props: { entry: entries.find((e) => e.id === doc.id)!, doc, translated: false },
+  }));
 }
 
 const { entry, doc, translated } = Astro.props;
-const title = translated ? (doc.titleEn ?? doc.title) : doc.title;
+const title = doc.title;
 const { Content } = await render(entry);
 const ghUrl = `https://github.com/nv-lang/nova/blob/main/${doc.github}`;
 const sourcePath = entry.data.sourcePath;
@@ -31,10 +28,10 @@ const sourceUrl = sourcePath
 ---
 
 <BaseLayout
-  title={`${title} — specification — Nova`}
-  description={`${title} — a section of the Nova language specification.`}
-  canonical={`https://nv-lang.org/spec/${doc.slug}/`}
-  lang="en"
+  title={`${title} — спецификация — Nova`}
+  description={`${title} — раздел спецификации языка Nova.`}
+  canonical={`https://nv-lang.org/ru/spec/${doc.slug}/`}
+  lang="ru"
   hreflangRu={`https://nv-lang.org/ru/spec/${doc.slug}/`}
   hreflangEn={`https://nv-lang.org/spec/${doc.slug}/`}
   langRuUrl={`/ru/spec/${doc.slug}/`}
@@ -45,18 +42,16 @@ const sourceUrl = sourcePath
     <SpecSidebar current={`spec:${doc.slug}`} />
     <main id="main-content">
       <div class="spec-doc__meta">
-        <a href="/spec/">&#8592; Specification</a>
-        <a href={ghUrl}>Source on GitHub &#8599;</a>
+        <a href="/ru/spec/">&#8592; Спецификация</a>
+        <a href={ghUrl}>Источник на GitHub &#8599;</a>
       </div>
-      {translated
-        ? <p class="spec-lang-note">Informative translation. The Russian text (<a href={`/ru/spec/${doc.slug}/`}>русский оригинал</a>) is normative.</p>
-        : <p class="spec-lang-note">This page is not translated yet — the normative Russian text is shown.</p>}
+      <p class="spec-lang-note">Нормативный текст спецификации. Английская страница — <a href={`/spec/${doc.slug}/`}>informative translation</a>.</p>
       <article class="doc-content">
         <Content />
       </article>
       <PageMeta
-        lang="en"
-        pagePath={`/spec/${doc.slug}/`}
+        lang="ru"
+        pagePath={`/ru/spec/${doc.slug}/`}
         sourceUrl={sourceUrl}
         sourceDate={entry.data.sourceDate}
       />
