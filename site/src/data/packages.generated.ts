@@ -7,6 +7,99 @@ export const PACKAGE_DOCS = [
       "en": "Polaris — web framework",
       "ru": "Polaris — веб-фреймворк"
     },
+    "pages": [
+      {
+        "slug": "auth",
+        "title": {
+          "en": "Auth: Bearer, Basic, JWT, cookies, sessions",
+          "ru": "Auth: Bearer, Basic, JWT, куки, сессии"
+        }
+      },
+      {
+        "slug": "batteries",
+        "title": {
+          "en": "Batteries: cors, compress, log, ratelimit",
+          "ru": "Батарейки: cors, compress, log, ratelimit"
+        }
+      },
+      {
+        "slug": "errors",
+        "title": {
+          "en": "Errors",
+          "ru": "Ошибки"
+        }
+      },
+      {
+        "slug": "extractors",
+        "title": {
+          "en": "Extractors",
+          "ru": "Экстракторы"
+        }
+      },
+      {
+        "slug": "handlers-response",
+        "title": {
+          "en": "Handlers, requests, and responses",
+          "ru": "Обработчики, запросы и ответы"
+        }
+      },
+      {
+        "slug": "middleware",
+        "title": {
+          "en": "Middleware",
+          "ru": "Middleware"
+        }
+      },
+      {
+        "slug": "overview",
+        "title": {
+          "en": "Polaris overview",
+          "ru": "Polaris — обзор"
+        }
+      },
+      {
+        "slug": "index",
+        "title": {
+          "en": "Polaris documentation",
+          "ru": "Документация Polaris"
+        }
+      },
+      {
+        "slug": "roadmap",
+        "title": {
+          "en": "Roadmap",
+          "ru": "Roadmap"
+        }
+      },
+      {
+        "slug": "routing",
+        "title": {
+          "en": "Routing",
+          "ru": "Маршрутизация"
+        }
+      },
+      {
+        "slug": "serving",
+        "title": {
+          "en": "Serving: `ServerPolicy`, the accept loop, background tasks",
+          "ru": "Serve: `ServerPolicy`, accept-loop, фоновые задачи"
+        }
+      },
+      {
+        "slug": "static-files",
+        "title": {
+          "en": "Static file serving",
+          "ru": "Отдача статических файлов"
+        }
+      },
+      {
+        "slug": "websocket",
+        "title": {
+          "en": "WebSocket",
+          "ru": "WebSocket"
+        }
+      }
+    ],
     "slugs": [
       "auth",
       "batteries",
@@ -30,6 +123,15 @@ export const PACKAGE_DOCS = [
       "en": "nova-http — HTTP protocol core",
       "ru": "nova-http — ядро протокола HTTP"
     },
+    "pages": [
+      {
+        "slug": "index",
+        "title": {
+          "en": "nova-http",
+          "ru": "nova-http"
+        }
+      }
+    ],
     "slugs": [
       "index"
     ]
@@ -41,6 +143,15 @@ export const PACKAGE_DOCS = [
       "en": "nova-tls — TLS",
       "ru": "nova-tls — TLS"
     },
+    "pages": [
+      {
+        "slug": "index",
+        "title": {
+          "en": "nova-tls",
+          "ru": "nova-tls"
+        }
+      }
+    ],
     "slugs": [
       "index"
     ]
@@ -52,6 +163,15 @@ export const PACKAGE_DOCS = [
       "en": "nova-compress — compression",
       "ru": "nova-compress — сжатие"
     },
+    "pages": [
+      {
+        "slug": "index",
+        "title": {
+          "en": "nova-compress",
+          "ru": "nova-compress"
+        }
+      }
+    ],
     "slugs": [
       "index"
     ]
@@ -63,6 +183,15 @@ export const PACKAGE_DOCS = [
       "en": "nova-bignum — arbitrary precision",
       "ru": "nova-bignum — произвольная точность"
     },
+    "pages": [
+      {
+        "slug": "index",
+        "title": {
+          "en": "nova-bignum",
+          "ru": "nova-bignum"
+        }
+      }
+    ],
     "slugs": [
       "index"
     ]

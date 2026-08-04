@@ -12,13 +12,16 @@ export async function getStaticPaths() {
   for (const p of PACKAGE_DOCS) {
     for (const slug of p.slugs.filter((x) => x !== 'index')) {
       const entry = entries.find((e) => e.id === `${p.pkg}/ru/${slug}`);
-      if (entry) out.push({ params: { pkg: p.pkg, slug }, props: { entry, p, slug } });
+      const meta = p.pages?.find((x) => x.slug === slug);
+      if (entry) out.push({ params: { pkg: p.pkg, slug }, props: { entry, p, slug, meta } });
     }
   }
   return out;
 }
 
-const { entry, p, slug } = Astro.props;
+const { entry, p, slug, meta } = Astro.props;
+// Заголовок страницы — её собственный H1, а не общее имя пакета.
+const pageTitle = meta?.title?.ru ?? p.title.ru;
 const { Content } = await render(entry);
 const repo = entry.data.sourceRepo ?? p.repo;
 const path = entry.data.sourcePath ?? 'README.ru.md';
@@ -26,8 +29,8 @@ const editUrl = `https://github.com/${repo}/edit/main/${path}`;
 ---
 
 <BaseLayout
-  title={`${p.title.ru} — Nova`}
-  description={`${p.title.ru}: документация пакета.`}
+  title={`${pageTitle} — ${p.title.ru} — Nova`}
+  description={`${pageTitle} — документация пакета ${p.title.ru}.`}
   canonical={`https://nv-lang.org/ru/doc/${p.pkg}/${slug}/`}
   hreflangRu={`https://nv-lang.org/ru/doc/${p.pkg}/${slug}/`}
   hreflangEn={`https://nv-lang.org/doc/${p.pkg}/${slug}/`}
