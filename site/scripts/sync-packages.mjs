@@ -76,7 +76,17 @@ export async function syncPackages() {
       await writeFile(new URL(`${p.pkg}/ru/${page.slug}.md`, OUT),
         fm(p.repo, page.pathEn.replace(/\.md$/, '.ru.md')) + stripFm(page.ru), 'utf8');
     }
+    // Заголовок КАЖДОЙ страницы — из её H1 (иначе все 13 страниц пакета
+    // получают один <title>, что портит и навигацию, и выдачу поиска).
+    const h1 = (text) => {
+      const line = text.split(/\r?\n/).find((l) => /^#\s+/.test(l));
+      return line ? line.replace(/^#\s+/, '').trim() : '';
+    };
     index.push({ pkg: p.pkg, repo: p.repo, title: p.title,
+      pages: pages.map((x) => ({
+        slug: x.slug,
+        title: { en: h1(stripFm(x.en)) || p.title.en, ru: h1(stripFm(x.ru)) || p.title.ru },
+      })),
       slugs: pages.map((x) => x.slug) });
     console.log(`sync-packages: ${p.pkg} — ${pages.length} страниц(ы)`);
   }
