@@ -10,7 +10,11 @@ export async function getStaticPaths() {
   const entries = await getCollection('packages');
   const out = [];
   for (const p of PACKAGE_DOCS) {
-    const entry = entries.find((e) => e.id === `${p.pkg}/ru/index`);
+    // Корень пакета — README, если он есть в манифесте; иначе обзорная
+    // страница (у bignum манифест без README, но есть overview).
+    const entry = entries.find((e) => e.id === `${p.pkg}/ru/index`)
+      ?? entries.find((e) => e.id === `${p.pkg}/ru/overview`)
+      ?? entries.find((e) => e.id.startsWith(`${p.pkg}/ru/`));
     if (entry) out.push({ params: { pkg: p.pkg }, props: { entry, p } });
   }
   return out;
@@ -21,7 +25,8 @@ const { Content } = await render(entry);
 const repo = entry.data.sourceRepo ?? p.repo;
 const path = entry.data.sourcePath ?? 'README.ru.md';
 const editUrl = `https://github.com/${repo}/edit/main/${path}`;
-const others = p.slugs.filter((s) => s !== 'index');
+const rootSlug = entry.id.split('/').pop();
+const others = p.slugs.filter((s) => s !== 'index' && s !== rootSlug);
 ---
 
 <BaseLayout
