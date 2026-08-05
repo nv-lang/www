@@ -35,7 +35,7 @@ export const PACKAGES = [
     title: { en: 'nova-tls — TLS', ru: 'nova-tls — TLS' } },
   { pkg: 'compress', repo: 'nv-lang/nova-compress', docsDir: null,
     title: { en: 'nova-compress — compression', ru: 'nova-compress — сжатие' } },
-  { pkg: 'bignum',   repo: 'nv-lang/nova-bignum',   docsDir: null,
+  { pkg: 'bignum',   repo: 'nv-lang/nova-bignum',   docsDir: 'docs',
     title: { en: 'nova-bignum — arbitrary precision', ru: 'nova-bignum — произвольная точность' } },
 ];
 

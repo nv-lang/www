@@ -185,15 +185,47 @@ export const PACKAGE_DOCS = [
     },
     "pages": [
       {
-        "slug": "index",
+        "slug": "bigdecimal",
         "title": {
-          "en": "nova-bignum",
-          "ru": "nova-bignum"
+          "en": "BigDecimal",
+          "ru": "BigDecimal"
+        }
+      },
+      {
+        "slug": "bigfloat",
+        "title": {
+          "en": "BigFloat",
+          "ru": "BigFloat"
+        }
+      },
+      {
+        "slug": "bigint",
+        "title": {
+          "en": "BigInt",
+          "ru": "BigInt"
+        }
+      },
+      {
+        "slug": "bigrat",
+        "title": {
+          "en": "BigRat",
+          "ru": "BigRat"
+        }
+      },
+      {
+        "slug": "overview",
+        "title": {
+          "en": "nova-bignum overview",
+          "ru": "nova-bignum — обзор"
         }
       }
     ],
     "slugs": [
-      "index"
+      "bigdecimal",
+      "bigfloat",
+      "bigint",
+      "bigrat",
+      "overview"
     ]
   }
 ] as const;
