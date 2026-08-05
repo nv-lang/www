@@ -65,13 +65,6 @@ export const PACKAGE_DOCS = [
         }
       },
       {
-        "slug": "roadmap",
-        "title": {
-          "en": "Roadmap",
-          "ru": "Roadmap"
-        }
-      },
-      {
         "slug": "routing",
         "title": {
           "en": "Routing",
@@ -109,7 +102,6 @@ export const PACKAGE_DOCS = [
       "middleware",
       "overview",
       "index",
-      "roadmap",
       "routing",
       "serving",
       "static-files",

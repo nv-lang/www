@@ -59,7 +59,7 @@ function stripFm(text) {
 // Ссылки внутри доки пакета указывают на СОСЕДНИЕ .md-файлы («overview.md»,
 // «./routing.md»). На сайте таких адресов нет — их надо переписать в маршруты,
 // иначе читатель упирается в 404 (найдено владельцем 2026-08-04).
-function rewritePkgLinks(text, pkg, lang, repo) {
+function rewritePkgLinks(text, pkg, lang, repo, published) {
   const base = lang === 'ru' ? `/ru/doc/${pkg}` : `/doc/${pkg}`;
   // «../README.md» — корень репы пакета: на сайте это его обзорная страница.
   // «../examples/...» и прочее вне docs/ — на сайте не публикуется, ведём в
@@ -69,6 +69,11 @@ function rewritePkgLinks(text, pkg, lang, repo) {
     (m, rel, hash) => `](https://github.com/${repo}/blob/main/${rel}${hash ?? ''})`);
   return text.replace(/\]\(\.?\/?([A-Za-z0-9._-]+)\.md(#[^)]*)?\)/g, (m, name, hash) => {
     const slug = name.replace(/\.ru$/, '');
+    // Страница, исключённая из манифеста (жанр «внутреннее», site-conventions
+    // #page-genre), на сайте не существует — ведём в репозиторий-источник,
+    // иначе получаем битую ссылку (поймано при исключении roadmap полариса).
+    if (published && !published.has(slug) && slug !== 'README' && slug !== 'readme')
+      return `](https://github.com/${repo}/blob/main/docs/${name}.md${hash ?? ''})`;
     const route = (slug === 'README' || slug === 'readme') ? `${base}/` : `${base}/${slug}/`;
     return `](${route}${hash ?? ''})`;
   });
@@ -103,13 +108,14 @@ export async function syncPackages() {
       if (!en || !ru) throw new Error(`README-пара неполна в ${p.repo}`);
       pages.push({ slug: 'index', en, ru, pathEn: 'README.md' });
     }
+    const pubSet = new Set(pages.map((x) => x.slug === 'index' ? 'README' : x.slug));
     await mkdir(new URL(`${p.pkg}/en/`, OUT), { recursive: true });
     await mkdir(new URL(`${p.pkg}/ru/`, OUT), { recursive: true });
     for (const page of pages) {
       await writeFile(new URL(`${p.pkg}/en/${page.slug}.md`, OUT),
-        fm(p.repo, page.pathEn) + rewritePkgLinks(stripFm(page.en), p.pkg, 'en', p.repo), 'utf8');
+        fm(p.repo, page.pathEn) + rewritePkgLinks(stripFm(page.en), p.pkg, 'en', p.repo, pubSet), 'utf8');
       await writeFile(new URL(`${p.pkg}/ru/${page.slug}.md`, OUT),
-        fm(p.repo, page.pathEn.replace(/\.md$/, '.ru.md')) + rewritePkgLinks(stripFm(page.ru), p.pkg, 'ru', p.repo), 'utf8');
+        fm(p.repo, page.pathEn.replace(/\.md$/, '.ru.md')) + rewritePkgLinks(stripFm(page.ru), p.pkg, 'ru', p.repo, pubSet), 'utf8');
     }
     // Заголовок КАЖДОЙ страницы — из её H1 (иначе все 13 страниц пакета
     // получают один <title>, что портит и навигацию, и выдачу поиска).
