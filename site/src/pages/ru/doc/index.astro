@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
 import PartialWithMeta from '@components/PartialWithMeta.astro';
+import GuideIndex from '@components/GuideIndex.astro';
 import body from '@partials/ru-doc-index.html?raw';
 import { partialDate } from '@data/sourceMeta';
 const updated = partialDate('ru-doc-index.html');
@@ -24,6 +25,7 @@ const meta = {
 ---
 
 <BaseLayout {...meta} active="doc">
+  <GuideIndex lang="ru" />
   <PartialWithMeta
     body={body}
     lang="ru"

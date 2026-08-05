@@ -1,0 +1,43 @@
+---
+// Полный указатель гайдов и пакетов, строится ИЗ МАНИФЕСТА (docs.generated.ts +
+// packages.generated.ts). Заведён потому, что 26 из 29 гайдов были доступны
+// только по прямой ссылке: боковое меню несло рукописный список из трёх
+// страниц, а новые туда не попадали (найдено проверкой достижимости).
+import { DOC_GUIDES } from '@data/docs';
+import { PACKAGE_DOCS } from '@data/packages.generated';
+
+interface Props { lang?: 'ru' | 'en'; }
+const { lang = 'en' } = Astro.props;
+const ru = lang === 'ru';
+const base = ru ? '/ru/doc' : '/doc';
+const clean = (t: string) => t.replace(/`/g, '').replace(/\s+/g, ' ').trim();
+const guides = [...DOC_GUIDES].sort((a, b) =>
+  (ru ? a.title.ru : a.title.en).localeCompare(ru ? b.title.ru : b.title.en, ru ? 'ru' : 'en'));
+---
+
+<section class="guide-index container--narrow">
+  <h2 id="all-guides">{ru ? 'Все гайды' : 'All guides'}</h2>
+  <p>{ru
+    ? 'Полный список пользовательских руководств — он строится из манифеста публикации, поэтому новая страница появляется здесь сама.'
+    : 'Every user guide. The list is built from the publication manifest, so a new page shows up here on its own.'}</p>
+  <ul class="guide-index__list">
+    {guides.map((g) => (
+      <li>
+        <a href={`${base}/${g.slug}/`}>{clean(ru ? g.title.ru : g.title.en)}</a>
+        <span>{clean(ru ? g.description.ru : g.description.en).slice(0, 110)}</span>
+      </li>
+    ))}
+  </ul>
+
+  <h2 id="packages">{ru ? 'Пакеты' : 'Packages'}</h2>
+  <ul class="guide-index__list">
+    {PACKAGE_DOCS.map((p) => (
+      <li>
+        <a href={`${base}/${p.pkg}/`}>{ru ? p.title.ru : p.title.en}</a>
+        <span>{p.pages.length > 1
+          ? (ru ? `${p.pages.length} страниц документации` : `${p.pages.length} documentation pages`)
+          : (ru ? 'обзор пакета' : 'package overview')}</span>
+      </li>
+    ))}
+  </ul>
+</section>

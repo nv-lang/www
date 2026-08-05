@@ -1358,3 +1358,13 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
   .email-form__status--success { color: #6fcd6f; }
   .email-form__status--error   { color: #ff7d6c; }
 }
+
+
+/* Указатель гайдов на /doc/ (строится из манифеста) */
+.guide-index { margin-top: 3rem; }
+.guide-index h2 { margin-top: 2rem; }
+.guide-index__list { list-style: none; padding: 0; display: grid; gap: .55rem; }
+.guide-index__list li { display: flex; flex-wrap: wrap; gap: .5rem .75rem; align-items: baseline;
+  border-bottom: 1px solid var(--border-soft); padding-bottom: .5rem; }
+.guide-index__list a { font-weight: 600; }
+.guide-index__list span { color: var(--fg-muted); font-size: .85rem; flex: 1 1 22rem; }
