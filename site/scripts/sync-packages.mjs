@@ -45,6 +45,16 @@ async function raw(repo, path) {
 }
 
 // исходный frontmatter источника срезаем: он не должен рендериться в тело
+
+// Переключатель языка внутри страницы («**English** | [Русский](…)») дублирует
+// переключатель RU/EN в шапке сайта и ведёт на .md-файл — на сайте не работает.
+// Срезаем при импорте (замечание владельца 2026-08-05); в репозитории он полезен.
+function stripLangSwitch(text) {
+  return text.replace(
+    /^(?:\*\*(?:English|Русский)\*\*|\[(?:English|Русский)\]\([^)]*\))[ \t]*\|[ \t]*(?:\*\*(?:English|Русский)\*\*|\[(?:English|Русский)\]\([^)]*\))[ \t]*\r?\n\r?\n?/m,
+    '');
+}
+
 function stripFm(text) {
   if (!text.startsWith('---')) return text;
   const nl = String.fromCharCode(10);
@@ -113,9 +123,9 @@ export async function syncPackages() {
     await mkdir(new URL(`${p.pkg}/ru/`, OUT), { recursive: true });
     for (const page of pages) {
       await writeFile(new URL(`${p.pkg}/en/${page.slug}.md`, OUT),
-        fm(p.repo, page.pathEn) + rewritePkgLinks(stripFm(page.en), p.pkg, 'en', p.repo, pubSet), 'utf8');
+        fm(p.repo, page.pathEn) + rewritePkgLinks(stripLangSwitch(stripFm(page.en)), p.pkg, 'en', p.repo, pubSet), 'utf8');
       await writeFile(new URL(`${p.pkg}/ru/${page.slug}.md`, OUT),
-        fm(p.repo, page.pathEn.replace(/\.md$/, '.ru.md')) + rewritePkgLinks(stripFm(page.ru), p.pkg, 'ru', p.repo, pubSet), 'utf8');
+        fm(p.repo, page.pathEn.replace(/\.md$/, '.ru.md')) + rewritePkgLinks(stripLangSwitch(stripFm(page.ru)), p.pkg, 'ru', p.repo, pubSet), 'utf8');
     }
     // Заголовок КАЖДОЙ страницы — из её H1 (иначе все 13 страниц пакета
     // получают один <title>, что портит и навигацию, и выдачу поиска).

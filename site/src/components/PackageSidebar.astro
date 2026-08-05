@@ -8,7 +8,9 @@ const ru = lang === 'ru';
 const base = ru ? `/ru/doc/${pkg}` : `/doc/${pkg}`;
 const p = PACKAGE_DOCS.find((x) => x.pkg === pkg)!;
 const title = ru ? p.title.ru : p.title.en;
-const pages = p.pages.filter((x) => x.slug !== 'index');
+// корень пакета (README или overview) уже показан отдельной строкой
+const rootSlug = p.pages.some((x) => x.slug === 'index') ? 'index' : 'overview';
+const pages = p.pages.filter((x) => x.slug !== 'index' && x.slug !== rootSlug);
 ---
 
 <aside class="doc-sidebar">
