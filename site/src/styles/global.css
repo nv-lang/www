@@ -1368,3 +1368,19 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
   border-bottom: 1px solid var(--border-soft); padding-bottom: .5rem; }
 .guide-index__list a { font-weight: 600; }
 .guide-index__list span { color: var(--fg-muted); font-size: .85rem; flex: 1 1 22rem; }
+
+/* Таблицы в доке: имена из кода и короткие значения не должны переноситься по
+   слогам («HalfEv/en»), а узкие колонки-примеры — сжиматься в столбик.
+   Ширину держим по содержимому, лишнее уводим в горизонтальную прокрутку
+   (сама таблица уже display:block; overflow-x:auto выше). */
+.doc-layout table code,
+.doc-content table code { white-space: nowrap; }
+.doc-layout table th,
+.doc-layout table td,
+.doc-content table th,
+.doc-content table td { white-space: normal; vertical-align: top; }
+/* колонки-примеры (короткие ячейки) не переносим вовсе */
+.doc-layout table td:not(:nth-child(1)):not(:nth-child(2)),
+.doc-layout table th:not(:nth-child(1)):not(:nth-child(2)),
+.doc-content table td:not(:nth-child(1)):not(:nth-child(2)),
+.doc-content table th:not(:nth-child(1)):not(:nth-child(2)) { white-space: nowrap; }
