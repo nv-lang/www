@@ -128,7 +128,7 @@ assert(m.is_empty())</code></pre>
         <p>Создаёт пустой <code>HashMap</code>, вмещающий не менее <code>min_capacity</code> записей без рехеширования. Аргумент — это число записей, а не число бакетов. Используйте, когда конечный размер известен заранее.</p>
         <h4>Примеры</h4>
         <pre><code class="language-nova">mut m = HashMap[str, int].with_capacity(100)
-for i in 0..100 { m.insert("k" + str.from(i), i) }
+for i in 0..100 { m.insert("k" + i.to_str(), i) }
 assert(m.len() == 100)</code></pre>
       </div>
 

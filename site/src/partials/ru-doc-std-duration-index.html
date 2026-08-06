@@ -53,13 +53,13 @@
   <main id="main-content">
     <article class="prose">
 
-      <p>Три типа покрывают модель времени Nova: <code>Duration</code> (знаковый интервал), <code>Timestamp</code> (момент от Unix-эпохи) и <code>Monotonic</code> (монотонные часы процесса). Все хранят наносекунды в одном поле <code>i64</code>. Методы-расширения для целых чисел и чисел с плавающей точкой позволяют писать <code>5.seconds()</code>, <code>1.hour()</code>, <code>500.millis()</code> напрямую.</p>
+      <p>Три типа покрывают модель времени Nova: <code>Duration</code> (знаковый интервал), <code>Timestamp</code> (момент от Unix-эпохи) и <code>Monotonic</code> (монотонные часы процесса). Все хранят наносекунды в одном поле <code>i64</code>. Методы-расширения для целых чисел и чисел с плавающей точкой позволяют писать <code>5.to_seconds()</code>, <code>1.to_hours()</code>, <code>500.to_millis()</code> напрямую.</p>
 
-      <pre><code class="language-nova">ro timeout = 30.seconds()
-ro deadline = Timestamp.from_unix_secs(1_700_000_000) + timeout
+      <pre><code class="language-nova">ro timeout = 30.to_seconds()
+ro deadline = 1_700_000_000.to_unix_seconds() + timeout
 
-ro d = Duration.from_secs(3661)  // 1h 1min 1s
-assert(d.into_human().contains("1h"))</code></pre>
+ro d = 3661.to_seconds()  // 1h 1min 1s
+assert(d.parts().hours == 1)</code></pre>
 
       <hr class="divider">
 
@@ -107,32 +107,32 @@ const HOUR   Duration  = { nanos: 3_600_000_000_000 }</code></pre>
 
       <h2 id="dur-from" style="margin-bottom:1.5rem;">Duration — конструкторы</h2>
 
-      <pre><code class="language-nova">fn Duration.from_nanos(n i64)    -> Self  // 1 ns
-fn Duration.from_micros(n i64)   -> Self  // 1 μs = 1_000 ns
-fn Duration.from_millis(n i64)   -> Self  // 1 ms = 1_000_000 ns
-fn Duration.from_secs(n i64)     -> Self  // 1 s  = 1_000_000_000 ns
-fn Duration.from_mins(n i64)     -> Self  // 60 s
-fn Duration.from_hours(n i64)    -> Self  // 3600 s
-fn Duration.from_days(n i64)     -> Self  // 86400 s
-fn Duration.from_weeks(n i64)    -> Self  // 7 * 86400 s
-fn Duration.from_secs_f64(s f64) -> Self  // e.g. 0.5 → 500ms</code></pre>
+      <pre><code class="language-nova">fn[T Ints] T @to_nanos()   -> Duration  // 1 ns
+fn[T Ints] T @to_micros()  -> Duration  // 1 μs = 1_000 ns
+fn[T Ints] T @to_millis()  -> Duration  // 1 ms = 1_000_000 ns
+fn[T Ints] T @to_seconds() -> Duration  // 1 s  = 1_000_000_000 ns
+fn[T Ints] T @to_minutes() -> Duration  // 60 s
+fn[T Ints] T @to_hours()   -> Duration  // 3600 s
+fn[T Ints] T @to_days()    -> Duration  // 86400 s
+fn[T Ints] T @to_weeks()   -> Duration  // 7 * 86400 s
+fn f64 @to_seconds()       -> Duration  // e.g. 0.5 → 500ms</code></pre>
 
       <hr class="divider">
 
       <h2 id="dur-as" style="margin-bottom:1.5rem;">Duration — аксессоры</h2>
 
-      <pre><code class="language-nova">fn Duration @as_nanos()     -> i64  // raw nanoseconds
-fn Duration @as_micros()    -> ()   // truncating
-fn Duration @as_millis()    -> ()
-fn Duration @as_secs()      -> ()
-fn Duration @as_mins()      -> ()
-fn Duration @as_hours()     -> ()
-fn Duration @as_days()      -> ()
-fn Duration @as_secs_f64()  -> f64  // fractional seconds (preserves sub-second)</code></pre>
+      <pre><code class="language-nova">fn Duration @nanos()       -> i64  // raw nanoseconds
+fn Duration @micros()      -> i64  // truncating
+fn Duration @millis()      -> i64
+fn Duration @seconds()     -> i64
+fn Duration @minutes()     -> i64
+fn Duration @hours()       -> i64
+fn Duration @days()        -> i64
+fn Duration @seconds_f64() -> f64  // fractional seconds (preserves sub-second)</code></pre>
 
       <h4>Примеры</h4>
-      <pre><code class="language-nova">assert(Duration.from_secs(2).as_millis() == 2000)
-assert(Duration.from_millis(1500).as_secs_f64() == 1.5)</code></pre>
+      <pre><code class="language-nova">assert(2.to_seconds().millis() == 2000)
+assert(1500.to_millis().seconds_f64() == 1.5)</code></pre>
 
       <hr class="divider">
 
@@ -149,24 +149,23 @@ fn Duration @div(n f64)            -> Duration
 fn Duration @ratio(other Duration) -> f64       // d1 / d2 dimensionless</code></pre>
 
       <h4>Примеры</h4>
-      <pre><code class="language-nova">assert(1.hour() + 30.minutes() == 90.minutes())
-assert(30.seconds().ratio(1.minute()) == 0.5)</code></pre>
+      <pre><code class="language-nova">assert(1.to_hours() + 30.to_minutes() == 90.to_minutes())
+assert(30.to_seconds().ratio(1.to_minutes()) == 0.5)</code></pre>
 
       <hr class="divider">
 
       <h2 id="dur-fmt" style="margin-bottom:1.5rem;">Duration — форматирование</h2>
 
-      <pre><code class="language-nova">fn Duration @into()         -> str  // auto-scale: "500ns" / "42ms" / "2.5s" / "5min" / "2h"
-fn Duration @into_human()   -> str  // decomposed: "1d 2h 30min 45s"
+      <pre><code class="language-nova">fn Duration @to_str()       -> str  // auto-scale: "500ns" / "42ms" / "2.5s" / "5min" / "2h"
 fn Duration @parts()        -> DurationParts</code></pre>
 
       <h4>Примеры</h4>
-      <pre><code class="language-nova">ro d = Duration.from_secs(3661)  // 1h 1min 1s
+      <pre><code class="language-nova">ro d = 3661.to_seconds()  // 1h 1min 1s
 ro p = d.parts()
 assert(p.hours == 1 && p.minutes == 1 && p.seconds == 1)
 
-assert(2.hours().into() == "2h")
-assert(500.nanos().into() == "500ns")</code></pre>
+assert(2.to_hours().to_str() == "2h")
+assert(500.to_nanos().to_str() == "500ns")</code></pre>
 
       <hr class="divider">
 
@@ -174,33 +173,28 @@ assert(500.nanos().into() == "500ns")</code></pre>
 
       <p>Методы-расширения для <code>int</code> и <code>f64</code> позволяют естественно записывать литералы длительности:</p>
 
-      <pre><code class="language-nova">// int extensions
-fn int @nanos()   -> Duration
-fn int @micros()  -> Duration
-fn int @millis()  -> Duration
-fn int @seconds() -> Duration   // also: .second() (singular)
-fn int @minutes() -> Duration   // also: .minute()
-fn int @hours()   -> Duration   // also: .hour()
-fn int @days()    -> Duration   // also: .day()
-fn int @weeks()   -> Duration   // also: .week()
-
-// f64 extensions (allows fractional units)
-fn f64 @seconds() -> Duration
-fn f64 @millis()  -> Duration
-fn f64 @hours()   -> Duration</code></pre>
+      <pre><code class="language-nova">fn[T Ints] T @to_nanos()   -> Duration
+fn[T Ints] T @to_micros()  -> Duration
+fn[T Ints] T @to_millis()  -> Duration
+fn[T Ints] T @to_seconds() -> Duration
+fn[T Ints] T @to_minutes() -> Duration
+fn[T Ints] T @to_hours()   -> Duration
+fn[T Ints] T @to_days()    -> Duration
+fn[T Ints] T @to_weeks()   -> Duration
+fn f64 @to_seconds() -> Duration</code></pre>
 
       <h4>Примеры</h4>
-      <pre><code class="language-nova">assert(30.seconds() == Duration.from_secs(30))
-assert(500.nanos()  == Duration.from_nanos(500))
-assert(0.5.seconds() == 500.millis())</code></pre>
+      <pre><code class="language-nova">assert(30.to_seconds().seconds() == 30)
+assert(500.to_nanos().nanos() == 500)
+assert(0.5.to_seconds() == 500.to_millis())</code></pre>
 
       <hr class="divider">
 
       <h2 id="ts-from" style="margin-bottom:1.5rem;">Timestamp — конструкторы</h2>
 
-      <pre><code class="language-nova">fn Timestamp.from_unix_secs(s i64)   -> Self
-fn Timestamp.from_unix_millis(ms i64) -> Self
-fn Timestamp.from_unix_nanos(n i64)   -> Self</code></pre>
+      <pre><code class="language-nova">fn[T Ints] T @to_unix_seconds() -> Timestamp
+fn[T Ints] T @to_unix_millis()  -> Timestamp
+fn[T Ints] T @to_unix_nanos()   -> Timestamp</code></pre>
 
       <hr class="divider">
 
@@ -211,10 +205,10 @@ fn Timestamp @minus(d Duration)         -> Timestamp   // shift back
 fn Timestamp @minus(other Timestamp)    -> Duration    // elapsed (signed)</code></pre>
 
       <h4>Примеры</h4>
-      <pre><code class="language-nova">ro start    = Timestamp.from_unix_secs(1000)
-ro deadline = start + 30.seconds()
-assert(deadline.as_unix_secs() == 1030)
-assert((deadline - start) == 30.seconds())</code></pre>
+      <pre><code class="language-nova">ro start    = 1000.to_unix_seconds()
+ro deadline = start + 30.to_seconds()
+assert(deadline.unix_seconds() == 1030)
+assert((deadline - start) == 30.to_seconds())</code></pre>
 
       <hr class="divider">
 
@@ -229,7 +223,7 @@ fn deadline_in(d Duration)  Time -> Timestamp // now() + d</code></pre>
 
       <h4>Примеры</h4>
       <pre><code class="language-nova">with Time = th.fixed_ms(10_000) {
-    ro deadline = Timestamp.from_unix_secs(5)
+    ro deadline = 5.to_unix_seconds()
     assert(deadline.is_past())
 
     ro (result, elapsed) = measure(|| 42)

@@ -128,7 +128,7 @@ assert(m.is_empty())</code></pre>
         <p>Create an empty <code>HashMap</code> sized to hold at least <code>min_capacity</code> entries without a rehash. The argument is an entry count, not a bucket count. Use this when the final size is known in advance.</p>
         <h4>Examples</h4>
         <pre><code class="language-nova">mut m = HashMap[str, int].with_capacity(100)
-for i in 0..100 { m.insert("k" + str.from(i), i) }
+for i in 0..100 { m.insert("k" + i.to_str(), i) }
 assert(m.len() == 100)</code></pre>
       </div>
 
