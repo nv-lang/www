@@ -27,7 +27,8 @@
   --surface:      #ffffff;
   --accent-glow:  rgba(107,63,160,.32);
   --sel-bg:       rgba(107,63,160,.16);
-  --sel-code-bg:  #add6ff;   /* editor-style selection (VS Code light) */
+  --sel-code-bg:  #264f78;   /* editor-style selection (VS Code dark) — code
+                                 blocks are ALWAYS dark, regardless of page theme */
 
   --font-heading: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI",
                   Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -68,7 +69,6 @@
     --surface:      #1b1b26;
     --accent-glow:  rgba(169,125,209,.30);
     --sel-bg:       rgba(169,125,209,.26);
-    --sel-code-bg:  #264f78;   /* editor-style selection (VS Code dark) */
 
     /* Syntax token colors — dark */
     --tok-kw:      #c792ea;
@@ -151,8 +151,7 @@ a:hover { text-decoration: underline; color: var(--accent-hover); }
 ::selection { background: var(--sel-bg); }
 /* In code blocks the subtle page-level selection tint drowns among coloured
    syntax tokens on a dark background — use a denser overlay there. */
-pre ::selection, pre::selection,
-code ::selection, code::selection { background: var(--sel-code-bg); }
+pre ::selection, pre::selection { background: var(--sel-code-bg); }
 
 /* Видимое фокус-кольцо для клавиатурной навигации (a11y + полировка) */
 :focus-visible {
