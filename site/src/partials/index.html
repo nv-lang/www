@@ -131,7 +131,7 @@ fn fetch_user(id u64) Db Log -> Result[User, NotFound]
     <div>
       <p class="section-label">Эффекты в деле</p>
       <h2 style="font-size:clamp(1.4rem,3vw,1.9rem);margin-bottom:.75rem;">Все зависимости видны с первого взгляда</h2>
-      <p style="color:var(--fg-muted);">Сигнатура HTTP-сервера сообщает, что он работает с сетью (<code>Net</code>), временем (<code>Time</code>) и отпускает завершённые соединения в открепления-файберы (<code>Detach</code>). Ничего неявного. Система эффектов и есть документация.</p>
+      <p style="color:var(--fg-muted);">Первая строка — <code>fn main() Net Time Detach</code> — объявляет всё, что эта программа делает с внешним миром: сеть (<code>Net</code>), время (<code>Time</code>), откреплённые файберы соединений (<code>Detach</code>). Ничего неявного. Система эффектов и есть документация.</p>
       <a href="/ru/spec/" class="btn btn-outline" style="margin-top:.5rem;">Читать спецификацию</a>
     </div>
     <div class="code-window">
