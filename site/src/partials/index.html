@@ -131,7 +131,7 @@ fn fetch_user(id u64) Db Log -> Result[User, NotFound]
     <div>
       <p class="section-label">Эффекты в деле</p>
       <h2 style="font-size:clamp(1.4rem,3vw,1.9rem);margin-bottom:.75rem;">Все зависимости видны с первого взгляда</h2>
-      <p style="color:var(--fg-muted);">Сигнатура HTTP-сервера сообщает, что он работает с сетью (<code>Net</code>), говорит на HTTP (<code>Http</code>) и пишет логи (<code>Log</code>). Ничего неявного. Система эффектов и есть документация.</p>
+      <p style="color:var(--fg-muted);">Сигнатура HTTP-сервера сообщает, что он работает с сетью (<code>Net</code>), временем (<code>Time</code>) и отпускает завершённые соединения в открепления-файберы (<code>Detach</code>). Ничего неявного. Система эффектов и есть документация.</p>
       <a href="/ru/spec/" class="btn btn-outline" style="margin-top:.5rem;">Читать спецификацию</a>
     </div>
     <div class="code-window">
@@ -139,14 +139,14 @@ fn fetch_user(id u64) Db Log -> Result[User, NotFound]
         <div class="code-window__dots"><span></span><span></span><span></span></div>
         <span class="code-window__title">server.nv</span>
       </div>
-      <pre><code class="language-nova">// HTTP-сервер — эффекты видны в сигнатуре
-fn serve_api() Net Http Log -> ()
-{
-    ro router = Router.new()
-        .route(Get,  "/users/:id", get_user)
-        .route(Post, "/users",    create_user)
+      <pre><code class="language-nova">// HTTP-сервер — все зависимости в сигнатуре
+fn main() Net Time Detach -> () {
+    ro app = Router.new()
+        .get("/users/{id}", get_user)!!
+        .post("/users", create_user)!!
 
-    Http.serve("0.0.0.0:8080", router.dispatch())
+    consume listener = TcpListener.bind("0.0.0.0:8080")!!
+    serve_router(listener, app, ServerPolicy.new())
 }</code></pre>
     </div>
   </div>
