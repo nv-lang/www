@@ -30,13 +30,13 @@ Nova — это не очередная «безопасная замена C» 
 
 ```nova
 // Сигнатура — это контракт с вызывающим:
-// дай мне положительный id, я верну тебе User или NotFound,
+// дай мне ненулевой id, я верну тебе User или NotFound,
 // и я затрону только Db и Log — и ничего больше.
 fn fetch_user(id u64) Db Log -> Result[User, NotFound]
-    requires id > 0
+    requires id != 0
 {
     log("fetching", {id: id.to_str()})
-    match db.find_user(id) {
+    match find_user(id) {
         Some(u) => Ok(u)
         None    => Err(NotFound)
     }

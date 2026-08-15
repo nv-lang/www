@@ -29,13 +29,13 @@ Effects in Nova are first-class interfaces. You declare an effect, provide a han
 
 ```nova
 // The signature is the contract with the caller:
-// give me a positive id, I give you a User or NotFound,
+// give me a non-zero id, I give you a User or NotFound,
 // and I will only touch Db and Log — nothing else.
 fn fetch_user(id u64) Db Log -> Result[User, NotFound]
-    requires id > 0
+    requires id != 0
 {
     log("fetching", {id: id.to_str()})
-    match db.find_user(id) {
+    match find_user(id) {
         Some(u) => Ok(u)
         None    => Err(NotFound)
     }

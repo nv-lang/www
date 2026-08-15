@@ -24,10 +24,10 @@
         </div>
         <pre><code class="language-nova">// Алгебраические эффекты в сигнатурах
 fn fetch_user(id u64) Db Log -> Result[User, NotFound]
-    requires id > 0
+    requires id != 0
 {
     Log.info("fetching ${id}")
-    match Db.find_user(id) {
+    match find_user(id) {
         Some(u) => Ok(u)
         None    => Err(NotFound)
     }
