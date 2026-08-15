@@ -2,7 +2,7 @@
 // Тянет дерево spec/ + выбранные пользовательские гайды docs/guide/ и
 // раскладывает по контент-коллекциям сайта:
 //   spec/decisions/NN-*.md, README.md         -> src/content/decisions/
-//   spec/*.md (обзорные документы)             -> src/content/spec/
+//   spec/*.ru.md (обзорные документы, русская сторона) -> src/content/spec/
 //   spec/decisions/history/*.md                -> src/content/spec/history/
 //   docs/guide/<slug>.md / <slug>.ru.md         -> src/content/docs/{en,ru}/<slug>.md
 //     (состав гайдов — из docs/guide/PUBLISHED.list репы nova, №307)
@@ -76,7 +76,7 @@ async function fetchPublishedSlugs() {
   return new Set(slugs);
 }
 
-// Обзорные документы spec/*.md -> /spec/<name>/
+// Обзорные документы spec/<name>.ru.md -> /spec/<name>/
 const SPEC_DOCS = new Set([
   'overview', 'revolutionary',
   'syntax', 'effects', 'conversions', 'open-questions',
@@ -95,10 +95,13 @@ function pathToSite(repoPath) {
   // русские якоря), английский перевод — на /spec/<slug>/. Ссылки из
   // русских источников обязаны вести на русскую страницу, иначе якорь
   // не находится (поймано check-links при вводе двуязычия).
-  m = repoPath.match(/^spec\/([a-z][a-z0-9-]*)\.en\.md$/);
-  if (m && SPEC_DOCS.has(m[1])) return `/spec/${m[1]}/`;
-  m = repoPath.match(/^spec\/([a-z][a-z0-9-]*)\.md$/);
+  // 2026-08-12: spec/ перешёл на общую конвенцию docs/guide/ — X.md английская
+  // сторона, X.ru.md русская (было наоборот: X.en.md / X.md). Сайт публикует
+  // русскую как норматив на /ru/spec/, английскую — на /spec/.
+  m = repoPath.match(/^spec\/([a-z][a-z0-9-]*)\.ru\.md$/);
   if (m && SPEC_DOCS.has(m[1])) return `/ru/spec/${m[1]}/`;
+  m = repoPath.match(/^spec\/([a-z][a-z0-9-]*)\.md$/);
+  if (m && SPEC_DOCS.has(m[1])) return `/spec/${m[1]}/`;
   m = repoPath.match(/^docs\/guide\/([a-z][a-z0-9-]*)\.ru\.md$/);
   if (m && DOC_SLUGS.has(m[1])) return `/ru/doc/${m[1]}/`;
   m = repoPath.match(/^docs\/guide\/([a-z][a-z0-9-]*)\.md$/);
@@ -377,10 +380,13 @@ async function main() {
     // 241 Ф.2: английские переводы читательской спеки — отдельной веткой,
     // ложатся в подкаталог en/ коллекции. Русский файл остаётся нормативом
     // и адресуется прежним id (без префикса).
-    else if ((m = f.path.match(/^spec\/([a-z][a-z0-9-]*)\.en\.md$/)) && SPEC_DOCS.has(m[1]))
-      specFiles.push({ rel: `en/${m[1]}.md`, text: f.text, path: f.path });
-    else if ((m = f.path.match(/^spec\/([a-z][a-z0-9-]*)\.md$/)) && SPEC_DOCS.has(m[1]))
+    // 2026-08-12 (spec rename): X.ru.md — русский норматив (id без префикса),
+    // X.md — английская сторона (подкаталог en/). Порядок веток важен: .ru.md
+    // ловим первым, иначе общий .md-регекс съел бы его как английский.
+    else if ((m = f.path.match(/^spec\/([a-z][a-z0-9-]*)\.ru\.md$/)) && SPEC_DOCS.has(m[1]))
       specFiles.push({ rel: `${m[1]}.md`, text: f.text, path: f.path });
+    else if ((m = f.path.match(/^spec\/([a-z][a-z0-9-]*)\.md$/)) && SPEC_DOCS.has(m[1]))
+      specFiles.push({ rel: `en/${m[1]}.md`, text: f.text, path: f.path });
     else if ((m = f.path.match(/^docs\/guide\/([a-z][a-z0-9-]*)\.ru\.md$/)) && DOC_SLUGS.has(m[1]))
       docFiles.push({ slug: m[1], lang: 'ru', text: stripDocChrome(f.text), path: f.path });
     else if ((m = f.path.match(/^docs\/guide\/([a-z][a-z0-9-]*)\.md$/)) && DOC_SLUGS.has(m[1]))
