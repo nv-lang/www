@@ -47,7 +47,7 @@ export const DOC_GUIDES_GENERATED: DocGuide[] = [
       "ru": "Каналы и `select` в Nova"
     },
     "description": {
-      "en": "Channel[T] is the primary inter-fiber communication primitive. The model is capability-split (Rust mpsc-style): Channel.new(cap) returns a pair of objects with split capabilities — ChanWriter[T]…",
+      "en": "Channel[T] is the primary inter-fiber communication primitive. The model is capability-split (Rust mpsc-style): Channel[T].new(cap) returns a pair of objects with split capabilities —…",
       "ru": "Channel[T] — основной примитив межфибровой коммуникации. Модель —"
     }
   },
@@ -265,6 +265,18 @@ export const DOC_GUIDES_GENERATED: DocGuide[] = [
     "description": {
       "en": "Strings in Nova — the lens model",
       "ru": "Строки в Nova — модель линз"
+    }
+  },
+  {
+    "slug": "structured-concurrency",
+    "github": "docs/guide/structured-concurrency.md",
+    "title": {
+      "en": "Structured concurrency: `supervised` scopes, deadlines, cancellation",
+      "ru": "Структурная конкурентность: области `supervised`, сроки, отмена"
+    },
+    "description": {
+      "en": "A supervised { } scope owns every fiber spawned inside it: the scope does not exit until all children finished or were cancelled, and spawn is only legal inside such a scope (D50). This page…",
+      "ru": "Область supervised { } владеет каждым файбером, порождённым внутри неё: область не завершится, пока все дети не закончили работу или не были отменены, а spawn легален только внутри такой области…"
     }
   },
   {
