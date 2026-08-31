@@ -25,11 +25,11 @@
           <span class="code-window__title">fetch_user.nv</span>
         </div>
         <pre><code class="language-nova">// Algebraic effects in signatures
-fn fetch_user(id u64) Db Log -> Result[User, NotFound]
-    requires id != 0
+fn fetch_user(id int) Db Log -> Result[User, NotFound]
+    requires id > 0
 {
     Log.info("fetching ${id}")
-    match find_user(id) {
+    match Db.find_user(id) {
         Some(u) => Ok(u)
         None    => Err(NotFound)
     }

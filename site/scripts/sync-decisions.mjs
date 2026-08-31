@@ -28,12 +28,20 @@ const UA = { 'User-Agent': 'nv-lang-www-build' };
 // Разовая 5xx от GitHub роняла ВЕСЬ деплой (прецедент 2026-08-04: fetch 500 на
 // одном файле из 70). Сеть — не повод считать сборку красной: три попытки с
 // нарастающей паузой, и только потом падаем.
-async function fetchRetry(url, init, tries = 3) {
+// 404 is the ONLY 4xx we trust as final -- it is the honest "not there".
+// Every other 4xx gets retried, because raw.githubusercontent.com hands out
+// SPURIOUS 400s. Measured 2026-08-31 over one repository: the same blob
+// answered 400 and 200 within a minute, by branch AND by commit SHA, while
+// the API listed it present and GitHub status was all-green; which file was
+// hit moved between runs. Treating that 400 as "absent" is what killed the
+// whole build -- a missing half of a doc pair is a hard error downstream, so
+// one flaky edge response blocked every deploy.
+async function fetchRetry(url, init, tries = 5) {
   let last;
   for (let i = 0; i < tries; i++) {
     try {
       const r = await fetch(url, init);
-      if (r.ok || (r.status >= 400 && r.status < 500)) return r;
+      if (r.ok || r.status === 404) return r;
       last = new Error(`HTTP ${r.status}`);
     } catch (e) { last = e; }
     if (i < tries - 1) await new Promise((res) => setTimeout(res, 800 * (i + 1)));

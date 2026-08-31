@@ -11,12 +11,20 @@ const UA = { 'User-Agent': 'nv-lang-www-build' };
 // Разовая 5xx от GitHub роняла ВЕСЬ деплой (прецедент 2026-08-04: fetch 500 на
 // одном файле из 70). Сеть — не повод считать сборку красной: три попытки с
 // нарастающей паузой, и только потом падаем.
-async function fetchRetry(url, init, tries = 3) {
+// 404 is the ONLY 4xx we trust as final -- it is the honest "not there".
+// Every other 4xx gets retried, because raw.githubusercontent.com hands out
+// SPURIOUS 400s. Measured 2026-08-31 over one repository: the same blob
+// answered 400 and 200 within a minute, by branch AND by commit SHA, while
+// the API listed it present and GitHub status was all-green; which file was
+// hit moved between runs. Treating that 400 as "absent" is what killed the
+// whole build -- a missing half of a doc pair is a hard error downstream, so
+// one flaky edge response blocked every deploy.
+async function fetchRetry(url, init, tries = 5) {
   let last;
   for (let i = 0; i < tries; i++) {
     try {
       const r = await fetch(url, init);
-      if (r.ok || (r.status >= 400 && r.status < 500)) return r;
+      if (r.ok || r.status === 404) return r;
       last = new Error(`HTTP ${r.status}`);
     } catch (e) { last = e; }
     if (i < tries - 1) await new Promise((res) => setTimeout(res, 800 * (i + 1)));
@@ -39,8 +47,42 @@ export const PACKAGES = [
     title: { en: 'nova-bignum — arbitrary precision', ru: 'nova-bignum — произвольная точность' } },
 ];
 
+// BRANCH is resolved to a COMMIT SHA once per repository, and everything is
+// then fetched by that SHA. Two reasons, the first one measured on 2026-08-31:
+//
+//  1. raw.githubusercontent.com can serve a POISONED CACHE for a branch path.
+//     `nova-polaris/main/docs/auth.ru.md` returned HTTP 400 on every retry and
+//     on both raw routes, while the SAME blob by SHA returned 200 and the API
+//     reported it present at 11364 bytes. A neighbouring `routing.ru.md` was
+//     fine, GitHub status was all-green, and the file holds nothing unusual.
+//     One bad edge entry blocked the ENTIRE site build, because a missing
+//     half of a doc pair is a hard error below.
+//  2. A build that reads a moving branch is not reproducible: two files in
+//     one run can come from two different commits. Pinning the SHA fixes
+//     that as a side effect, which is the better reason of the two.
+//
+// One extra API call per repository (six in total), unauthenticated, well
+// inside the rate limit. If the call fails, we fall back to the branch name --
+// the previous behaviour, no worse than before.
+const REF_CACHE = new Map();
+async function refOf(repo) {
+  if (REF_CACHE.has(repo)) return REF_CACHE.get(repo);
+  let ref = BRANCH;
+  try {
+    const r = await fetchRetry(
+      `https://api.github.com/repos/${repo}/commits/${BRANCH}`, { headers: UA });
+    if (r.ok) {
+      const j = await r.json();
+      if (j && typeof j.sha === 'string' && j.sha.length >= 7) ref = j.sha;
+    }
+  } catch {}
+  REF_CACHE.set(repo, ref);
+  return ref;
+}
+
 async function raw(repo, path) {
-  const r = await fetchRetry(`https://raw.githubusercontent.com/${repo}/${BRANCH}/${path}`, { headers: UA });
+  const ref = await refOf(repo);
+  const r = await fetchRetry(`https://raw.githubusercontent.com/${repo}/${ref}/${path}`, { headers: UA });
   return r.ok ? await r.text() : null;
 }
 
