@@ -1,0 +1,80 @@
+<div class="page-header">
+  <div class="container--narrow">
+    <span class="version-badge">Alpha pre-releases</span>
+    <h1>Nova releases</h1>
+    <p>Nova Oracle 0.1.0 is the Rust-based compiler distribution. Nova Carina
+    0.2.0 is the accepted self-hosting milestone, built with Nova itself.
+    Both are early alpha releases: APIs and language features may change, and
+    compatibility is not guaranteed.</p>
+  </div>
+</div>
+
+<main id="main-content" style="padding:3rem 1.5rem 5rem;">
+<div class="container--narrow">
+  <section aria-labelledby="oracle-release">
+    <h2 id="oracle-release">Nova Oracle 0.1.0 (alpha)</h2>
+    <p>Oracle compiles Nova to C, then to native code. It includes the
+    <code>nova</code> CLI, standard library and C runtime; the binary bundles
+    also include <code>nova-lsp</code>. The Windows bundle was smoke-tested
+    after a clean extraction with the default Boehm GC. The Linux bundle was
+    smoke-tested after a clean extraction on x86_64. A C toolchain and Boehm
+    GC development files are required to build Nova programs on Linux.</p>
+    <div class="download-grid">
+      <div class="download-card">
+        <h3>Windows x86_64</h3>
+        <p>ZIP with <code>nova.exe</code>, <code>nova-lsp.exe</code>, runtime,
+        standard library and setup instructions. No VS Code extension is bundled.</p>
+        <a class="btn btn-primary" href="https://github.com/nv-lang/nova/releases/download/oracle-v0.1.0/nova-oracle-0.1.0-windows-x86_64.zip">Download Windows ZIP</a>
+      </div>
+      <div class="download-card">
+        <h3>Linux x86_64</h3>
+        <p>Compiler and language server with standard-library and runtime sources.
+        Install a C toolchain and <code>libgc-dev</code> before compiling programs.</p>
+        <a class="btn btn-outline" href="https://github.com/nv-lang/nova/releases/download/oracle-v0.1.0/nova-oracle-0.1.0-linux-x86_64.tar.gz">Download Linux archive</a>
+      </div>
+      <div class="download-card">
+        <h3>Source archive</h3>
+        <p>Source snapshot with submodules at the release revision.</p>
+        <a class="btn btn-outline" href="https://github.com/nv-lang/nova/releases/download/oracle-v0.1.0/nova-oracle-0.1.0-src.tar.gz">Download source</a>
+      </div>
+    </div>
+    <p><a href="https://github.com/nv-lang/nova/releases/download/oracle-v0.1.0/SHA256SUMS">SHA256SUMS</a>
+    · <a href="https://github.com/nv-lang/nova/releases/tag/oracle-v0.1.0">Release notes and limitations</a></p>
+  </section>
+
+  <section aria-labelledby="carina-release" style="margin-top:3.5rem;">
+    <h2 id="carina-release">Nova Carina 0.2.0 (alpha)</h2>
+    <p>Carina is the compiler written in Nova. Its accepted Windows x86_64
+    A → B → C bootstrap produced byte-identical B and C executables and
+    byte-identical generated C. The Windows archive contains that saved
+    stage-B <code>novac.exe</code>, not a newly rebuilt binary. The 0.2
+    milestone proves self-compilation, not readiness of the wider package
+    ecosystem; that is a 0.3 criterion. No Linux Carina binary is included
+    in 0.2.0: the Linux CI build is not a Linux double-build receipt.</p>
+    <div class="download-grid">
+      <div class="download-card">
+        <h3>Windows x86_64</h3>
+        <p>Saved stage-B <code>novac.exe</code> with standard-library interfaces
+        and setup instructions.</p>
+        <a class="btn btn-primary" href="https://github.com/nv-lang/nova/releases/download/carina-v0.2.0/nova-carina-0.2.0-windows-x86_64.zip">Download Windows ZIP</a>
+      </div>
+      <div class="download-card">
+        <h3>Source archive</h3>
+        <p>Source snapshot at the accepted 0.2 revision.</p>
+        <a class="btn btn-outline" href="https://github.com/nv-lang/nova/releases/download/carina-v0.2.0/nova-carina-0.2.0-src.tar.gz">Download source</a>
+      </div>
+      <div class="download-card">
+        <h3>Acceptance receipt</h3>
+        <p>Records the accepted source revision, bootstrap and same-SHA CI evidence.</p>
+        <a class="btn btn-outline" href="https://github.com/nv-lang/nova/releases/download/carina-v0.2.0/proof-and-accept-receipt.txt">Download receipt</a>
+      </div>
+    </div>
+    <p><a href="https://github.com/nv-lang/nova/releases/download/carina-v0.2.0/SHA256SUMS">SHA256SUMS</a>
+    · <a href="https://github.com/nv-lang/nova/releases/tag/carina-v0.2.0">Release notes and limitations</a></p>
+  </section>
+
+  <p style="color:var(--fg-muted);margin-top:3rem;">Verify downloaded files with the
+  SHA256SUMS for the corresponding release. Oracle's Docker image was built
+  and smoke-tested locally but is not published as a container image.</p>
+</div>
+</main>

@@ -1,0 +1,27 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import body from '@partials/release-index.html?raw';
+import headExtra from '@partials/release-index-head.html?raw';
+const meta = {
+  title: "Nova Oracle 0.1.0 and Carina 0.2.0 — Releases",
+  description: "Alpha releases: download Oracle for Windows or Linux, and the accepted Carina self-hosting compiler for Windows x86_64.",
+  canonical: "https://nv-lang.org/release/",
+  lang: "en" as const,
+  hreflangRu: "https://nv-lang.org/ru/release/",
+  hreflangEn: "https://nv-lang.org/release/",
+  hreflangXDefault: "https://nv-lang.org/release/",
+  ogType: "website",
+  ogUrl: "https://nv-lang.org/release/",
+  ogTitle: "Nova Oracle 0.1.0 and Carina 0.2.0 — Releases",
+  ogDescription: "Alpha releases: Oracle on Windows and Linux, Carina self-hosting milestone on Windows x86_64.",
+  twitterTitle: "Nova Oracle 0.1.0 and Carina 0.2.0 — Releases",
+  twitterDescription: "Alpha releases: Oracle on Windows and Linux, Carina self-hosting milestone on Windows x86_64.",
+  langRuUrl: "/ru/release/",
+  langEnUrl: "/release/",
+};
+---
+
+<BaseLayout {...meta} active={undefined}>
+  <Fragment slot="head-extra" set:html={headExtra} />
+  <Fragment set:html={body} />
+</BaseLayout>

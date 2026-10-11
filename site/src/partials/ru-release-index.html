@@ -1,0 +1,81 @@
+<div class="page-header">
+  <div class="container--narrow">
+    <span class="version-badge">Альфа-версии</span>
+    <h1>Релизы Nova</h1>
+    <p>Nova Oracle 0.1.0 — дистрибутив компилятора на Rust. Nova Carina 0.2.0 —
+    принятая ступень самосборки компилятора, написанного на Nova. Оба выпуска
+    ранние: язык и API могут меняться, совместимость не гарантируется.</p>
+  </div>
+</div>
+
+<main id="main-content" style="padding:3rem 1.5rem 5rem;">
+<div class="container--narrow">
+  <section aria-labelledby="oracle-release">
+    <h2 id="oracle-release">Nova Oracle 0.1.0 (alpha)</h2>
+    <p>Oracle компилирует Nova в C, затем в нативный код. Дистрибутив содержит
+    CLI <code>nova</code>, стандартную библиотеку и C-рантайм; в бинарные
+    архивы также входит <code>nova-lsp</code>. Windows-архив прошёл проверку
+    после чистой распаковки с Boehm GC по умолчанию, Linux-архив — после чистой
+    распаковки на x86_64. Для сборки программ в Linux нужны C-компилятор и
+    заголовки Boehm GC.</p>
+    <div class="download-grid">
+      <div class="download-card">
+        <h3>Windows x86_64</h3>
+        <p>ZIP с <code>nova.exe</code>, <code>nova-lsp.exe</code>, рантаймом,
+        стандартной библиотекой и инструкцией по настройке. Расширение VS Code
+        в архив не входит.</p>
+        <a class="btn btn-primary" href="https://github.com/nv-lang/nova/releases/download/oracle-v0.1.0/nova-oracle-0.1.0-windows-x86_64.zip">Скачать ZIP для Windows</a>
+      </div>
+      <div class="download-card">
+        <h3>Linux x86_64</h3>
+        <p>Компилятор и языковой сервер с исходниками стандартной библиотеки
+        и рантайма. Для сборки программ установите C-компилятор и
+        <code>libgc-dev</code>.</p>
+        <a class="btn btn-outline" href="https://github.com/nv-lang/nova/releases/download/oracle-v0.1.0/nova-oracle-0.1.0-linux-x86_64.tar.gz">Скачать архив для Linux</a>
+      </div>
+      <div class="download-card">
+        <h3>Исходный архив</h3>
+        <p>Снимок исходников с субмодулями на ревизии выпуска.</p>
+        <a class="btn btn-outline" href="https://github.com/nv-lang/nova/releases/download/oracle-v0.1.0/nova-oracle-0.1.0-src.tar.gz">Скачать исходники</a>
+      </div>
+    </div>
+    <p><a href="https://github.com/nv-lang/nova/releases/download/oracle-v0.1.0/SHA256SUMS">SHA256SUMS</a>
+    · <a href="https://github.com/nv-lang/nova/releases/tag/oracle-v0.1.0">Заметки о выпуске и ограничения</a></p>
+  </section>
+
+  <section aria-labelledby="carina-release" style="margin-top:3.5rem;">
+    <h2 id="carina-release">Nova Carina 0.2.0 (alpha)</h2>
+    <p>Carina — компилятор, написанный на Nova. Принятая на Windows x86_64
+    двойная сборка A → B → C дала побайтно одинаковые B и C, а также
+    одинаковый сгенерированный C. Windows-архив содержит сохранённый
+    <code>novac.exe</code> стадии B, не новую пересборку. Ступень 0.2 доказывает
+    самосборку, а не готовность широкой экосистемы пакетов: это критерий 0.3.
+    Linux-бинарника Carina в 0.2.0 нет: сборка Linux CI не является распиской
+    двойной сборки на Linux.</p>
+    <div class="download-grid">
+      <div class="download-card">
+        <h3>Windows x86_64</h3>
+        <p>Сохранённый <code>novac.exe</code> стадии B, интерфейсы стандартной
+        библиотеки и инструкция по настройке.</p>
+        <a class="btn btn-primary" href="https://github.com/nv-lang/nova/releases/download/carina-v0.2.0/nova-carina-0.2.0-windows-x86_64.zip">Скачать ZIP для Windows</a>
+      </div>
+      <div class="download-card">
+        <h3>Исходный архив</h3>
+        <p>Снимок исходников принятой ревизии 0.2.</p>
+        <a class="btn btn-outline" href="https://github.com/nv-lang/nova/releases/download/carina-v0.2.0/nova-carina-0.2.0-src.tar.gz">Скачать исходники</a>
+      </div>
+      <div class="download-card">
+        <h3>Расписка приёмки</h3>
+        <p>Принятая ревизия исходников, самосборка и CI на том же SHA.</p>
+        <a class="btn btn-outline" href="https://github.com/nv-lang/nova/releases/download/carina-v0.2.0/proof-and-accept-receipt.txt">Скачать расписку</a>
+      </div>
+    </div>
+    <p><a href="https://github.com/nv-lang/nova/releases/download/carina-v0.2.0/SHA256SUMS">SHA256SUMS</a>
+    · <a href="https://github.com/nv-lang/nova/releases/tag/carina-v0.2.0">Заметки о выпуске и ограничения</a></p>
+  </section>
+
+  <p style="color:var(--fg-muted);margin-top:3rem;">Проверяйте скачанные файлы
+  по SHA256SUMS своего выпуска. Docker-образ Oracle собран и проверен локально,
+  но не опубликован в контейнерном реестре.</p>
+</div>
+</main>
