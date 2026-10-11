@@ -10,7 +10,7 @@
 
   <div class="status-banner" style="margin-bottom:2.5rem;">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:.1rem"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-    <span><strong>Pre-alpha.</strong> Nova is in active development. The compiler builds and runs real programs, but the language is not yet API-stable. Expect rough edges.</span>
+    <span><strong>Alpha release.</strong> Nova Oracle 0.1.0 is available for Windows and Linux x86_64. Language features and APIs may change; compatibility and production readiness are not guaranteed. Start with Oracle; Carina 0.2.0 is a separate Windows-only self-hosting milestone.</span>
   </div>
 
   <!-- ── System requirements ──────────────────────────────────────────────── -->
@@ -18,46 +18,41 @@
   <div class="reqs-grid">
     <div class="req-card">
       <div class="req-card__label">Linux</div>
-      <div class="req-card__val">x86-64, kernel 4.15+<br>glibc 2.17+ or musl</div>
+      <div class="req-card__val">x86_64<br>C toolchain and Boehm GC development files</div>
     </div>
     <div class="req-card">
       <div class="req-card__label">macOS</div>
-      <div class="req-card__val">13 Ventura+<br>Apple Silicon or Intel</div>
+      <div class="req-card__val">No published or release-verified binary bundle</div>
     </div>
     <div class="req-card">
       <div class="req-card__label">Windows</div>
-      <div class="req-card__val">Windows 10 / 11<br>x86-64; MSVC 2022 toolchain</div>
+      <div class="req-card__val">x86_64<br>C toolchain, e.g. Visual Studio Build Tools</div>
     </div>
     <div class="req-card">
-      <div class="req-card__label">Build from source</div>
-      <div class="req-card__val">Rust 1.85+<br>Clang, MSVC, or GCC</div>
+      <div class="req-card__label">Binary bundles</div>
+      <div class="req-card__val">No Rust installation needed<br>A C compiler is still required</div>
     </div>
   </div>
 
-  <!-- ── OS tabs ───────────────────────────────────────────────────────────── -->
+  <!-- ── Released binary bundles ─────────────────────────────────────────── -->
   <h2 style="margin-bottom:1.25rem;">Installation</h2>
   <p style="color:var(--fg-muted);margin-bottom:1.5rem;">
-    Nova is pre-alpha — there are no pre-built packages yet. Build the compiler
-    from source; the steps below work the same on Linux, macOS, and Windows.
+    Download the Oracle bundle for your platform from the <a href="/release/#oracle-release">release page</a>.
+    Verify the archive against <code>SHA256SUMS</code> for that release, then unpack it.
+    The bundles include the CLI, <code>nova-lsp</code>, standard library and C runtime.
+    Follow the <code>README-INSTALL.md</code> inside your archive.
   </p>
 
-  <!-- Linux ──────────────────────────────────────────────────────────────── -->
-
-  <!-- macOS ──────────────────────────────────────────────────────────────── -->
-
-  <!-- Windows ────────────────────────────────────────────────────────────── -->
-
-  <!-- From source ─────────────────────────────────────────────────────────── -->
   <div>
-
     <div class="step">
       <div class="step__num">1</div>
       <div class="step__body">
-        <h3>Prerequisites</h3>
-        <p>Install a stable <a href="https://rustup.rs">Rust</a> toolchain (1.85+). To compile Nova programs you also need a C toolchain — Clang, MSVC, or GCC (auto-detected).</p>
-        <p>Nothing else to install: the runtime's C dependencies (libuv and the Boehm GC) ship as submodules and are built once, automatically, on your first <code>nova build</code>.</p>
+        <h3>Windows x86_64</h3>
+        <p>Unpack <code>nova-oracle-0.1.0-windows-x86_64.zip</code>. Install a C compiler, for example Visual Studio Build Tools with C++ support. Boehm GC libraries and headers are bundled.</p>
+        <p>In PowerShell, from the directory containing <code>nova.exe</code>, dot-source the setup script. The leading dot keeps the environment settings in this session:</p>
         <div class="copy-block">
-          <pre><code>rustup update stable</code></pre>
+          <pre><code>. .\setup-env.ps1
+nova --version</code></pre>
           <button class="copy-btn" onclick="copyCode(this)">Copy</button>
         </div>
       </div>
@@ -66,36 +61,42 @@
     <div class="step">
       <div class="step__num">2</div>
       <div class="step__body">
-        <h3>Clone and build</h3>
+        <h3>Linux x86_64</h3>
+        <p>Unpack <code>nova-oracle-0.1.0-linux-x86_64.tar.gz</code>. On Debian/Ubuntu, install the C toolchain and Boehm GC development files:</p>
         <div class="copy-block">
-          <pre><code>git clone --recursive https://github.com/nv-lang/nova
-cd nova/nova-cli
-cargo build --release</code></pre>
+          <pre><code>sudo apt-get install clang cmake make libgc-dev build-essential</code></pre>
           <button class="copy-btn" onclick="copyCode(this)">Copy</button>
         </div>
-        <p style="margin-top:.5rem;">The <code>--recursive</code> flag pulls in libuv, a git submodule the runtime needs. Already cloned without it? Run <code>git submodule update --init</code> inside the repo.</p>
-        <p style="margin-top:.5rem;">The CLI binary lands at <code>nova-cli/target/release/nova</code> (<code>nova.exe</code> on Windows). Add that directory to your PATH.</p>
+        <p style="margin-top:.75rem;">In Bash, from the root of the unpacked distribution:</p>
+        <div class="copy-block">
+          <pre><code>source ./setup-env.sh
+nova --version</code></pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
       </div>
     </div>
 
     <div class="step">
       <div class="step__num">3</div>
       <div class="step__body">
-        <h3>Run the test suite (optional)</h3>
-        <div class="copy-block">
-          <pre><code>cd ..
-nova-cli/target/release/nova test spec_tests/conformance</code></pre>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-        <p style="margin-top:.5rem;">Compiles and runs the language conformance suite through the compiler you just built. A full run takes tens of minutes — skipping it is fine; building the hello-world below is a quicker toolchain check.</p>
+        <h3>Source builds and Carina</h3>
+        <p>The <a href="/release/">release page</a> also provides source snapshots with submodules. For an Oracle source build, use the repository's <a href="https://github.com/nv-lang/nova/blob/main/docs/guide/linux-build.md">Linux build guide</a> and the platform prerequisites.</p>
+        <p>Carina 0.2.0 is the compiler written in Nova. Its published binary is Windows x86_64 only; the accepted milestone is self-compilation, not the full Oracle CLI or package ecosystem. Follow the separate archive's instructions.</p>
       </div>
     </div>
 
-  </div><!-- /tab-src -->
+  </div>
 
   <!-- ── First program ─────────────────────────────────────────────────────── -->
   <h2 style="margin-top:3.5rem;margin-bottom:1.25rem;">Your first Nova program</h2>
-  <p style="color:var(--fg-muted);margin-bottom:1.5rem;">Create a file called <code>hello.nv</code> in the root of the cloned repository — <code>nova build</code> looks upward for the workspace's <code>nova.toml</code>:</p>
+  <p style="color:var(--fg-muted);margin-bottom:1.5rem;">Create a separate project directory. Add <code>nova.toml</code> first: the compiler searches upward for this package manifest.</p>
+  <div class="copy-block" style="margin-bottom:1.5rem;">
+    <pre><code>[package]
+name = "hello"
+version = "0.1.0"</code></pre>
+    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+  </div>
+  <p style="color:var(--fg-muted);margin-bottom:1rem;">In the same directory, create <code>hello.nv</code>. Its module name matches the package name:</p>
 
   <div class="copy-block" style="margin-bottom:1.5rem;">
     <pre><code class="language-nova">module hello
@@ -106,9 +107,15 @@ fn main() {
     <button class="copy-btn" onclick="copyCode(this)">Copy</button>
   </div>
 
-  <p style="color:var(--fg-muted);margin-bottom:1rem;">Compile to a native binary, then run it:</p>
+  <p style="color:var(--fg-muted);margin-bottom:1rem;">From the project directory, in the session where you ran the setup script, build and run. Windows PowerShell:</p>
   <div class="copy-block" style="margin-bottom:1.5rem;">
-    <pre><code>nova build hello.nv -o hello
+    <pre><code>nova build hello.nv
+.\hello.exe</code></pre>
+    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+  </div>
+  <p style="color:var(--fg-muted);margin-bottom:1rem;">Linux Bash:</p>
+  <div class="copy-block" style="margin-bottom:1.5rem;">
+    <pre><code>nova build hello.nv
 ./hello</code></pre>
     <button class="copy-btn" onclick="copyCode(this)">Copy</button>
   </div>
@@ -149,16 +156,16 @@ fn main() {
     <div style="border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;">
       <div style="font-weight:600;margin-bottom:.35rem;">VS Code</div>
       <div style="font-size:.85rem;color:var(--fg-muted);margin-bottom:.6rem;">Syntax highlighting, basic language server.</div>
-      <a href="https://marketplace.visualstudio.com/items?itemName=nv-lang.nova-vscode" style="font-size:.83rem;color:var(--accent);">Install extension &rarr;</a>
+      <a href="https://github.com/nv-lang/nova/tree/main/editors/vscode" style="font-size:.83rem;color:var(--accent);">Extension source (not bundled) &rarr;</a>
     </div>
     <div style="border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;">
-      <div style="font-weight:600;margin-bottom:.35rem;">JetBrains IDEs</div>
-      <div style="font-size:.85rem;color:var(--fg-muted);margin-bottom:.6rem;">IntelliJ / CLion / Rider plugin. Syntax + structure view.</div>
-      <a href="https://plugins.jetbrains.com/plugin/nova-lang" style="font-size:.83rem;color:var(--accent);">Install plugin &rarr;</a>
+      <div style="font-weight:600;margin-bottom:.35rem;">Other editors</div>
+      <div style="font-size:.85rem;color:var(--fg-muted);margin-bottom:.6rem;">Syntax-highlighting grammars in the repository; no editor plugin is included in the release archives.</div>
+      <a href="https://github.com/nv-lang/nova/tree/main/editors" style="font-size:.83rem;color:var(--accent);">Editor sources &rarr;</a>
     </div>
     <div style="border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;">
       <div style="font-weight:600;margin-bottom:.35rem;">Vim / Neovim</div>
-      <div style="font-size:.85rem;color:var(--fg-muted);margin-bottom:.6rem;">Tree-sitter grammar and LSP config via Mason.</div>
+      <div style="font-size:.85rem;color:var(--fg-muted);margin-bottom:.6rem;">Separate Tree-sitter grammar project.</div>
       <a href="https://github.com/nv-lang/tree-sitter-nova" style="font-size:.83rem;color:var(--accent);">View on GitHub &rarr;</a>
     </div>
   </div>
@@ -219,7 +226,7 @@ fn main() {
       <ul>
         <li><a href="https://github.com/nv-lang/nova/tree/main/docs/plans">Roadmap</a></li>
         <li><a href="https://github.com/nv-lang/nova/blob/main/CONTRIBUTING.md">Contributing</a></li>
-        <li><a href="https://github.com/nv-lang/nova/blob/main/LICENSE">License (MIT)</a></li>
+        <li><a href="https://github.com/nv-lang/nova/blob/main/LICENSE">License (MIT OR Apache-2.0)</a></li>
       </ul>
     </div>
   </div>

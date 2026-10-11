@@ -18,3 +18,4 @@ node_modules/
 site/src/content/decisions/
 site/src/content/spec/
 site/src/content/docs/
+site/src/content/packages/

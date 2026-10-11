@@ -40,6 +40,18 @@ export const DOC_GUIDES_GENERATED: DocGuide[] = [
     }
   },
   {
+    "slug": "caller-location",
+    "github": "docs/guide/caller-location.md",
+    "title": {
+      "en": "Where was I called from? — `CallerLoc` and `caller_loc()`",
+      "ru": "Откуда меня позвали? — `CallerLoc` и `caller_loc()`"
+    },
+    "description": {
+      "en": "A diagnostic helper that reports itself is useless. Write a wrapper around panic, and every failure points at the wrapper's own line — the same line every time, telling you nothing about which of…",
+      "ru": "Помощник для диагностики, сообщающий о себе, бесполезен. Напишите обёртку над panic — и каждый отказ будет указывать на строку самой обёртки, одну и ту же всякий раз, не говоря ничего о том, какой…"
+    }
+  },
+  {
     "slug": "channels",
     "github": "docs/guide/channels.md",
     "title": {
@@ -92,7 +104,7 @@ export const DOC_GUIDES_GENERATED: DocGuide[] = [
     "github": "docs/guide/datetime.md",
     "title": {
       "en": "Civil (calendar) time in Nova — `std/time/civil`",
-      "ru": "Гражданское (календарное) время в Nova — `std/time/civil`"
+      "ru": "Календарное время в Nova — `std/time/civil`"
     },
     "description": {
       "en": "\"2026-07-10 14:30\" is NOT an instant: in Tokyo and New York it arrives at a different time. So Plain → Timestamp only through an explicit zone + a DST resolution policy, and it's fallible…",
@@ -205,6 +217,18 @@ export const DOC_GUIDES_GENERATED: DocGuide[] = [
     "description": {
       "en": "Function parameters are read-only by default. Want to mutate — write mut.",
       "ru": "Параметры функций — read-only по умолчанию.  Хочешь менять — пиши mut."
+    }
+  },
+  {
+    "slug": "process-streams",
+    "github": "docs/guide/process-streams.md",
+    "title": {
+      "en": "Child-process streams (`std.os`)",
+      "ru": "Потоки дочернего процесса (`std.os`)"
+    },
+    "description": {
+      "en": "Command.run() (D453) starts a program, waits and gives you the exit code — nothing else. Command.start() (Plan 294, [D492](../../spec/decisions/04-effects.md#d492)) gives you a live child and byte…",
+      "ru": "Command.run() (D453) запускает программу, ждёт и отдаёт код выхода — больше ничего. Command.start() (план 294, [D492](../../spec/decisions/04-effects.md#d492)) отдаёт живой дескриптор процесса и…"
     }
   },
   {

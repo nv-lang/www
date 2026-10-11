@@ -10,7 +10,7 @@
 
   <div class="status-banner" style="margin-bottom:2.5rem;">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:.1rem"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-    <span><strong>Pre-alpha.</strong> Nova находится в активной разработке. Компилятор собирает и запускает реальные программы, но язык ещё не стабилизирован по API. Ожидайте шероховатостей.</span>
+    <span><strong>Альфа-релиз.</strong> Nova Oracle 0.1.0 доступен для Windows и Linux x86_64. Язык и API могут меняться; совместимость и готовность к production не гарантируются. Начните с Oracle; Carina 0.2.0 — отдельная ступень самосборки, пока только с Windows-бинарником.</span>
   </div>
 
   <!-- ── Системные требования ──────────────────────────────────────────────── -->
@@ -18,46 +18,41 @@
   <div class="reqs-grid">
     <div class="req-card">
       <div class="req-card__label">Linux</div>
-      <div class="req-card__val">x86-64, ядро 4.15+<br>glibc 2.17+ или musl</div>
+      <div class="req-card__val">x86_64<br>C-тулчейн и заголовки Boehm GC</div>
     </div>
     <div class="req-card">
       <div class="req-card__label">macOS</div>
-      <div class="req-card__val">13 Ventura+<br>Apple Silicon или Intel</div>
+      <div class="req-card__val">Нет опубликованного бинарного архива или подтверждённой релизной приёмки</div>
     </div>
     <div class="req-card">
       <div class="req-card__label">Windows</div>
-      <div class="req-card__val">Windows 10 / 11<br>x86-64; тулчейн MSVC 2022</div>
+      <div class="req-card__val">x86_64<br>C-тулчейн, например Visual Studio Build Tools</div>
     </div>
     <div class="req-card">
-      <div class="req-card__label">Сборка из исходников</div>
-      <div class="req-card__val">Rust 1.85+<br>Clang, MSVC или GCC</div>
+      <div class="req-card__label">Бинарные архивы</div>
+      <div class="req-card__val">Rust устанавливать не нужно<br>C-компилятор всё ещё нужен</div>
     </div>
   </div>
 
-  <!-- ── Вкладки ОС ──────────────────────────────────────────────────────────── -->
+  <!-- ── Опубликованные бинарные архивы ───────────────────────────────────── -->
   <h2 style="margin-bottom:1.25rem;">Установка</h2>
   <p style="color:var(--fg-muted);margin-bottom:1.5rem;">
-    Nova — pre-alpha, готовых пакетов пока нет. Соберите компилятор из исходников;
-    шаги ниже одинаковы для Linux, macOS и Windows.
+    Скачайте архив Oracle для своей платформы со <a href="/ru/release/#oracle-release">страницы релизов</a>.
+    Проверьте его по <code>SHA256SUMS</code> того же выпуска и распакуйте.
+    В архив входят CLI, <code>nova-lsp</code>, стандартная библиотека и C-рантайм.
+    Следуйте <code>README-INSTALL.md</code> внутри своего архива.
   </p>
 
-  <!-- Linux ──────────────────────────────────────────────────────────────────── -->
-
-  <!-- macOS ──────────────────────────────────────────────────────────────────── -->
-
-  <!-- Windows ──────────────────────────────────────────────────────────────── -->
-
-  <!-- Из исходников ──────────────────────────────────────────────────────────── -->
   <div>
-
     <div class="step">
       <div class="step__num">1</div>
       <div class="step__body">
-        <h3>Предварительные требования</h3>
-        <p>Установите стабильный <a href="https://rustup.rs">Rust</a> (1.85+). Для компиляции программ на Nova также нужен C-тулчейн — Clang, MSVC или GCC (определяется автоматически).</p>
-        <p>Больше ничего ставить не нужно: C-зависимости рантайма (libuv и сборщик мусора Boehm) поставляются сабмодулями и собираются один раз автоматически при первом <code>nova build</code>.</p>
+        <h3>Windows x86_64</h3>
+        <p>Распакуйте <code>nova-oracle-0.1.0-windows-x86_64.zip</code>. Нужен C-компилятор, например Visual Studio Build Tools с поддержкой C++. Библиотека Boehm GC и её заголовки входят в архив.</p>
+        <p>В PowerShell из каталога с <code>nova.exe</code> подключите скрипт через точку. Начальная точка сохраняет настройки окружения в текущей сессии:</p>
         <div class="copy-block">
-          <pre><code>rustup update stable</code></pre>
+          <pre><code>. .\setup-env.ps1
+nova --version</code></pre>
           <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
         </div>
       </div>
@@ -66,36 +61,42 @@
     <div class="step">
       <div class="step__num">2</div>
       <div class="step__body">
-        <h3>Клонировать и собрать</h3>
+        <h3>Linux x86_64</h3>
+        <p>Распакуйте <code>nova-oracle-0.1.0-linux-x86_64.tar.gz</code>. Для Debian/Ubuntu установите C-тулчейн и заголовки Boehm GC:</p>
         <div class="copy-block">
-          <pre><code>git clone --recursive https://github.com/nv-lang/nova
-cd nova/nova-cli
-cargo build --release</code></pre>
+          <pre><code>sudo apt-get install clang cmake make libgc-dev build-essential</code></pre>
           <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
         </div>
-        <p style="margin-top:.5rem;">Флаг <code>--recursive</code> подтягивает libuv — git-сабмодуль, нужный рантайму. Уже склонировали без него? Выполните <code>git submodule update --init</code> внутри репозитория.</p>
-        <p style="margin-top:.5rem;">Бинарник CLI будет в <code>nova-cli/target/release/nova</code> (<code>nova.exe</code> на Windows). Добавьте этот каталог в PATH.</p>
+        <p style="margin-top:.75rem;">В Bash из корня распакованного дистрибутива:</p>
+        <div class="copy-block">
+          <pre><code>source ./setup-env.sh
+nova --version</code></pre>
+          <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+        </div>
       </div>
     </div>
 
     <div class="step">
       <div class="step__num">3</div>
       <div class="step__body">
-        <h3>Запустить тесты (опционально)</h3>
-        <div class="copy-block">
-          <pre><code>cd ..
-nova-cli/target/release/nova test spec_tests/conformance</code></pre>
-          <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
-        </div>
-        <p style="margin-top:.5rem;">Компилирует и прогоняет конформанс-набор языка через только что собранный компилятор. Полный прогон занимает десятки минут — его можно пропустить; быстрее проверить тулчейн сборкой hello-world ниже.</p>
+        <h3>Исходники и Carina</h3>
+        <p>На <a href="/ru/release/">странице релизов</a> есть также снимки исходников с субмодулями. Для сборки Oracle из исходников используйте <a href="https://github.com/nv-lang/nova/blob/main/docs/guide/linux-build.md">инструкцию сборки на Linux</a> и требования вашей платформы.</p>
+        <p>Carina 0.2.0 — компилятор, написанный на Nova. Его опубликованный бинарник — только для Windows x86_64; принятая ступень доказывает самосборку, а не готовность всей Oracle CLI или экосистемы пакетов. Инструкция для Carina находится в её отдельном архиве.</p>
       </div>
     </div>
 
-  </div><!-- /tab-src -->
+  </div>
 
   <!-- ── Первая программа ──────────────────────────────────────────────────── -->
   <h2 style="margin-top:3.5rem;margin-bottom:1.25rem;">Первая программа на Nova</h2>
-  <p style="color:var(--fg-muted);margin-bottom:1.5rem;">Создайте файл <code>hello.nv</code> в корне клонированного репозитория — <code>nova build</code> ищет <code>nova.toml</code> workspace вверх по дереву каталогов:</p>
+  <p style="color:var(--fg-muted);margin-bottom:1.5rem;">Создайте отдельную папку проекта. Сначала добавьте <code>nova.toml</code>: компилятор ищет этот манифест пакета вверх по дереву каталогов.</p>
+  <div class="copy-block" style="margin-bottom:1.5rem;">
+    <pre><code>[package]
+name = "hello"
+version = "0.1.0"</code></pre>
+    <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+  </div>
+  <p style="color:var(--fg-muted);margin-bottom:1rem;">В той же папке создайте <code>hello.nv</code>. Имя модуля соответствует имени пакета:</p>
 
   <div class="copy-block" style="margin-bottom:1.5rem;">
     <pre><code class="language-nova">module hello
@@ -106,9 +107,16 @@ fn main() {
     <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
   </div>
 
-  <p style="color:var(--fg-muted);margin-bottom:1rem;">Скомпилируйте в native binary и запустите его:</p>
+  <p style="color:var(--fg-muted);margin-bottom:1rem;">Из папки проекта, в сессии после подключения setup-скрипта, соберите и запустите программу. PowerShell на Windows:</p>
   <div class="copy-block" style="margin-bottom:1.5rem;">
-    <pre><code>nova build hello.nv -o hello
+    <pre><code>nova build hello.nv
+.\hello.exe</code></pre>
+    <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+  </div>
+
+  <p style="color:var(--fg-muted);margin-bottom:1rem;">Bash на Linux:</p>
+  <div class="copy-block" style="margin-bottom:1.5rem;">
+    <pre><code>nova build hello.nv
 ./hello</code></pre>
     <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
   </div>
@@ -149,16 +157,16 @@ fn main() {
     <div style="border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;">
       <div style="font-weight:600;margin-bottom:.35rem;">VS Code</div>
       <div style="font-size:.85rem;color:var(--fg-muted);margin-bottom:.6rem;">Подсветка синтаксиса, базовый языковой сервер.</div>
-      <a href="https://marketplace.visualstudio.com/items?itemName=nv-lang.nova-vscode" style="font-size:.83rem;color:var(--accent);">Установить расширение &rarr;</a>
+      <a href="https://github.com/nv-lang/nova/tree/main/editors/vscode" style="font-size:.83rem;color:var(--accent);">Исходники расширения (не входит в архив) &rarr;</a>
     </div>
     <div style="border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;">
-      <div style="font-weight:600;margin-bottom:.35rem;">JetBrains IDEs</div>
-      <div style="font-size:.85rem;color:var(--fg-muted);margin-bottom:.6rem;">Плагин для IntelliJ / CLion / Rider. Синтаксис + структурный просмотр.</div>
-      <a href="https://plugins.jetbrains.com/plugin/nova-lang" style="font-size:.83rem;color:var(--accent);">Установить плагин &rarr;</a>
+      <div style="font-weight:600;margin-bottom:.35rem;">Другие редакторы</div>
+      <div style="font-size:.85rem;color:var(--fg-muted);margin-bottom:.6rem;">Грамматики подсветки в репозитории; плагины редакторов в релизные архивы не входят.</div>
+      <a href="https://github.com/nv-lang/nova/tree/main/editors" style="font-size:.83rem;color:var(--accent);">Исходники для редакторов &rarr;</a>
     </div>
     <div style="border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;">
       <div style="font-weight:600;margin-bottom:.35rem;">Vim / Neovim</div>
-      <div style="font-size:.85rem;color:var(--fg-muted);margin-bottom:.6rem;">Грамматика Tree-sitter и конфигурация LSP через Mason.</div>
+      <div style="font-size:.85rem;color:var(--fg-muted);margin-bottom:.6rem;">Отдельный проект грамматики Tree-sitter.</div>
       <a href="https://github.com/nv-lang/tree-sitter-nova" style="font-size:.83rem;color:var(--accent);">Смотреть на GitHub &rarr;</a>
     </div>
   </div>

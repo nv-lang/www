@@ -89,18 +89,22 @@
       <p>Nova нацелена на область, где нужен контроль системного уровня (предсказуемая производительность, явное управление ресурсами), но также желательны гарантии безопасности, которые обеспечивает современная теория типов. Это не исследовательский язык — он компилируется в нативный код и предназначен для создания реального программного обеспечения.</p>
 
       <h2 id="installation">Установка</h2>
-      <p>Nova — pre-alpha, CLI <code>nova</code> собирается из исходников (стабильный Rust 1.85+; для компиляции программ нужен C-тулчейн — Clang, MSVC или GCC):</p>
+      <p>Начните с <a href="/ru/release/#oracle-release">альфа-архива Oracle 0.1.0</a> для Windows или Linux x86_64. В него входят CLI, языковой сервер, стандартная библиотека и рантайм; системный C-компилятор всё ещё нужен. Следуйте <a href="/ru/install/">инструкции настройки</a>. Сборка Oracle из исходников остаётся альтернативой:</p>
 
-      <pre><code>git clone https://github.com/nv-lang/nova
+      <pre><code>git clone --recursive https://github.com/nv-lang/nova
 cd nova/nova-cli
 cargo build --release</code></pre>
 
       <p>CLI <code>nova</code> будет в <code>nova-cli/target/release/nova</code>; добавьте его в <code>PATH</code>. Подробные шаги — на <a href="/ru/install/">странице установки</a>.</p>
 
-      <h2 id="hello-world">Hello, World</h2>
-      <p>Создайте файл <code>hello.nv</code>:</p>
+      <p><strong>Платформы бинарных выпусков:</strong> Oracle — Windows и Linux x86_64; Carina 0.2.0 — только Windows x86_64. Для macOS и ARM64 нет опубликованного бинарного архива или подтверждённой релизной приёмки.</p>
 
-      <pre><code class="language-nova">fn main() {
+      <h2 id="hello-world">Hello, World</h2>
+      <p>В отдельной папке проекта создайте <code>nova.toml</code> с <code>[package]</code>, <code>name = "hello"</code> и <code>version = "0.1.0"</code>, затем <code>hello.nv</code>:</p>
+
+      <pre><code class="language-nova">module hello
+
+fn main() {
     println("Hello, World!")
 }</code></pre>
 
@@ -108,6 +112,7 @@ cargo build --release</code></pre>
 
       <pre><code>nova build hello.nv
 ./hello</code></pre>
+      <p>В PowerShell на Windows запускайте <code>.\hello.exe</code>. Используйте сессию, где был подключён setup-скрипт дистрибутива.</p>
 
       <p>Точка входа программы — <code>fn main()</code>; <code>println</code> выводит строку в стандартный вывод.</p>
 

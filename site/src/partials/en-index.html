@@ -4,9 +4,9 @@
 <section style="background:var(--hero-bg);border-bottom:1px solid var(--border);overflow:clip;">
   <div class="hero-split">
     <div class="hero-split__text">
-      <span class="badge">Bootstrap · pre-alpha</span>
+      <span class="badge">Oracle 0.1.0 · Carina 0.2.0 · alpha</span>
       <h1>A language that<br>says what it means</h1>
-      <p>Nova is a general-purpose systems language built around <strong>algebraic effects</strong>, <strong>static contracts</strong>, and an <strong>M:N concurrency runtime</strong>. Every side effect is declared. Every invariant is verified.</p>
+      <p>Nova is a general-purpose systems language built around <strong>algebraic effects</strong>, <strong>static contracts</strong>, and an <strong>M:N concurrency runtime</strong>. Side effects are visible in types; optional contracts are checked where the compiler can prove them.</p>
       <div class="hero-split__actions">
         <a href="/install/" class="btn btn-primary">Get started</a>
         <a href="/spec/syntax/" class="btn btn-outline">Syntax</a>
@@ -44,7 +44,7 @@ fn fetch_user(id int) Db Log -> Result[User, NotFound]
   <div style="max-width:1100px;margin-inline:auto;">
     <div class="status-banner">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:.1rem"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <span><strong>Bootstrap stage.</strong> Nova is in active early development — the compiler runs, the standard library is partial, and breaking changes happen regularly. Not ready for production use. On the horizon — <strong>Carina</strong>: the Nova compiler written in Nova itself, built in parallel, aiming at <strong>Nova Carina 1.0</strong> — the first release where <code>nova</code> is built by Nova.</span>
+      <span><strong>Two alpha releases.</strong> <a href="/release/#oracle-release">Oracle 0.1.0</a> ships the Rust-based compiler, CLI and standard library for Windows and Linux x86_64. <a href="/release/#carina-release">Carina 0.2.0</a>, written in Nova, has reached verified self-compilation on Windows x86_64; wider package compatibility is a later milestone. APIs may change; neither release is production-ready.</span>
     </div>
   </div>
 </div>
@@ -69,7 +69,7 @@ fn fetch_user(id int) Db Log -> Result[User, NotFound]
         <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
       </div>
       <h3>Static Contracts</h3>
-      <p><code>requires</code>, <code>ensures</code>, and <code>invariant</code> clauses are checked by an SMT solver at compile time. Proven contracts are erased at zero cost; unproven ones remain fail-fast runtime checks — in release builds too.</p>
+      <p><code>requires</code>, <code>ensures</code>, and <code>invariant</code> express optional contracts. Oracle's default verifier handles trivial cases; richer proofs require the optional Z3 backend. Unproven conditions use runtime checks in supported modes; these checks are stripped in release builds.</p>
     </div>
 
     <div class="feature-card">
@@ -119,7 +119,7 @@ fn fetch_user(id int) Db Log -> Result[User, NotFound]
         <div class="ai-pitch__dot" style="--dot:#f472b6;"></div>
         <div>
           <strong>Static contracts</strong>
-          <p>Contracts are optional — add <code>requires</code> and <code>ensures</code> where you need them. The compiler proves them statically when it can; what it can't prove becomes a runtime check.</p>
+          <p>Contracts are optional — add <code>requires</code> and <code>ensures</code> where you need them. Oracle proves what its selected backend can handle; runtime fallback checks are stripped in release builds.</p>
         </div>
       </div>
 
@@ -157,13 +157,10 @@ fn main() Net Time Detach -> () {
 <!-- ── Install ────────────────────────────────────────────────────────────── -->
 <section class="install">
   <h2>Try Nova</h2>
-  <p>Nova is pre-alpha — build the compiler from source. Full steps on the <a href="/install/">install page</a>.</p>
-  <div class="install-cmd">
-    <span class="install-cmd__prefix">$</span>
-    <code>git clone https://github.com/nv-lang/nova &amp;&amp; cd nova/nova-cli &amp;&amp; cargo build --release</code>
-  </div>
+  <p>Start with an Oracle 0.1.0 alpha binary bundle for Windows or Linux x86_64. A system C compiler is required; you do not need to build the Rust compiler first.</p>
+  <a href="/release/" class="btn btn-primary">Download Oracle and view Carina</a>
   <p style="margin-top:1.25rem;font-size:.88rem;color:var(--fg-subtle);">
-    Builds the <code>nova</code> CLI &middot; <a href="/install/">prerequisites &amp; first program</a>
+    <a href="/install/">Setup instructions &amp; first program</a> &middot; Verify downloads with the release's <code>SHA256SUMS</code>
   </p>
 </section>
 
