@@ -49,7 +49,7 @@ const dateText = sourceDate ? fmtDate(sourceDate) : '';
 <div class="page-meta">
   <div class="page-meta__links">
     {href && <a href={href}>{label} &#8599;</a>}
-    <a href={feedbackUrl(pagePath)}>
+    <a href={feedbackUrl(pagePath, lang)}>
       {ru ? 'Сообщить о проблеме' : 'Report a problem'} &#8599;
     </a>
   </div>

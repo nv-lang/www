@@ -22,13 +22,20 @@ export const FEEDBACK = {
 // Публичный origin сайта — для заголовка/тела обратной связи.
 export const SITE_ORIGIN = 'https://nv-lang.org';
 
+const PRIVATE_REPORT_URL = 'https://github.com/nv-lang/nova/security/advisories/new';
+const SECURITY_WARNING = {
+  en: `Security issue? Don't post it here, use the private report: ${PRIVATE_REPORT_URL}`,
+  ru: `Уязвимость? Не пишите здесь, откройте приватный отчёт: ${PRIVATE_REPORT_URL}`,
+};
+
 // Ссылка обратной связи: заголовок = домен + путь страницы (читабельно в
-// списке задач), тело — предзаполнено полным URL.
-export function feedbackUrl(pagePath: string): string {
+// списке задач), тело сначала отводит уязвимости в приватный канал,
+// затем указывает полный URL страницы.
+export function feedbackUrl(pagePath: string, lang: 'en' | 'ru'): string {
   const q = new URLSearchParams();
   if (FEEDBACK.base.endsWith('/discussions/new'))
     q.set('category', FEEDBACK.category);
   q.set('title', `nv-lang.org${pagePath}`);
-  q.set('body', `Page: ${SITE_ORIGIN}${pagePath}\n\n`);
+  q.set('body', `${SECURITY_WARNING[lang]}\nPage: ${SITE_ORIGIN}${pagePath}\n\n`);
   return `${FEEDBACK.base}?${q.toString()}`;
 }
