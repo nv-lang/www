@@ -1165,6 +1165,7 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
   border-radius: 6px; font-size: 0.78rem; color: var(--accent);
 }
 .prose { line-height: 1.7; }
+.prose .post-cover { width: 100%; aspect-ratio: 780 / 440; margin: 0 0 2rem; border-radius: 10px; }
 .prose blockquote {
   margin: 1.5rem 0; padding: 0.9rem 1.15rem;
   border-left: 4px solid var(--accent); border-radius: 0 6px 6px 0;

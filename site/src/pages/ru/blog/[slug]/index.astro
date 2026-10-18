@@ -19,7 +19,7 @@ export async function getStaticPaths() {
 const { post, slug } = Astro.props;
 const { Content } = await render(post);
 const d = post.data;
-const [kind, ...topics] = d.tags;
+const [, ...topics] = d.tags;
 const mins = d.readingMinutes ?? readingMinutes(post.body);
 const ruUrl = `/ru/blog/${slug}/`;
 const enUrl = `/blog/${slug}/`;
@@ -60,8 +60,8 @@ const enUrl = `/blog/${slug}/`;
             <span class="post-stats__time">{mins} мин</span>
             {topics.length > 0 && <span class="post-stats__topics">{topics.join(', ')}</span>}
           </div>
-          {kind && <span class="post-kind">{kind}</span>}
         </header>
+        {d.cover && <img class="post-cover" src={d.cover} alt="" width="780" height="440" />}
 
         <Content />
       </article>
