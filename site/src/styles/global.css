@@ -1147,6 +1147,36 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
   font-weight: 600;
 }
 
+/* ── Шапка поста и оформление текста (по образцу Хабра) ──────────────── */
+.post-head { margin-bottom: 2rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border-soft); }
+.post-byline { display: flex; align-items: center; gap: 0.55rem; font-size: 0.88rem; margin-bottom: 0.9rem; }
+.prose .post-avatar {
+  display: inline-block; margin: 0; width: 24px; height: 24px;
+  border-radius: 6px; background: #1a1530; padding: 3px;
+}
+.post-byline__author { font-weight: 600; color: var(--fg); }
+.post-byline__date { color: var(--fg-subtle); }
+.prose .post-title { font-size: clamp(1.75rem, 4vw, 2.3rem); line-height: 1.2; margin: 0 0 0.85rem; }
+.post-stats { display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem; font-size: 0.85rem; color: var(--fg-muted); margin-bottom: 0.8rem; }
+.post-stats__time { font-weight: 600; }
+.post-stats__topics { color: var(--fg-muted); }
+.post-kind {
+  display: inline-block; padding: 0.15rem 0.6rem; border: 1px solid var(--accent);
+  border-radius: 6px; font-size: 0.78rem; color: var(--accent);
+}
+.prose { line-height: 1.7; }
+.prose blockquote {
+  margin: 1.5rem 0; padding: 0.9rem 1.15rem;
+  border-left: 4px solid var(--accent); border-radius: 0 6px 6px 0;
+  background: var(--bg-alt);
+}
+.prose blockquote p:last-child { margin-bottom: 0; }
+/* подпись под картинкой: абзац из одного курсива сразу после картинки */
+.prose p:has(> img) + p > em:only-child {
+  display: block; margin-top: -0.6rem; text-align: center;
+  font-size: 0.85rem; color: var(--fg-muted);
+}
+
 /* ── Page header (non-hero pages) ────────────────────────────────────────── */
 .page-header {
   background: var(--bg-alt);
