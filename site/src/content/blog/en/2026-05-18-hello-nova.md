@@ -6,6 +6,7 @@ date: "2026-05-18"
 dateLabel: "May 18, 2026"
 lang: "en"
 tags: ["Announcement", "Language"]
+cover: "/blog/2026-05-18-hello-nova/cover.png"
 excerpt: "Introducing Nova — what it is, why I am building it, and what works today: algebraic effects, static contracts, M:N runtime, and documentation tooling. A look at the bootstrap stage and the road ahead."
 ---
 
