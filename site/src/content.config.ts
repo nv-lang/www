@@ -60,6 +60,8 @@ const blog = defineCollection({
     // если пост репостится (dev.to), там указывается этот canonical.
     canonical: z.string().optional(),
     // Для постов-анонсов: ссылка на полный текст (например, на Хабре).
+    // Обложка для списка постов (780x440 или 2x), путь от корня сайта.
+    cover: z.string().optional(),
     externalUrl: z.string().optional(),
     externalLabel: z.string().optional(),
   }),

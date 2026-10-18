@@ -1121,6 +1121,8 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
 .prose ul, .prose ol { padding-left: 1.5rem; margin-bottom: 1rem; }
 .prose li { margin-bottom: 0.4rem; }
 .prose pre { margin: 1.25rem 0; }
+.prose img { display: block; max-width: 100%; height: auto; margin: 1.25rem auto; border-radius: 6px; }
+.prose table { display: block; max-width: 100%; overflow-x: auto; }
 
 .post-meta {
   display: flex;
@@ -1175,6 +1177,16 @@ pre.nova-block .tok-ident   { color: #9cdcfe; }                    /* light blue
   padding: 1.75rem 0;
 }
 .blog-list__item:last-child { border-bottom: none; }
+
+.blog-list__cover { display: block; margin-bottom: 1rem; }
+.blog-list__cover img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 780 / 440;
+  border-radius: 10px;
+  border: 1px solid var(--border-soft);
+}
 
 .blog-list__date {
   font-size: 0.83rem;
