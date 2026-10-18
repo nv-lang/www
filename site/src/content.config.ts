@@ -62,6 +62,9 @@ const blog = defineCollection({
     // Для постов-анонсов: ссылка на полный текст (например, на Хабре).
     // Обложка для списка постов (780x440 или 2x), путь от корня сайта.
     cover: z.string().optional(),
+    // Время чтения в минутах, если пост — анонс статьи, опубликованной
+    // в другом месте: считается по полному тексту (см. CLAUDE.md, «Блог»).
+    readingMinutes: z.number().int().positive().optional(),
     externalUrl: z.string().optional(),
     externalLabel: z.string().optional(),
   }),

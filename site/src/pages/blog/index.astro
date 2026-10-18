@@ -42,7 +42,7 @@ const meta = {
         {posts.map((post) => {
           const url = `/blog/${post.data.slug}/`;
           const [kind, ...topics] = post.data.tags;
-          const mins = readingMinutes(post.body);
+          const mins = post.data.readingMinutes ?? readingMinutes(post.body);
           return (
             <li class="blog-card">
               <div class="blog-card__head">
