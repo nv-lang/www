@@ -6,7 +6,7 @@ date: "2026-10-16"
 dateLabel: "October 16, 2026"
 lang: "en"
 tags: ["Article", "AI agents", "Compiler"]
-cover: "/blog/2026-10-16-ai-compiler-self-build/cover.png"
+cover: "/blog/2026-10-16-ai-compiler-self-build/cover-en.png"
 excerpt: "Nova's first compiler, Oracle in Rust, hit a dead end: for a month the agents and I \"fixed\" type inference, the reports were green, and the work stood still. The second, Carina, was written from scratch in Nova itself and built itself, byte for byte. How it went, step by step, and seven techniques for checking agents' work."
 ---
 

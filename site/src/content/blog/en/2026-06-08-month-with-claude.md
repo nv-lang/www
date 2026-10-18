@@ -6,7 +6,7 @@ date: "2026-06-08"
 dateLabel: "June 8, 2026"
 lang: "en"
 tags: ["Case study", "AI agents"]
-cover: "/blog/2026-06-08-month-with-claude/cover.png"
+cover: "/blog/2026-06-08-month-with-claude/cover-en.png"
 excerpt: "A month building Nova with autonomous AI agents: around 300 engineering plans closed, almost 2000 tests passing. Four categories of failure that show up regularly, and the discipline that catches them."
 canonical: "https://nv-lang.org/blog/2026-06-08-month-with-claude/"
 ---
