@@ -3,7 +3,7 @@
     <span class="version-badge">Alpha pre-releases</span>
     <h1>Nova releases</h1>
     <p>Nova Oracle 0.1.0 is the Rust-based compiler distribution. Nova Carina
-    0.2.0 is the accepted self-hosting milestone, built with Nova itself.
+    0.2.1 is the published Windows x86_64 alpha of the self-hosted compiler.
     Both are early alpha releases: APIs and language features may change, and
     compatibility is not guaranteed.</p>
   </div>
@@ -40,6 +40,49 @@
     </div>
     <p><a href="https://github.com/nv-lang/nova/releases/download/oracle-v0.1.0/SHA256SUMS">SHA256SUMS</a>
     · <a href="https://github.com/nv-lang/nova/releases/tag/oracle-v0.1.0">Release notes and limitations</a></p>
+  </section>
+
+  <section aria-labelledby="carina-0-2-1-release" style="margin-top:3.5rem;">
+    <h2 id="carina-0-2-1-release">Nova Carina 0.2.1 (alpha)</h2>
+    <p>Carina is the compiler written in Nova. This Windows x86_64 alpha was
+    built from source revision <code>3729abcce</code>: the published Oracle 0.1.0
+    first built stage A, stage A emitted C, and Clang compiled that C into the
+    released stage-B1 executable. For this source, B1 and the newly pinned
+    seed reach the same C-level fixed point: 13,250,302 bytes, SHA-256
+    (<code>25c5404f1e8e175652f19c9ca6cb03d29de82cee70a7cd9f4258c6724115c8a0</code>).
+    The required CI gate still uses Oracle; migration away from Oracle is in
+    progress. This C-level result does not claim Oracle-free bootstrap or
+    native executable equality with a stage B2, Linux
+    support, or package-ecosystem readiness (planned for 0.3). Building Nova
+    programs still requires an external C toolchain. Historical Boehm GC
+    headers and Oracle/run-2 libraries are documented in the linked receipt
+    and release notes. The linked <code>release-notes.md</code> is a snapshot
+    from before this verification; see the current release body for the update.</p>
+    <p><strong>Why 0.2.1?</strong> 0.2.0 established a fixed point for an earlier accepted source revision. 0.2.1 pins a new seed to revision 3729abcce and verifies its C-level fixed point on that source; the older seed's separate successful emit does not establish the same fixed point.</p>
+    <div class="download-grid">
+      <div class="download-card">
+        <h3>Windows x86_64</h3>
+        <p>Released stage-B1 <code>novac.exe</code> alpha bundle.</p>
+        <a class="btn btn-primary" href="https://github.com/nv-lang/nova/releases/download/carina-v0.2.1/nova-carina-0.2.1-windows-x86_64.zip">Download Windows ZIP</a>
+        <p>SHA-256: <code>7e8264fd7b72d4005ca9bde585a6a732d3e7d6c248b65fd5787cd4a766e69cdb</code></p>
+      </div>
+      <div class="download-card">
+        <h3>Source archive</h3>
+        <p>Source snapshot for revision <code>3729abcce</code>.</p>
+        <a class="btn btn-outline" href="https://github.com/nv-lang/nova/releases/download/carina-v0.2.1/nova-carina-0.2.1-src.tar.gz">Download source</a>
+        <p>SHA-256: <code>716b58090af840326a2cdf3440590d7295015e5e6e9c07f75d7776bec7e0db67</code></p>
+      </div>
+      <div class="download-card">
+        <h3>Release evidence</h3>
+        <p>Checksums, bootstrap receipt and seed descriptor.</p>
+        <a class="btn btn-outline" href="https://github.com/nv-lang/nova/releases/download/carina-v0.2.1/SHA256SUMS">SHA256SUMS</a>
+        <p>SHA-256: <code>66ed06aba924491bfe8b292d392d9aebf27b0971a8f2a9a7ebf884b7ffa555d0</code></p>
+        <p><a href="https://github.com/nv-lang/nova/releases/download/carina-v0.2.1/bootstrap-alpha-receipt.json">Bootstrap alpha receipt</a>
+        · <a href="https://github.com/nv-lang/nova/releases/download/carina-v0.2.1/seed-descriptor.json">Seed descriptor</a></p>
+      </div>
+    </div>
+    <p><a href="https://github.com/nv-lang/nova/releases/download/carina-v0.2.1/release-notes.md">Pre-verification release-notes.md snapshot</a>
+    · <a href="https://github.com/nv-lang/nova/releases/tag/carina-v0.2.1">Release body and current limitations</a></p>
   </section>
 
   <section aria-labelledby="carina-release" style="margin-top:3.5rem;">

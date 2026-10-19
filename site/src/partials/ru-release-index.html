@@ -2,8 +2,8 @@
   <div class="container--narrow">
     <span class="version-badge">Альфа-версии</span>
     <h1>Релизы Nova</h1>
-    <p>Nova Oracle 0.1.0 — дистрибутив компилятора на Rust. Nova Carina 0.2.0 —
-    принятая ступень самосборки компилятора, написанного на Nova. Оба выпуска
+    <p>Nova Oracle 0.1.0 — дистрибутив компилятора на Rust. Nova Carina 0.2.1 —
+    опубликованная альфа самосборочного компилятора для Windows x86_64. Оба выпуска
     ранние: язык и API могут меняться, совместимость не гарантируется.</p>
   </div>
 </div>
@@ -41,6 +41,50 @@
     </div>
     <p><a href="https://github.com/nv-lang/nova/releases/download/oracle-v0.1.0/SHA256SUMS">SHA256SUMS</a>
     · <a href="https://github.com/nv-lang/nova/releases/tag/oracle-v0.1.0">Заметки о выпуске и ограничения</a></p>
+  </section>
+
+  <section aria-labelledby="carina-0-2-1-release" style="margin-top:3.5rem;">
+    <h2 id="carina-0-2-1-release">Nova Carina 0.2.1 (alpha)</h2>
+    <p>Carina — компилятор, написанный на Nova. Эта альфа для Windows x86_64
+    собрана из исходников ревизии <code>3729abcce</code>: опубликованный Oracle
+    0.1.0 сначала собрал стадию A, та выпустила C-код, а Clang собрал из него
+    опубликованный исполняемый файл стадии B1. Для этой ревизии B1 и новый
+    закреплённый seed достигают одной неподвижной точки на уровне C:
+    13 250 302 байта,
+    SHA-256 <code>25c5404f1e8e175652f19c9ca6cb03d29de82cee70a7cd9f4258c6724115c8a0</code>.
+    Обязательный CI-гейт пока использует Oracle; отвязка от него ещё идёт.
+    Этот результат на уровне C не означает Oracle-free bootstrap,
+    побайтового совпадения нативного исполняемого файла со стадией B2,
+    поддержки Linux или готовности экосистемы пакетов (планируется для 0.3).
+    Для сборки программ Nova по-прежнему нужен внешний C-компилятор.
+    Происхождение исторических заголовков Boehm GC и библиотек Oracle/run-2
+    описано в расписке и заметках о выпуске. Файл <code>release-notes.md</code>
+    — снимок до этой проверки; обновлённое пояснение — в текущем тексте релиза.</p>
+    <p><strong>Зачем 0.2.1?</strong> 0.2.0 подтвердила неподвижную точку для прежней принятой ревизии. 0.2.1 закрепляет новый seed ревизии 3729abcce и подтверждает его неподвижную точку на уровне C; отдельная успешная эмиссия старого seed не доказывает такой же неподвижной точки.</p>
+    <div class="download-grid">
+      <div class="download-card">
+        <h3>Windows x86_64</h3>
+        <p>Опубликованный альфа-архив со стадией B1 <code>novac.exe</code>.</p>
+        <a class="btn btn-primary" href="https://github.com/nv-lang/nova/releases/download/carina-v0.2.1/nova-carina-0.2.1-windows-x86_64.zip">Скачать ZIP для Windows</a>
+        <p>SHA-256: <code>7e8264fd7b72d4005ca9bde585a6a732d3e7d6c248b65fd5787cd4a766e69cdb</code></p>
+      </div>
+      <div class="download-card">
+        <h3>Исходный архив</h3>
+        <p>Снимок исходников ревизии <code>3729abcce</code>.</p>
+        <a class="btn btn-outline" href="https://github.com/nv-lang/nova/releases/download/carina-v0.2.1/nova-carina-0.2.1-src.tar.gz">Скачать исходники</a>
+        <p>SHA-256: <code>716b58090af840326a2cdf3440590d7295015e5e6e9c07f75d7776bec7e0db67</code></p>
+      </div>
+      <div class="download-card">
+        <h3>Данные выпуска</h3>
+        <p>Контрольные суммы, расписка самосборки и дескриптор seed.</p>
+        <a class="btn btn-outline" href="https://github.com/nv-lang/nova/releases/download/carina-v0.2.1/SHA256SUMS">SHA256SUMS</a>
+        <p>SHA-256: <code>66ed06aba924491bfe8b292d392d9aebf27b0971a8f2a9a7ebf884b7ffa555d0</code></p>
+        <p><a href="https://github.com/nv-lang/nova/releases/download/carina-v0.2.1/bootstrap-alpha-receipt.json">Расписка самосборки</a>
+        · <a href="https://github.com/nv-lang/nova/releases/download/carina-v0.2.1/seed-descriptor.json">Дескриптор seed</a></p>
+      </div>
+    </div>
+    <p><a href="https://github.com/nv-lang/nova/releases/download/carina-v0.2.1/release-notes.md">Снимок release-notes.md до проверки</a>
+    · <a href="https://github.com/nv-lang/nova/releases/tag/carina-v0.2.1">Текст релиза и текущие ограничения</a></p>
   </section>
 
   <section aria-labelledby="carina-release" style="margin-top:3.5rem;">
