@@ -50,13 +50,14 @@
     released stage-B1 executable. For this source, B1 and the newly pinned
     seed reach the same C-level fixed point: 13,250,302 bytes, SHA-256
     (<code>25c5404f1e8e175652f19c9ca6cb03d29de82cee70a7cd9f4258c6724115c8a0</code>).
-    The required CI gate still uses Oracle; migration away from Oracle is in
-    progress. This C-level result does not claim Oracle-free bootstrap or
-    native executable equality with a stage B2, Linux
+    Under this C-level criterion, Carina 0.2.1 can be built without launching
+    Oracle; the required CI gate still uses Oracle. This does not claim native
+    executable equality with a stage B2, Linux
     support, or package-ecosystem readiness (planned for 0.3). Building Nova
     programs still requires an external C toolchain. Historical Boehm GC
-    headers and Oracle/run-2 libraries are documented in the linked receipt
-    and release notes. The linked <code>release-notes.md</code> is a snapshot
+    headers came from published Oracle 0.1.0; saved runtime libraries came
+    from run2/source3729, as documented in the linked receipt and release
+    notes. The linked <code>release-notes.md</code> is a snapshot
     from before this verification; see the current release body for the update.</p>
     <p><strong>Why 0.2.1?</strong> 0.2.0 established a fixed point for an earlier accepted source revision. 0.2.1 pins a new seed to revision 3729abcce and verifies its C-level fixed point on that source; the older seed's separate successful emit does not establish the same fixed point.</p>
     <div class="download-grid">
