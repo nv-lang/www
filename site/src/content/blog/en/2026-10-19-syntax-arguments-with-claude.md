@@ -38,7 +38,7 @@ fn save(u User) Throws Io Async -> ()
 
 The language kept changing: `Throws` was renamed to `Fail`, and `Async` was removed from the type system altogether, since asynchrony became the job of the M:N runtime. But the principle stayed: effects are written as words, and a signature reads without decoding.
 
-![How the effect syntax changed: !throws io async, then Throws Io Async, today Fs Fail[IoError]](/blog/2026-10-19-syntax-arguments-with-claude/f5-effects.png)
+![How the effect syntax changed: !throws io async, then Throws Io Async, today Fs Fail[IoError]](/blog/2026-10-19-syntax-arguments-with-claude/f5-effects-en.png)
 
 AI reasons logically ("the symbol is free"), while a human sees how a line reads at first glance. AI can't do that yet.
 
@@ -48,7 +48,7 @@ At first, arrays in Nova were written as `[T]`, Rust and Swift style. Claude def
 
 The last question settled it. In Go, `[2][3]int` reads in the same order as `arr[i][j]`. In Rust, `[[T; 3]; 2]` reads the other way round, and people have long complained about it. Claude reweighed: matching the indexing order matters more than neat consistency with generics, and the parser stays unambiguous by position. Nova kept Go-style arrays: `[]T`, `[N]T`, `[N1][N2]T`. About thirty places in the docs had to be fixed. Rust's notation has every right to exist, but it's not to my taste.
 
-![Order of dimensions: in Go and Nova, [2][3]int and a[i][j] go in the same order; in Rust, [[T; 3]; 2] is written the other way round](/blog/2026-10-19-syntax-arguments-with-claude/f1-arrays.png)
+![Order of dimensions: in Go and Nova, [2][3]int and a[i][j] go in the same order; in Rust, [[T; 3]; 2] is written the other way round](/blog/2026-10-19-syntax-arguments-with-claude/f1-arrays-en.png)
 
 ## `&T`, which survived everything by inertia
 
@@ -75,7 +75,7 @@ Four short stories. Three of them have the same cause: AI mixes habits from diff
 
 **Result type: `:` or `->`.** This one isn't about AI but about my old gripe with TypeScript: there, the result type in a declaration comes after a colon, `function f(x: number): number`, and in a function type after an arrow, `(x: number) => number`. In Nova it always comes after `->`: `fn f(x int) -> int` and `fn(int) -> int`. So the two arrows have different jobs: `->` introduces the result type, `=>` introduces the expression itself.
 
-![Before → after: function body = → =>, pub fn → export, IO and FS → Io and Fs, result type after -> in both declarations and function types](/blog/2026-10-19-syntax-arguments-with-claude/f7-small.png)
+![Before → after: function body = → =>, pub fn → export, IO and FS → Io and Fs, result type after -> in both declarations and function types](/blog/2026-10-19-syntax-arguments-with-claude/f7-small-en.png)
 
 Each decision looked reasonable on its own; the mistake was the mix of schools. AI doesn't see it: to the AI these are just different places in the docs.
 
@@ -121,7 +121,7 @@ fn Account mut @deposit(amount money) =>           // mutating instance method: 
 
 The objection about the dot went away, because the notation now reflects the difference between a static method (which often serves as a constructor, like `Account.new`) and an instance method. The `self` keyword was removed from the language; fields are written as `@field`, the instance itself as `@`. Of the five variants this one turned out best, and I'm happy with it.
 
-![Five rounds of the method-declaration argument: each form and Claude's objection to it, with the final notation at the bottom](/blog/2026-10-19-syntax-arguments-with-claude/f2-methods.png)
+![Five rounds of the method-declaration argument: each form and Claude's objection to it, with the final notation at the bottom](/blog/2026-10-19-syntax-arguments-with-claude/f2-methods-en.png)
 
 The story has a sequel. When the language got resources that a method takes over completely (`consume`), they found a place right where `mut` goes:
 
@@ -143,7 +143,7 @@ fn str @bytes() -> ro []u8   // a view of the string's bytes without copying
 
 Strings in Nova are immutable, but you can get a string's bytes as an array: `bytes()` returns an `ro` array laid directly over the string's own bytes, with no copy. Without `ro`, such an array could be used to change a string that the language promises never changes. Whoever needs to write makes an explicit copy, for example `"123".bytes().clone()`.
 
-![Return modifiers: -> mut T and -> consume T removed, -> ro T kept](/blog/2026-10-19-syntax-arguments-with-claude/f3-returns.png)
+![Return modifiers: -> mut T and -> consume T removed, -> ro T kept](/blog/2026-10-19-syntax-arguments-with-claude/f3-returns-en.png)
 
 ## From `let` to `ro`
 
@@ -157,7 +157,7 @@ In early examples, a field was named `@_balance`: the underscore meant "don't to
 
 We settled this one by measuring. We took Kubernetes, a big Go project, and counted fields ([the study](https://github.com/nv-lang/nova/blob/eee6eae882a46861d70e5eae48648d8a643c8901/docs/dev/research/06-field-visibility-go-kubernetes.md), with the method and the counting script): of 35 thousand fields in 11 thousand structs, 59% turned out to be public. In internal logic it's roughly half and half, while in API descriptions such as `core/v1/types.go`, 92% of fields are public. So in Nova fields are public by default, and you hide a field with an explicit `priv`, which the compiler checks. If almost everything in a type is private, you write `type X priv { … }`, and then open up individual fields.
 
-![Kubernetes: share of public fields — all code 59.4%, pkg/ 47%, staging/ 63.7%, cmd/ 67.8%, core/v1/types.go 92.4%](/blog/2026-10-19-syntax-arguments-with-claude/f6-visibility.png)
+![Kubernetes: share of public fields — all code 59.4%, pkg/ 47%, staging/ 63.7%, cmd/ 67.8%, core/v1/types.go 92.4%](/blog/2026-10-19-syntax-arguments-with-claude/f6-visibility-en.png)
 
 ## Where Claude was right: pointers
 
@@ -176,7 +176,7 @@ On the second question I was the one persuaded. I proposed that a modifier act o
 
 This time I was the one who had to look at the question from scratch, which is exactly what I usually ask the agent to do. I looked at my idea from the outside, and Claude's argument convinced me. Now a modifier stops at the `*` boundary: `ro` freezes everything the value owns but doesn't pass through a pointer. What you can do with the memory behind a pointer is said only by its type: `*T` means "read-only", `*mut T` means "writable", the same everywhere in the program. In a garbage-collected language without borrow checking, you can't statically tell your own memory from someone else's, so the boundary is drawn where it's visible in the text: at `*`. The price is known from C++: deep immutability can't be imposed through a pointer from the outside.
 
-![ro freezes everything the value owns but stops at *: what you can do behind a pointer is said only by its type](/blog/2026-10-19-syntax-arguments-with-claude/f4-pointers.png)
+![ro freezes everything the value owns but stops at *: what you can do behind a pointer is said only by its type](/blog/2026-10-19-syntax-arguments-with-claude/f4-pointers-en.png)
 
 ## When to argue with AI: a short checklist
 
