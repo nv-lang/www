@@ -10,7 +10,7 @@
 
   <div class="status-banner" style="margin-bottom:2.5rem;">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:.1rem"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-    <span><strong>Альфа-релиз.</strong> Nova Oracle 0.1.0 доступен для Windows и Linux x86_64. Язык и API могут меняться; совместимость и готовность к production не гарантируются. Начните с Oracle; Carina 0.2.0 — отдельная ступень самосборки, пока только с Windows-бинарником.</span>
+    <span><strong>Альфа-релиз.</strong> Nova Oracle 0.1.3 доступен для Windows и Linux x86_64. Язык и API могут меняться; совместимость и готовность к production не гарантируются. Начните с Oracle; Carina 0.2.0 — отдельная ступень самосборки, пока только с Windows-бинарником.</span>
   </div>
 
   <!-- ── Системные требования ──────────────────────────────────────────────── -->
@@ -48,7 +48,7 @@
       <div class="step__num">1</div>
       <div class="step__body">
         <h3>Windows x86_64</h3>
-        <p>Распакуйте <code>nova-oracle-0.1.0-windows-x86_64.zip</code>. Нужен C-компилятор, например Visual Studio Build Tools с поддержкой C++. Библиотека Boehm GC и её заголовки входят в архив.</p>
+        <p>Распакуйте <code>nova-oracle-0.1.3-windows-x86_64.zip</code>. Нужен C-компилятор, например Visual Studio Build Tools с поддержкой C++. Библиотека Boehm GC и её заголовки входят в архив.</p>
         <p>В PowerShell из каталога с <code>nova.exe</code> подключите скрипт через точку. Начальная точка сохраняет настройки окружения в текущей сессии:</p>
         <div class="copy-block">
           <pre><code>. .\setup-env.ps1
@@ -62,7 +62,7 @@ nova --version</code></pre>
       <div class="step__num">2</div>
       <div class="step__body">
         <h3>Linux x86_64</h3>
-        <p>Распакуйте <code>nova-oracle-0.1.0-linux-x86_64.tar.gz</code>. Для Debian/Ubuntu установите C-тулчейн и заголовки Boehm GC:</p>
+        <p>Распакуйте <code>nova-oracle-0.1.3-linux-x86_64.tar.gz</code>. Для Debian/Ubuntu установите C-тулчейн и заголовки Boehm GC:</p>
         <div class="copy-block">
           <pre><code>sudo apt-get install clang cmake make libgc-dev build-essential</code></pre>
           <button class="copy-btn" onclick="copyCode(this)">Копировать</button>

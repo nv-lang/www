@@ -2,7 +2,7 @@
   <div class="container--narrow">
     <span class="version-badge">Alpha pre-releases</span>
     <h1>Nova releases</h1>
-    <p>Nova Oracle 0.1.0 is the Rust-based compiler distribution. Nova Carina
+    <p>Nova Oracle 0.1.3 is the Rust-based compiler distribution. Nova Carina
     0.2.1 is the published Windows x86_64 alpha of the self-hosted compiler.
     Both are early alpha releases: APIs and language features may change, and
     compatibility is not guaranteed.</p>
@@ -12,7 +12,7 @@
 <main id="main-content" style="padding:3rem 1.5rem 5rem;">
 <div class="container--narrow">
   <section aria-labelledby="oracle-release">
-    <h2 id="oracle-release">Nova Oracle 0.1.0 (alpha)</h2>
+    <h2 id="oracle-release">Nova Oracle 0.1.3 (alpha)</h2>
     <p>Oracle compiles Nova to C, then to native code. It includes the
     <code>nova</code> CLI, standard library and C runtime; the binary bundles
     also include <code>nova-lsp</code>. The Windows bundle was smoke-tested
@@ -24,28 +24,28 @@
         <h3>Windows x86_64</h3>
         <p>ZIP with <code>nova.exe</code>, <code>nova-lsp.exe</code>, runtime,
         standard library and setup instructions. No VS Code extension is bundled.</p>
-        <a class="btn btn-primary" href="https://github.com/nv-lang/nova/releases/download/oracle-v0.1.0/nova-oracle-0.1.0-windows-x86_64.zip">Download Windows ZIP</a>
+        <a class="btn btn-primary" href="https://github.com/nv-lang/nova/releases/download/oracle-v0.1.3/nova-oracle-0.1.3-windows-x86_64.zip">Download Windows ZIP</a>
       </div>
       <div class="download-card">
         <h3>Linux x86_64</h3>
         <p>Compiler and language server with standard-library and runtime sources.
         Install a C toolchain and <code>libgc-dev</code> before compiling programs.</p>
-        <a class="btn btn-outline" href="https://github.com/nv-lang/nova/releases/download/oracle-v0.1.0/nova-oracle-0.1.0-linux-x86_64.tar.gz">Download Linux archive</a>
+        <a class="btn btn-outline" href="https://github.com/nv-lang/nova/releases/download/oracle-v0.1.3/nova-oracle-0.1.3-linux-x86_64.tar.gz">Download Linux archive</a>
       </div>
       <div class="download-card">
         <h3>Source archive</h3>
         <p>Source snapshot with submodules at the release revision.</p>
-        <a class="btn btn-outline" href="https://github.com/nv-lang/nova/releases/download/oracle-v0.1.0/nova-oracle-0.1.0-src.tar.gz">Download source</a>
+        <a class="btn btn-outline" href="https://github.com/nv-lang/nova/releases/download/oracle-v0.1.3/nova-oracle-0.1.0-src.tar.gz">Download source</a>
       </div>
     </div>
-    <p><a href="https://github.com/nv-lang/nova/releases/download/oracle-v0.1.0/SHA256SUMS">SHA256SUMS</a>
-    · <a href="https://github.com/nv-lang/nova/releases/tag/oracle-v0.1.0">Release notes and limitations</a></p>
+    <p><a href="https://github.com/nv-lang/nova/releases/download/oracle-v0.1.3/SHA256SUMS">SHA256SUMS</a>
+    · <a href="https://github.com/nv-lang/nova/releases/tag/oracle-v0.1.3">Release notes and limitations</a></p>
   </section>
 
   <section aria-labelledby="carina-0-2-1-release" style="margin-top:3.5rem;">
     <h2 id="carina-0-2-1-release">Nova Carina 0.2.1 (alpha)</h2>
     <p>Carina is the compiler written in Nova. This Windows x86_64 alpha was
-    built from source revision <code>3729abcce</code>: the published Oracle 0.1.0
+    built from source revision <code>3729abcce</code>: the published Oracle 0.1.3
     first built stage A, stage A emitted C, and Clang compiled that C into the
     released stage-B1 executable. For this source, B1 and the newly pinned
     seed reach the same C-level fixed point: 13,250,302 bytes, SHA-256
@@ -55,7 +55,7 @@
     executable equality with a stage B2, Linux
     support, or package-ecosystem readiness (planned for 0.3). Building Nova
     programs still requires an external C toolchain. Historical Boehm GC
-    headers came from published Oracle 0.1.0; saved runtime libraries came
+    headers came from published Oracle 0.1.3; saved runtime libraries came
     from run2/source3729, as documented in the linked receipt and release
     notes. The linked <code>release-notes.md</code> is a snapshot
     from before this verification; see the current release body for the update.</p>
